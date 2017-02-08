@@ -10,9 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20170203182221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
+
+  create_table "boxes", force: :cascade do |t|
+    t.geometry "geom",      limit: {:srid=>4326, :type=>"multi_polygon"}
+    t.integer  "g250m_id"
+    t.string   "municipal"
+    t.integer  "muni_id"
+  end
+
+  create_table "travel_times", force: :cascade do |t|
+    t.integer "input_id"
+    t.integer "target_id"
+    t.integer "g250m_id_origin"
+    t.integer "g250m_id_destination"
+    t.decimal "distance"
+    t.decimal "x_origin",             precision: 15, scale: 12
+    t.decimal "y_origin",             precision: 15, scale: 12
+    t.decimal "x_destination",        precision: 15, scale: 12
+    t.decimal "y_destination",        precision: 15, scale: 12
+    t.string  "travel_mode"
+    t.integer "time"
+    t.integer "pair_id"
+  end
 
 end

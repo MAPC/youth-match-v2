@@ -1,6 +1,9 @@
 # Youth Match Second Generation
 
-## Automating a lottery which matches local young people to meaningful (summer) employment, and tracking their responses.
+ Automating a lottery which matches local young people to meaningful (summer) employment, and tracking their responses.
+
+## Setup
+
 
 ## Contact
 
