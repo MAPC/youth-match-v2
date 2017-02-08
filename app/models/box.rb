@@ -1,6 +1,6 @@
 class Box < ApplicationRecord
   def self.intersects(latlong)
-    raise Error.new('please format as lat,long') if latlong.excludes?(',') || latlong.blank?
+    raise 'please format as lat,long' if latlong.exclude?(',') || latlong.blank?
     latlong = latlong.split(",")
     location = RGeo::Geographic.spherical_factory(srid: 4326)
                                .point(latlong[1], latlong[0])
