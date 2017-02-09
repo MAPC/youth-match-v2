@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209185457) do
+ActiveRecord::Schema.define(version: 20170209194305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20170209185457) do
     t.string    "last_name"
     t.string    "email"
     t.integer   "icims_id"
-    t.string    "interests",                                                                              array: true
+    t.string    "interests",                                                                 array: true
     t.boolean   "prefers_nearby"
     t.boolean   "has_transit_pass"
     t.integer   "grid_id"
@@ -35,6 +35,16 @@ ActiveRecord::Schema.define(version: 20170209185457) do
     t.integer  "g250m_id"
     t.string   "municipal"
     t.integer  "muni_id"
+  end
+
+  create_table "positions", force: :cascade do |t|
+    t.integer   "icims_id"
+    t.string    "title"
+    t.string    "category"
+    t.integer   "grid_id"
+    t.geography "location",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.datetime  "created_at",                                                          null: false
+    t.datetime  "updated_at",                                                          null: false
   end
 
   create_table "travel_times", force: :cascade do |t|
