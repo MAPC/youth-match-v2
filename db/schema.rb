@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170213183026) do
+ActiveRecord::Schema.define(version: 20170216200336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,9 +43,21 @@ ActiveRecord::Schema.define(version: 20170213183026) do
     t.string    "title"
     t.string    "category"
     t.integer   "grid_id"
-    t.geography "location",   limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.datetime  "created_at",                                                          null: false
-    t.datetime  "updated_at",                                                          null: false
+    t.geography "location",     limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.datetime  "created_at",                                                            null: false
+    t.datetime  "updated_at",                                                            null: false
+    t.integer   "applicant_id"
+    t.index ["applicant_id"], name: "index_positions_on_applicant_id", using: :btree
+  end
+
+  create_table "preferences", force: :cascade do |t|
+    t.integer  "applicant_id"
+    t.integer  "position_id"
+    t.float    "score"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["applicant_id"], name: "index_preferences_on_applicant_id", using: :btree
+    t.index ["position_id"], name: "index_preferences_on_position_id", using: :btree
   end
 
   create_table "travel_times", force: :cascade do |t|
@@ -61,6 +73,11 @@ ActiveRecord::Schema.define(version: 20170213183026) do
     t.string  "travel_mode"
     t.integer "time"
     t.integer "pair_id"
+    t.index ["input_id"], name: "index_travel_times_on_input_id", using: :btree
+    t.index ["target_id"], name: "index_travel_times_on_target_id", using: :btree
   end
 
+  add_foreign_key "positions", "applicants"
+  add_foreign_key "preferences", "applicants"
+  add_foreign_key "preferences", "positions"
 end
