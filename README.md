@@ -1,6 +1,19 @@
 # Youth Match Second Generation
 
-## Automating a lottery which matches local young people to meaningful (summer) employment, and tracking their responses.
+ Automating a lottery which matches local young people to meaningful (summer) employment, and tracking their responses.
+
+## Setup
+
+To test and prove the lottery works:
+
+1. `rake import:seed` if you did not run `bin/setup`
+2. `rake import:applicant_test_data`
+3. `rake import:position_test_data`
+4. `rake lottery:assign_lottery_numbers` to pick lottery winners
+5. `rake lottery:build_preference_lists` to build preference lists
+6. `rake lottery:match` to match positions to jobs
+7. `rake lottery:print` to print information about the lottery results
+
 
 ## Contact
 
