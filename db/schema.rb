@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170216200336) do
+ActiveRecord::Schema.define(version: 20170224204019) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,14 +21,19 @@ ActiveRecord::Schema.define(version: 20170216200336) do
     t.string    "last_name"
     t.string    "email"
     t.integer   "icims_id"
-    t.string    "interests",                                                                              array: true
+    t.string    "interests",                                                                                   array: true
     t.boolean   "prefers_nearby"
     t.boolean   "has_transit_pass"
     t.integer   "grid_id"
-    t.geography "location",         limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.datetime  "created_at",                                                                null: false
-    t.datetime  "updated_at",                                                                null: false
+    t.geography "location",              limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.datetime  "created_at",                                                                     null: false
+    t.datetime  "updated_at",                                                                     null: false
     t.integer   "lottery_number"
+    t.boolean   "receive_text_messages"
+    t.string    "phone"
+    t.string    "guardian_name"
+    t.string    "guardian_phone"
+    t.string    "guardian_email"
   end
 
   create_table "boxes", force: :cascade do |t|
