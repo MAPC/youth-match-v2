@@ -73,7 +73,8 @@ namespace :import do
                                 prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
                                 has_transit_pass: boolean(applicant_information['field36999']),
                                 receive_text_messages: boolean(applicant_information['field50527']),
-                                phone: mobile_phone(applicant_information),
+                                mobile_phone: mobile_phone(applicant_information),
+                                home_phone: home_phone(applicant_information),
                                 guardian_name: applicant_information['field51088'],
                                 guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
                                 guardian_email: applicant_information['field51090'],
@@ -142,6 +143,14 @@ namespace :import do
     applicant['phones'].each do |phone|
       next if phone['phonetype'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == 'Mobile'
+    end
+    return nil
+  end
+
+  def home_phone(applicant)
+    applicant['phones'].each do |phone|
+      next if phone['phonetype'].blank?
+      return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == 'Home'
     end
     return nil
   end

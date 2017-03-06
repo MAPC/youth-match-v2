@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170303213125) do
+ActiveRecord::Schema.define(version: 20170306180728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20170303213125) do
     t.datetime  "updated_at",                                                                               null: false
     t.integer   "lottery_number"
     t.boolean   "receive_text_messages"
-    t.string    "phone"
+    t.string    "mobile_phone"
     t.string    "guardian_name"
     t.string    "guardian_phone"
     t.string    "guardian_email"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20170303213125) do
     t.text      "participant_essay"
     t.string    "address"
     t.text      "participant_essay_attached_file"
+    t.string    "home_phone"
   end
 
   create_table "boxes", force: :cascade do |t|
