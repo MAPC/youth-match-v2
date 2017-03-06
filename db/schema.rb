@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170224204019) do
+ActiveRecord::Schema.define(version: 20170303213125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,19 +21,35 @@ ActiveRecord::Schema.define(version: 20170224204019) do
     t.string    "last_name"
     t.string    "email"
     t.integer   "icims_id"
-    t.string    "interests",                                                                                   array: true
+    t.string    "interests",                                                                                             array: true
     t.boolean   "prefers_nearby"
     t.boolean   "has_transit_pass"
     t.integer   "grid_id"
-    t.geography "location",              limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.datetime  "created_at",                                                                     null: false
-    t.datetime  "updated_at",                                                                     null: false
+    t.geography "location",                        limit: {:srid=>4326, :type=>"point", :geographic=>true}
+    t.datetime  "created_at",                                                                               null: false
+    t.datetime  "updated_at",                                                                               null: false
     t.integer   "lottery_number"
     t.boolean   "receive_text_messages"
     t.string    "phone"
     t.string    "guardian_name"
     t.string    "guardian_phone"
     t.string    "guardian_email"
+    t.boolean   "in_school"
+    t.string    "school_type"
+    t.boolean   "bps_student"
+    t.string    "bps_school_name"
+    t.string    "current_grade_level"
+    t.boolean   "english_first_language"
+    t.string    "first_language"
+    t.boolean   "fluent_other_language"
+    t.string    "other_languages",                                                                                       array: true
+    t.boolean   "held_successlink_job_before"
+    t.string    "previous_job_site"
+    t.boolean   "wants_to_return_to_previous_job"
+    t.boolean   "superteen_participant"
+    t.text      "participant_essay"
+    t.string    "address"
+    t.text      "participant_essay_attached_file"
   end
 
   create_table "boxes", force: :cascade do |t|
