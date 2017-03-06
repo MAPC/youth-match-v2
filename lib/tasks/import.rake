@@ -50,10 +50,9 @@ namespace :import do
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
     end
-    workflows = JSON.parse(response.body)['searchResults'].map { |x| x['id'] }
+    workflows = JSON.parse(response.body)['searchResults'].pluck('id')
     puts 'Number of applicants: ' + workflows.count.to_s
     workflows.each do |workflow_id|
-      # ping the API for the information about the applicant
       workflow = Faraday.get("https://api.icims.com/customers/7383/applicantworkflows/#{workflow_id}",
                              {},
                              authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
@@ -73,8 +72,8 @@ namespace :import do
                                 prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
                                 has_transit_pass: boolean(applicant_information['field36999']),
                                 receive_text_messages: boolean(applicant_information['field50527']),
-                                mobile_phone: mobile_phone(applicant_information),
-                                home_phone: home_phone(applicant_information),
+                                mobile_phone: phone(applicant_information, 'Mobile'),
+                                home_phone: phone(applicant_information, 'Home'),
                                 guardian_name: applicant_information['field51088'],
                                 guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
                                 guardian_email: applicant_information['field51090'],
@@ -95,7 +94,7 @@ namespace :import do
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
                                 location: geocode_address(applicant_information),
                                 address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' })
-      # thank(applicant.phone) if applicant.receive_text_messages
+      # thank(applicant.mobile_phone) if applicant.mobile_phone && applicant.receive_text_messages
       applicant.save!
     end
   end
@@ -128,27 +127,19 @@ namespace :import do
                              address: street_address, locality: 'Boston', region: 'MA' })
     return nil if JSON.parse(response.body)['features'].count == 0
     coordinates = JSON.parse(response.body)['features'][0]['geometry']['coordinates']
-    return "POINT(" + coordinates[0].to_s + " " + coordinates[1].to_s + ")"
+    return 'POINT(' + coordinates[0].to_s + ' ' + coordinates[1].to_s + ')'
   end
 
   def get_attached_essay(applicant)
     return nil if applicant['field23872'].blank?
-    file_location = applicant['field23872']['file'].gsub!('binary','text')
+    file_location = applicant['field23872']['file'].gsub!('binary', 'text')
     Faraday.get(file_location, {}, authorization: "Basic #{Rails.application.secrets.icims_authorization_key}").body
   end
 
-  def mobile_phone(applicant)
+  def phone(applicant, phone_type)
     applicant['phones'].each do |phone|
       next if phone['phonetype'].blank?
-      return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == 'Mobile'
-    end
-    return nil
-  end
-
-  def home_phone(applicant)
-    applicant['phones'].each do |phone|
-      next if phone['phonetype'].blank?
-      return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == 'Home'
+      return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
     end
     return nil
   end
