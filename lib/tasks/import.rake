@@ -123,11 +123,9 @@ namespace :import do
   def geocode_address(applicant)
     street_address = applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
     street_address.gsub!(/\s#\d+/i, '')
-    response = Faraday.get("https://search.mapzen.com/v1/search?text=#{street_address}
-                                                               &size=1
-                                                               &focus.point.lat=42.3550591
-                                                               &focus.point.lon=-71.0635035
-                                                               &api_key=#{Rails.application.secrets.mapzen_api_key}")
+    response = Faraday.get('https://search.mapzen.com/v1/search/structured',
+                           { api_key: Rails.application.secrets.mapzen_api_key,
+                             address: street_address, locality: 'Boston', region: 'MA' })
     return nil if JSON.parse(response.body)['features'].count == 0
     coordinates = JSON.parse(response.body)['features'][0]['geometry']['coordinates']
     return "POINT(" + coordinates[0].to_s + " " + coordinates[1].to_s + ")"
@@ -156,7 +154,8 @@ namespace :import do
   end
 
   def thank(phone)
-    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid, Rails.application.secrets.twilio_auth_token
+    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
+                                      Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: 'Thank you for applying to the 2017 SuccessLink Lottery.
                            We have received your application! You will receive a text and
