@@ -46,12 +46,11 @@ namespace :import do
   task applicants_from_icims: :environment do
     response = icims_search(type: 'applicantworkflows',
                             body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
-    workflows = response['searchResults'].pluck('id')
+    workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
     puts 'Number of applicants: ' + workflows.count.to_s
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
       applicant_id = workflow['associatedprofile']['id']
-      next if Applicant.find_by_icims_id(applicant_id)
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
                                         id: applicant_id)
@@ -89,7 +88,8 @@ namespace :import do
                                 participant_essay: applicant_information['field23873'],
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
                                 location: geocode_applicant_address(applicant_information),
-                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' })
+                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' },
+                                workflow_id: workflow_id)
       # thank(applicant.mobile_phone) if applicant.mobile_phone && applicant.receive_text_messages
       applicant.save!
     end
