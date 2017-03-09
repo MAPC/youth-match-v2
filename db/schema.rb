@@ -83,6 +83,14 @@ ActiveRecord::Schema.define(version: 20170307203438) do
     t.index ["position_id"], name: "index_preferences_on_position_id", using: :btree
   end
 
+  create_table "rehire_sites", force: :cascade do |t|
+    t.string   "site_name"
+    t.string   "person_name"
+    t.boolean  "should_rehire"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
   create_table "travel_times", force: :cascade do |t|
     t.integer "input_id"
     t.integer "target_id"
