@@ -1,4 +1,4 @@
-class PositionImportsController < ApplicationController
+class ImportPositionsController < ApplicationController
   skip_before_action :verify_authenticity_token
   def create
     ImportPositionsJob.perform_now
