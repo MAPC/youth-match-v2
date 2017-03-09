@@ -1,0 +1,2 @@
+class RehireSite < ApplicationRecord
+end

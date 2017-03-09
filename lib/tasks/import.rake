@@ -111,6 +111,18 @@ namespace :import do
     end
   end
 
+  desc 'Import legacy site rehire data'
+  task site_rehire_data: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'sites_applicants_2017.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row, index|
+      a = RehireSite.new
+      a.site_name = row['Worksite']
+      a.person_name = row['Name']
+      a.save
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
