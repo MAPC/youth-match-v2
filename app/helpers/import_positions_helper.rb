@@ -1,2 +1,2 @@
-module PositionImportsHelper
+module ImportPositionsHelper
 end
