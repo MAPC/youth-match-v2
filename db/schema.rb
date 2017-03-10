@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20170307203438) do
     t.string   "site_name"
     t.string   "person_name"
     t.boolean  "should_rehire"
+    t.integer  "person_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end

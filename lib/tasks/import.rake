@@ -119,6 +119,7 @@ namespace :import do
       a = RehireSite.new
       a.site_name = row['Worksite']
       a.person_name = row['Name']
+      a.person_id = row['person_id']
       a.save
     end
   end

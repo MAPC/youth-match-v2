@@ -4,6 +4,7 @@ class CreateRehireSites < ActiveRecord::Migration[5.0]
       t.string :site_name
       t.string :person_name
       t.boolean :should_rehire
+      t.integer :person_id
 
       t.timestamps
     end
