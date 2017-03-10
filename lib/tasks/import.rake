@@ -124,6 +124,16 @@ namespace :import do
     end
   end
 
+  desc 'Import legacy site rehire data'
+  task normalize_duplicate_sites: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'normalize_duplicate_sites.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row, index|
+      a = RehireSite.where(site_name: row['site1'])
+      a.update_all(site_name: row['site2'])
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
