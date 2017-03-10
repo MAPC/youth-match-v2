@@ -5,7 +5,7 @@ class CreatePositions < ActiveRecord::Migration[5.0]
       t.string :title
       t.string :category
       t.integer :grid_id
-      t.st_point :location, srid: 4326, geographic: true
+      # t.st_point :location, srid: 4326, geographic: true
 
       t.timestamps
     end

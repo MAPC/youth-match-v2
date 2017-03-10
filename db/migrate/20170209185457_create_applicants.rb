@@ -9,7 +9,7 @@ class CreateApplicants < ActiveRecord::Migration[5.0]
       t.boolean :prefers_nearby
       t.boolean :has_transit_pass
       t.integer :grid_id
-      t.st_point :location, srid: 4326, geographic: true
+      # t.st_point :location, srid: 4326, geographic: true
 
       t.timestamps
     end
