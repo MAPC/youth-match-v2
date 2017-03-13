@@ -4,6 +4,8 @@
 
 ## Setup
 
+You will need to setup a .env file with some API keys. We use MapZen for geocoding, Twilio for text messaging, and iCIMS is the app we interface with from the City of Boston. See config/secrets.yml for the list of API key variables.
+
 To test and prove the lottery works:
 
 1. `rake import:seed` if you did not run `bin/setup`
