@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
   get 'travel_time/get'
+  resources :position_imports, only: [:create]
+
+  scope 'api' do
+    resources :rehire_sites, only: [:get_uniq_sites, :index, :update] do
+      get 'get_uniq_sites', to: 'rehire_sites#get_uniq_sites', on: :collection
+    end
+  end
 
   resources :applicant_imports, only: [:create]
 

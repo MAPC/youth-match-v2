@@ -1,9 +1,9 @@
 FactoryGirl.define do
   factory :position do
-    icims_id 1
-    title "MyString"
-    category "MyString"
-    grid_id 1
-    location ""
+    sequence(:icims_id) { |n| n }
+    sequence(:title) { |n| "Title #{n}" }
+    sequence(:category) { |n| "Category #{n}" }
+    sequence(:grid_id) { |n| n }
+    location ''
   end
 end

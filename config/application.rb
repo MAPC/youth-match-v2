@@ -21,5 +21,21 @@ module YouthMatchV2
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+    KNOWN_HOSTS = ENV.fetch('KNOWN_HOSTS') {
+      'http://lvh.me:5000,http://localhost:4200'
+    }
+    DEBUG_CORS  = ENV.fetch('DEBUG_CORS', false)
+
+    config.middleware.use ActionDispatch::Flash
+    config.middleware.use Rack::MethodOverride
+
+    config.middleware.insert_before 0, 'Rack::Cors',
+      debug:  DEBUG_CORS,
+      logger: (-> { Rails.logger }) do
+        allow do
+          origins  KNOWN_HOSTS.split(',')
+          resource '*', headers: :any, methods: %i( get post put patch delete )
+        end
+      end
   end
 end

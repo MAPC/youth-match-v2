@@ -44,21 +44,16 @@ namespace :import do
 
   desc 'Import applicants from ICIMS'
   task applicants_from_icims: :environment do
-    response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/7383/search/applicantworkflows'
-      req.body = '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296","D10103"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}'
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-    end
-    workflows = JSON.parse(response.body)['searchResults'].pluck('id')
+    response = icims_search(type: 'applicantworkflows',
+                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
+    workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
     puts 'Number of applicants: ' + workflows.count.to_s
     workflows.each do |workflow_id|
-      workflow = Faraday.get("https://api.icims.com/customers/7383/applicantworkflows/#{workflow_id}",
-                             {},
-                             authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-      applicant_id = JSON.parse(workflow.body)['associatedprofile']['id']
-      next if Applicant.find_by_icims_id(applicant_id)
-      applicant_information = get_person_from_icims(applicant_id)
+      workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
+      applicant_id = workflow['associatedprofile']['id']
+      applicant_information = icims_get(object: 'people',
+                                        fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
+                                        id: applicant_id)
       puts 'Importing: ' + applicant_id.to_s
       applicant = Applicant.new(first_name: applicant_information['firstname'],
                                 last_name: applicant_information['lastname'],
@@ -92,8 +87,9 @@ namespace :import do
                                 superteen_participant: boolean(applicant_information['field51125']),
                                 participant_essay: applicant_information['field23873'],
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
-                                location: geocode_address(applicant_information),
-                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' })
+                                location: geocode_applicant_address(applicant_information),
+                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' },
+                                workflow_id: workflow_id)
       # thank(applicant.mobile_phone) if applicant.mobile_phone && applicant.receive_text_messages
       applicant.save!
     end
@@ -101,39 +97,77 @@ namespace :import do
 
   desc 'Import positions from ICIMS'
   task positions_from_icims: :environment do
-    # get position IDS from icims
-    # iterate through positions to get position information
-    Position.new(# icims_id: ,
-                 # title: ,
-                 # category: ,
-                 # location: "POINT(" + row['X'] + " " + row['Y'] + ")" # lon lat,
-      )
+    response = icims_search(type: 'jobs', body: '{"filters":[{"name":"job.jobtitle","value":["successlink"],"operator":"="}]}')
+    jobs = response['searchResults'].pluck('id')
+    puts 'Importing ' + jobs.count.to_s + 'jobs'
+    jobs.each do |job_id|
+      job = icims_get(object: 'jobs', id: job_id)
+      job_address = get_address_from_icims(job['joblocation']['address'])
+      position = Position.new(icims_id: job_id,
+                              title: job['jobtitle'],
+                              # category: ,
+                              location: geocode_address(job_address['addressstreet1']))
+      position.save!
+    end
+  end
+
+  desc 'Import legacy site rehire data'
+  task site_rehire_data: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'sites_applicants_2017.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row, index|
+      a = RehireSite.new
+      a.site_name = row['Worksite']
+      a.person_name = row['Name']
+      a.save
+    end
   end
 
   private
 
-  def get_person_from_icims(applicant_id)
-    response = Faraday.get("https://api.icims.com/customers/7383/people/#{applicant_id}",
-                           { fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873' },
+  def get_address_from_icims(address_url)
+    response = Faraday.get(address_url,
+                           {},
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
-  end
-
-  def geocode_address(applicant)
-    street_address = applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
-    street_address.gsub!(/\s#\d+/i, '')
-    response = Faraday.get('https://search.mapzen.com/v1/search/structured',
-                           { api_key: Rails.application.secrets.mapzen_api_key,
-                             address: street_address, locality: 'Boston', region: 'MA' })
-    return nil if JSON.parse(response.body)['features'].count == 0
-    coordinates = JSON.parse(response.body)['features'][0]['geometry']['coordinates']
-    return 'POINT(' + coordinates[0].to_s + ' ' + coordinates[1].to_s + ')'
   end
 
   def get_attached_essay(applicant)
     return nil if applicant['field23872'].blank?
     file_location = applicant['field23872']['file'].gsub!('binary', 'text')
     Faraday.get(file_location, {}, authorization: "Basic #{Rails.application.secrets.icims_authorization_key}").body
+  end
+
+  def icims_get(object:, fields: '', id:)
+    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+                           { fields: fields },
+                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
+    JSON.parse(response.body)
+  end
+
+  def icims_search(type:, body:)
+    response = Faraday.post do |req|
+      req.url 'https://api.icims.com/customers/7383/search/' + type
+      req.body = body
+      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
+      req.headers["content-type"] = 'application/json'
+    end
+    JSON.parse(response.body)
+  end
+
+  def geocode_applicant_address(applicant)
+    street_address = applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
+    street_address.gsub!(/\s#\d+/i, '')
+    geocode_address(street_address)
+  end
+
+  def geocode_address(street_address)
+    response = Faraday.get('https://search.mapzen.com/v1/search/structured',
+                           { api_key: Rails.application.secrets.mapzen_api_key,
+                             address: street_address, locality: 'Boston', region: 'MA' })
+    return nil if JSON.parse(response.body)['features'].count == 0
+    coordinates = JSON.parse(response.body)['features'][0]['geometry']['coordinates']
+    return 'POINT(' + coordinates[0].to_s + ' ' + coordinates[1].to_s + ')'
   end
 
   def phone(applicant, phone_type)
