@@ -2,16 +2,17 @@ class Position < ApplicationRecord
   before_validation :compute_grid_id, if: 'location.present?'
   has_many :preferences
   belongs_to :applicant
+  has_one :offer
 
   def open?
-    applicant.blank?
+    offer.blank?
   end
 
   def prefers?(new_applicant)
     # return true if the new_applicant has a higher score relative to this position than if the
-    # current applicant assigned to the position
-    preferences.where(applicant: new_applicant).first.score >
-    preferences.where(applicant: self.applicant).first.score
+    # current applicant assigned to the position.
+    preferences.find_by(applicant: new_applicant).score >
+    preferences.find_by(applicant: self.offer.applicant).score
   end
 
   private

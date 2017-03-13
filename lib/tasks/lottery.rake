@@ -27,7 +27,7 @@ namespace :lottery do
   desc 'Print match results'
   task print: :environment do
     Applicant.chosen(1).each do |applicant|
-      puts "Applicant: #{applicant.email} Position: #{applicant.position.id} #{applicant.position.title}"
+      puts "Applicant: #{applicant.email} Position: #{applicant.offer.last.position.id} #{applicant.offer.last.position.title}"
     end
   end
 
@@ -66,9 +66,8 @@ namespace :lottery do
     Applicant.chosen.each do |applicant|
       applicant.match_to_position
     end
-    if Position.where(applicant: nil).any?
+    if Position.joins("LEFT OUTER JOIN offers ON offers.position_id = positions.id").where("offers.id IS null").any?
       match_applicants_to_positions
     end
   end
-
 end

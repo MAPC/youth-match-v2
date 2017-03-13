@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :offers
   get 'travel_time/get'
   resources :position_imports, only: [:create]
 
