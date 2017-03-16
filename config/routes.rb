@@ -6,6 +6,8 @@ Rails.application.routes.draw do
     resources :rehire_sites, only: [:get_uniq_sites, :index, :update] do
       get 'get_uniq_sites', to: 'rehire_sites#get_uniq_sites', on: :collection
     end
+
+    resources :applicants, only: [:index]
   end
 
   resources :applicant_imports, only: [:create]
