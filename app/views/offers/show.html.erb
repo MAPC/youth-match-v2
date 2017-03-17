@@ -1,0 +1,17 @@
+<p>
+  <strong>Applicant:</strong>
+  <%= @offer.applicant %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @offer.position %>
+</p>
+
+<p>
+  <strong>Accepted:</strong>
+  <%= @offer.accepted %>
+</p>
+
+<%= link_to 'Edit', edit_offer_path(@offer) %> |
+<%= link_to 'Back', offers_path %>
