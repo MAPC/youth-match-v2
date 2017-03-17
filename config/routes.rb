@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :offers
   get 'travel_time/get'
   resources :position_imports, only: [:create]
 
@@ -8,6 +7,7 @@ Rails.application.routes.draw do
       get 'get_uniq_sites', to: 'rehire_sites#get_uniq_sites', on: :collection
     end
 
+    resources :offers
     resources :applicants, only: [:index]
   end
 
