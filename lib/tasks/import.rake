@@ -45,9 +45,10 @@ namespace :import do
   desc 'Import applicants from ICIMS'
   task applicants_from_icims: :environment do
     response = icims_search(type: 'applicantworkflows',
-                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
+                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10101"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
     workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
     puts 'Number of applicants: ' + workflows.count.to_s
+    binding.pry
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
       applicant_id = workflow['associatedprofile']['id']
@@ -59,38 +60,39 @@ namespace :import do
                                 last_name: applicant_information['lastname'],
                                 email: applicant_information['email'],
                                 icims_id: applicant_id,
-                                interests: [applicant_information['field51027'],
-                                            applicant_information['field51034'],
-                                            applicant_information['field51053'],
-                                            applicant_information['field51054'],
-                                            applicant_information['field51055']],
-                                prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
-                                has_transit_pass: boolean(applicant_information['field36999']),
+                                # interests: [applicant_information['field51027'],
+                                #            applicant_information['field51034'],
+                                #            applicant_information['field51053'],
+                                #            applicant_information['field51054'],
+                                #            applicant_information['field51055']],
+                                # prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
+                                # has_transit_pass: boolean(applicant_information['field36999']),
                                 receive_text_messages: boolean(applicant_information['field50527']),
                                 mobile_phone: phone(applicant_information, 'Mobile'),
                                 home_phone: phone(applicant_information, 'Home'),
                                 guardian_name: applicant_information['field51088'],
                                 guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
                                 guardian_email: applicant_information['field51090'],
-                                in_school: boolean(applicant_information['field23807']),
-                                school_type: applicant_information['field51062'],
-                                bps_student: boolean(applicant_information['field23809']),
-                                bps_school_name: applicant_information['field23810'],
-                                current_grade_level: applicant_information['field23849'],
-                                english_first_language: boolean(applicant_information['field23850']),
-                                first_language: applicant_information['field23851'],
-                                fluent_other_language: boolean(applicant_information['field23852']),
-                                other_languages: applicant_information['field29895'].try(:pluck, 'value'),
-                                held_successlink_job_before: boolean(applicant_information['field51122']),
-                                previous_job_site: applicant_information['field51123'],
-                                wants_to_return_to_previous_job: boolean(applicant_information['field51124']),
-                                superteen_participant: boolean(applicant_information['field51125']),
-                                participant_essay: applicant_information['field23873'],
-                                participant_essay_attached_file: get_attached_essay(applicant_information),
-                                location: geocode_applicant_address(applicant_information),
-                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' },
+                                # in_school: boolean(applicant_information['field23807']),
+                                # school_type: applicant_information['field51062'],
+                                # bps_student: boolean(applicant_information['field23809']),
+                                # bps_school_name: applicant_information['field23810'],
+                                # current_grade_level: applicant_information['field23849'],
+                                # english_first_language: boolean(applicant_information['field23850']),
+                                # first_language: applicant_information['field23851'],
+                                # fluent_other_language: boolean(applicant_information['field23852']),
+                                # other_languages: applicant_information['field29895'].try(:pluck, 'value'),
+                                # held_successlink_job_before: boolean(applicant_information['field51122']),
+                                # previous_job_site: applicant_information['field51123'],
+                                # wants_to_return_to_previous_job: boolean(applicant_information['field51124']),
+                                # superteen_participant: boolean(applicant_information['field51125']),
+                                # participant_essay: applicant_information['field23873'],
+                                # participant_essay_attached_file: get_attached_essay(applicant_information),
+                                # location: geocode_applicant_address(applicant_information),
+                                # address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' },
                                 workflow_id: workflow_id)
       # thank(applicant.mobile_phone) if applicant.mobile_phone && applicant.receive_text_messages
+      # thank(applicant.guardian_phone) if applicant.guardian_phone && applicant.receive_text_messages
       applicant.save!
     end
   end
@@ -171,6 +173,7 @@ namespace :import do
   end
 
   def phone(applicant, phone_type)
+    return nil if applicant['phones'].blank?
     applicant['phones'].each do |phone|
       next if phone['phonetype'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
@@ -182,9 +185,7 @@ namespace :import do
     client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
-                           body: 'Thank you for applying to the 2017 SuccessLink Lottery.
-                           We have received your application! You will receive a text and
-                           email with your status in the lottery after 3/31.'
+                           body: 'Hey, this is SuccessLink. We noticed your application for a summer job is incomplete. Log back into your account right away to finish! https://successlink-boston.icims.com/jobs/login?loginOnly=1'
   end
 
   def boolean(data)
