@@ -13,7 +13,7 @@ namespace :lottery do
 
   desc 'Assign lottery numbers'
   task assign_lottery_numbers: :environment do
-    Applicant.order("RANDOM()").each_with_index do |applicant, index|
+    Applicant.where(removed_by_icims: false).order("RANDOM()").each_with_index do |applicant, index|
       applicant.lottery_number = index
       applicant.save!
     end

@@ -2,6 +2,7 @@ class BuildPreferenceListsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
+    Preferences.destroy_all
     Applicant.chosen(1).each do |applicant|
       Position.each do |position|
         score = travel_time_score(applicant, position) + interest_score(applicant, position)

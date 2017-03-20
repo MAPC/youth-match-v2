@@ -5,6 +5,8 @@ class ImportApplicantsJob < ApplicationJob
     response = icims_search(type: 'applicantworkflows',
                             body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
     workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
+    removed_by_icims = Applicant.all.pluck(:workflow_id) - response['searchResults'].pluck('id')
+    Applicant.find_by(icims_id: removed_by_icims).update(removed_by_icims: true, lottery_number: nil)
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
       applicant_id = workflow['associatedprofile']['id']
@@ -48,6 +50,7 @@ class ImportApplicantsJob < ApplicationJob
                                 workflow_id: workflow_id)
       applicant.save!
     end
+    update_lottery_numbers if Applicant.where.not(lottery_number: nil).any?
   end
 
   private
@@ -100,5 +103,12 @@ class ImportApplicantsJob < ApplicationJob
 
   def boolean(data)
     data.to_s == 'Yes'
+  end
+
+  def update_lottery_numbers
+    Applicant.where(removed_by_icims: false).order(:lottery_number, :id).each_with_index do | applicant, index |
+      applicant.lottery_number = index
+      applicant.save!
+    end
   end
 end

@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
     resources :offers
     resources :applicants, only: [:index]
+    resources :match_runs
+    resources :lottery_runs, only: [:create]
   end
 
   resources :applicant_imports, only: [:create]
