@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   get 'travel_time/get'
   resources :position_imports, only: [:create]
 
@@ -12,6 +13,7 @@ Rails.application.routes.draw do
   end
 
   resources :applicant_imports, only: [:create]
+  root to: 'offers#index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
