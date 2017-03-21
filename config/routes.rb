@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     end
 
     resources :offers
-    resources :applicants, only: [:index]
+    resources :applicants, only: [:index, :show, :update]
   end
 
   resources :applicant_imports, only: [:create]

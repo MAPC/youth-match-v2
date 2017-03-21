@@ -1,7 +1,7 @@
 class Applicant < ApplicationRecord
   before_validation :compute_grid_id, if: 'location.present?'
   has_many :preferences
-  has_one :position
+  has_and_belongs_to_many :positions
   has_one :offer
 
   def match_to_position
