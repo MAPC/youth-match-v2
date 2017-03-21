@@ -3,7 +3,7 @@ class Box < ApplicationRecord
     raise 'please provide a location' if latlong.blank?
     if latlong.is_a? String
       raise 'please format as lat,long' if latlong.exclude?(',')
-      latlong = latlong.split(',')
+      latlong = latlong.strip.split(',')
       location = RGeo::Geographic.spherical_factory(srid: 4326)
                                  .point(latlong[1], latlong[0])
     else
