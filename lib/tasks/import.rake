@@ -45,9 +45,15 @@ namespace :import do
   desc 'Import applicants from ICIMS'
   task applicants_from_icims: :environment do
     response = icims_search(type: 'applicantworkflows',
-                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10101"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
-    workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
+                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10101"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="}],"operator":"&"}')
+    workflows = response['searchResults'].pluck('id')
     puts 'Number of applicants: ' + workflows.count.to_s
+    if workflows.count == 1000
+      response2 = icims_search(type: 'applicantworkflows',
+                              body: '{"filters":[{"name":"applicantworkflow.status","value":["D10101"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="}],"operator":"&"},{"name":"applicantworkflow.id","value":["' + workflows.last.to_s + '"],"operator":">"}],"operator":"&"}')
+      workflows += response2['searchResults'].pluck('id')
+    end
+    workflows -= Applicant.all.pluck(:workflow_id)
     binding.pry
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
@@ -93,6 +99,7 @@ namespace :import do
                                 workflow_id: workflow_id)
       # thank(applicant.mobile_phone) if applicant.mobile_phone && applicant.receive_text_messages
       # thank(applicant.guardian_phone) if applicant.guardian_phone && applicant.receive_text_messages
+      binding.pry
       applicant.save!
     end
   end
@@ -141,7 +148,7 @@ namespace :import do
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
@@ -149,7 +156,7 @@ namespace :import do
 
   def icims_search(type:, body:)
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/7383/search/' + type
+      req.url 'https://api.icims.com/customers/6405/search/' + type
       req.body = body
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
