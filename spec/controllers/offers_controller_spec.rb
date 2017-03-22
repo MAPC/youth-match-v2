@@ -54,6 +54,7 @@ RSpec.describe OffersController, type: :controller do
 
   describe "GET #new" do
     it "assigns a new offer as @offer" do
+      sign_in FactoryGirl.create(:user)
       get :new, params: {}, session: valid_session
       expect(assigns(:offer)).to be_a_new(Offer)
     end
