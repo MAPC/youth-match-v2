@@ -1,5 +1,6 @@
 class OffersController < ApplicationController
   before_action :set_offer, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!
 
   # GET /offers
   # GET /offers.json
@@ -7,6 +8,7 @@ class OffersController < ApplicationController
     @offers = Offer.all
     respond_to do |format|
       format.jsonapi { render jsonapi: @offers }
+      format.html { @offers }
     end
   end
 
