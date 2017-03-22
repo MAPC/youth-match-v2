@@ -123,6 +123,28 @@ namespace :import do
     end
   end
 
+  desc 'Import 2017 positions from Deron CSV file'
+  task positions_data: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'dyee_2017_summer_positions_fixed.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row, index|
+      a = Position.new
+      a.title = row['job_title']
+      a.category = row['job_category']
+      a.duties_responsbilities = row['duties_responsibilities']
+      a.ideal_candidate = row['ideal_candidate']
+      a.open_positions = row['open_positions']
+      a.site_name = row['icims_name']
+      a.external_application_url = row['app_1'] || row['app_2']
+      a.primary_contact_person = row['primary_contact_person']
+      a.primary_contact_person_title = row['primary_contact_person_title']
+      a.primary_contact_person_phone = row['primary_contact_phone'].try(:gsub, /\D/, '')
+      a.site_phone = row['phone'].try(:gsub, /\D/, '')
+      a.location = RGeo::WKRep::WKBParser.new({}, support_ewkb: true).parse(row['the_geom'])
+      a.save
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
