@@ -10,14 +10,15 @@ RSpec.describe TravelTimeController, type: :controller do
     end
 
     it "returns an error when you do not provide valid origin" do
+      sign_in FactoryGirl.create(:user)
       get :get, params: { destination: '0,0' }
       expect(response).to have_http_status(422)
     end
 
     it "returns an error when you do not provide valid destination" do
+      sign_in FactoryGirl.create(:user)
       get :get, params: { origin: '0,0' }
       expect(response).to have_http_status(422)
     end
   end
-
 end

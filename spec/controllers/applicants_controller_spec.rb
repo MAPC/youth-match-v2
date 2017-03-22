@@ -12,6 +12,7 @@ RSpec.describe ApplicantsController, type: :controller do
       }
 
       it "updates the requested applicant" do
+        sign_in FactoryGirl.create(:user)
         request.headers['Content-Type'] = 'application/vnd.api+json'
         request.headers['Accept'] = 'application/vnd.api+json'
         put :update, params: { id: applicant.to_param, applicant: new_attributes }

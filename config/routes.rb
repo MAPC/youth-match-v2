@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  devise_for :users , :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
+  devise_for :users, :controllers => { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'sessions' }
   get 'travel_time/get'
   resources :position_imports, only: [:create]
 
