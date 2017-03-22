@@ -50,11 +50,10 @@ namespace :import do
     puts 'Number of applicants: ' + workflows.count.to_s
     if workflows.count == 1000
       response2 = icims_search(type: 'applicantworkflows',
-                              body: '{"filters":[{"name":"applicantworkflow.status","value":["D10101"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="}],"operator":"&"},{"name":"applicantworkflow.id","value":["' + workflows.last.to_s + '"],"operator":">"}],"operator":"&"}')
+                              body: '{"filters":[{"name":"applicantworkflow.status","value":["D10101"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="},{"name":"applicantworkflow.id","value":["' + workflows.last.to_s + '"],"operator":">"}],"operator":"&"}')
       workflows += response2['searchResults'].pluck('id')
     end
     workflows -= Applicant.all.pluck(:workflow_id)
-    binding.pry
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
       applicant_id = workflow['associatedprofile']['id']
@@ -99,8 +98,15 @@ namespace :import do
                                 workflow_id: workflow_id)
       # thank(applicant.mobile_phone) if applicant.mobile_phone && applicant.receive_text_messages
       # thank(applicant.guardian_phone) if applicant.guardian_phone && applicant.receive_text_messages
-      binding.pry
       applicant.save!
+    end
+  end
+
+  desc 'Remind incomplete applicants to apply'
+  task remind_applicants: :environment do
+    applicants = Applicant.where("receive_text_messages = ? AND id > ?", true, 8903)
+    applicants.each do |applicant|
+      remind(applicant.mobile_phone) if applicant.mobile_phone
     end
   end
 
@@ -182,13 +188,13 @@ namespace :import do
   def phone(applicant, phone_type)
     return nil if applicant['phones'].blank?
     applicant['phones'].each do |phone|
-      next if phone['phonetype'].blank?
+      next if phone['phonetype'].blank? || phone['phonenumber'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
     end
     return nil
   end
 
-  def thank(phone)
+  def remind(phone)
     client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
