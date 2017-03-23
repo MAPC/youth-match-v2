@@ -1,6 +1,6 @@
 class ApplicantsController < ApplicationController
   def index
-    @applicants = Applicant.all
+    @applicants = Applicant.includes(:positions).where('positions.id' => params[:position_id])
     respond_to do |format|
       format.jsonapi { render jsonapi: @applicants }
     end

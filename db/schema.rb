@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170322184032) do
+ActiveRecord::Schema.define(version: 20170322220603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,13 +21,13 @@ ActiveRecord::Schema.define(version: 20170322184032) do
     t.string    "last_name"
     t.string    "email"
     t.integer   "icims_id"
-    t.string    "interests",                                                                                                             array: true
+    t.string    "interests",                                                                                             array: true
     t.boolean   "prefers_nearby"
     t.boolean   "has_transit_pass"
     t.integer   "grid_id"
     t.geography "location",                        limit: {:srid=>4326, :type=>"point", :geographic=>true}
-    t.datetime  "created_at",                                                                                               null: false
-    t.datetime  "updated_at",                                                                                               null: false
+    t.datetime  "created_at",                                                                               null: false
+    t.datetime  "updated_at",                                                                               null: false
     t.integer   "lottery_number"
     t.boolean   "receive_text_messages"
     t.string    "mobile_phone"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20170322184032) do
     t.boolean   "english_first_language"
     t.string    "first_language"
     t.boolean   "fluent_other_language"
-    t.string    "other_languages",                                                                                                       array: true
+    t.string    "other_languages",                                                                                       array: true
     t.boolean   "held_successlink_job_before"
     t.string    "previous_job_site"
     t.boolean   "wants_to_return_to_previous_job"
@@ -52,7 +52,8 @@ ActiveRecord::Schema.define(version: 20170322184032) do
     t.text      "participant_essay_attached_file"
     t.string    "home_phone"
     t.integer   "workflow_id"
-    t.boolean   "removed_by_icims",                                                                         default: false
+    t.integer   "user_id"
+    t.index ["user_id"], name: "index_applicants_on_user_id", using: :btree
   end
 
   create_table "applicants_positions", force: :cascade do |t|
@@ -153,6 +154,7 @@ ActiveRecord::Schema.define(version: 20170322184032) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  add_foreign_key "applicants", "users"
   add_foreign_key "positions", "applicants"
   add_foreign_key "preferences", "applicants"
   add_foreign_key "preferences", "positions"
