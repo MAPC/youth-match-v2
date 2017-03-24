@@ -13,7 +13,7 @@ Rails.application.routes.draw do
     resources :positions, only: [:index, :show, :update] do
       resources :applicants
     end
-    resources :users, only: [:show]
+    resources :users, only: [:show, :index]
   end
 
   resources :applicant_imports, only: [:create]
