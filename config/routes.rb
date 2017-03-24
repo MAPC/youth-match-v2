@@ -10,6 +10,10 @@ Rails.application.routes.draw do
 
     resources :offers
     resources :applicants, only: [:index, :show, :update]
+    resources :positions, only: [:index, :show, :update] do
+      resources :applicants
+    end
+    resources :users, only: [:show]
   end
 
   resources :applicant_imports, only: [:create]

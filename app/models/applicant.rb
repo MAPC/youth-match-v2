@@ -3,6 +3,7 @@ class Applicant < ApplicationRecord
   has_many :preferences
   has_and_belongs_to_many :positions
   has_one :offer
+  belongs_to :user
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|

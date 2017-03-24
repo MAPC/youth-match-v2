@@ -6,6 +6,7 @@ class User < ApplicationRecord
          :omniauthable, :omniauth_providers => [:google_oauth2]
 
   before_save :ensure_authentication_token
+  has_one :applicant
 
   def ensure_authentication_token
     if authentication_token.blank?
