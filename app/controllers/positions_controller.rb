@@ -1,7 +1,7 @@
 class PositionsController < ApplicationController
   def index
+    # if includes param == true then do the includes logic
     @positions = Position.all.includes(:applicants)
-    puts params
     respond_to do |format|
       format.jsonapi { render jsonapi: @positions }
     end
