@@ -4,6 +4,7 @@ class Applicant < ApplicationRecord
   has_and_belongs_to_many :positions
   has_one :offer
   belongs_to :user
+  validate :positions_count_within_bounds
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|
@@ -35,6 +36,11 @@ class Applicant < ApplicationRecord
   def compute_grid_id
     grid = Box.intersects(location: location)
     self.grid_id = grid.g250m_id if grid
+  end
+
+  def positions_count_within_bounds
+    return if positions.blank?
+    errors.add(:positions, :size, message: 'You can only apply to ten or less positions') if positions.size > 10
   end
 end
 
