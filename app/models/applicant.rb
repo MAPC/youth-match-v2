@@ -1,7 +1,8 @@
 class Applicant < ApplicationRecord
   before_validation :compute_grid_id, if: 'location.present?'
   has_many :preferences
-  has_and_belongs_to_many :positions
+  has_many :applicants_position
+  has_many :positions, through: :applicants_position
   has_one :offer
   belongs_to :user
   validate :positions_count_within_bounds
