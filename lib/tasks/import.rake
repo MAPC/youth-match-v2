@@ -95,6 +95,11 @@ namespace :import do
     end
   end
 
+  desc 'Import applicants from production ICIMS'
+  task applicants_from_prod: :environment do
+    ImportApplicantsJob.perform_now
+  end
+
   desc 'Import positions from ICIMS'
   task positions_from_icims: :environment do
     response = icims_search(type: 'jobs', body: '{"filters":[{"name":"job.jobtitle","value":["successlink"],"operator":"="}]}')
