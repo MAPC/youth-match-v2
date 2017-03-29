@@ -6,6 +6,7 @@ class Applicant < ApplicationRecord
   has_one :offer
   belongs_to :user
   validate :positions_count_within_bounds
+  scope :first_timers, -> { joins("LEFT JOIN rehire_sites ON applicants.icims_id = rehire_sites.icims_id WHERE rehire_sites.icims_id IS NULL") }
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|

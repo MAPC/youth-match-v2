@@ -119,7 +119,18 @@ namespace :import do
       a = RehireSite.new
       a.site_name = row['Worksite']
       a.person_name = row['Name']
+      a.icims_id = row['person_id']
       a.save
+    end
+  end
+
+  desc 'Normalize duplicate rehire site data'
+  task normalize_duplicate_sites: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'normalize_duplicate_sites.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row, index|
+      a = RehireSite.where(site_name: row['site1'])
+      a.update_all(site_name: row['site2'])
     end
   end
 
