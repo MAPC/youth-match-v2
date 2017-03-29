@@ -1,13 +1,14 @@
 class PositionSerializer < ActiveModel::Serializer
-  attributes :id, :latitude, :longitude, :category, :site_name, :title, :duties_responsbilities, 
-    :ideal_candidate, 
-    :open_positions, 
+  attributes :id, :latitude, :longitude, :category, :site_name, :title, :duties_responsbilities,
+    :ideal_candidate,
+    :open_positions,
     :external_application_url,
     :external_application_url,
     :primary_contact_person,
     :primary_contact_person_title,
     :primary_contact_person_phone,
-    :site_phone
+    :site_phone,
+    :address
 
   def latitude
     object.location.try(:y)

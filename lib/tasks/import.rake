@@ -157,6 +157,7 @@ namespace :import do
       a.primary_contact_person_phone = row['primary_contact_phone'].try(:gsub, /\D/, '')
       a.site_phone = row['phone'].try(:gsub, /\D/, '')
       a.location = RGeo::WKRep::WKBParser.new({}, support_ewkb: true).parse(row['the_geom'])
+      a.address = row['address']
       a.save
     end
   end
