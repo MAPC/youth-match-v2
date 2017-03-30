@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :applicants
     end
     resources :users, only: [:show, :index]
+    resources :requisitions, only: [:update]
   end
 
   resources :applicant_imports, only: [:create]

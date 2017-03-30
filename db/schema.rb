@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170329180808) do
+ActiveRecord::Schema.define(version: 20170330224954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,12 +54,6 @@ ActiveRecord::Schema.define(version: 20170329180808) do
     t.integer   "workflow_id"
     t.integer   "user_id"
     t.index ["user_id"], name: "index_applicants_on_user_id", using: :btree
-  end
-
-  create_table "applicants_positions", force: :cascade do |t|
-    t.integer "applicant_id"
-    t.integer "position_id"
-    t.integer "status"
   end
 
   create_table "boxes", force: :cascade do |t|
@@ -118,6 +112,21 @@ ActiveRecord::Schema.define(version: 20170329180808) do
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
     t.integer  "icims_id"
+  end
+
+  create_table "requisitions", force: :cascade do |t|
+    t.integer "applicant_id"
+    t.integer "position_id"
+    t.integer "status",       default: 0
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "position_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["position_id"], name: "index_sites_on_position_id", using: :btree
+    t.index ["user_id"], name: "index_sites_on_user_id", using: :btree
   end
 
   create_table "travel_times", force: :cascade do |t|
