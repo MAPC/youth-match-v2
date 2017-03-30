@@ -1,8 +1,8 @@
 class Position < ApplicationRecord
   before_validation :compute_grid_id, if: 'location.present?'
   has_many :preferences
-  has_many :applicants_position
-  has_many :applicants, through: :applicants_position
+  has_many :requisitions
+  has_many :applicants, through: :requisitions
   has_one :offer
 
   def open?
