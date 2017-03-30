@@ -10,7 +10,8 @@ Rails.application.routes.draw do
 
     resources :offers
     resources :applicants, only: [:index, :show, :update]
-    resources :positions, only: [:index, :show, :update] do
+    resources :positions, only: [:index, :show, :update, :owned] do
+      get 'owned', to: 'positions#owned', on: :collection
       resources :applicants
     end
     resources :users, only: [:show, :index]

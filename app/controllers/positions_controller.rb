@@ -25,6 +25,11 @@ class PositionsController < ApplicationController
     end
   end
 
+  def owned
+    @positions = current_user.positions.includes(:applicants)
+    render json: @positions
+  end
+
   private
 
   def position_params

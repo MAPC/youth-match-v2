@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
   before_save :ensure_authentication_token
   has_one :applicant
+  has_many :positions, through: :site
+  has_one :site
 
   def ensure_authentication_token
     if authentication_token.blank?
