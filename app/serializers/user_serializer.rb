@@ -2,7 +2,7 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id, :applicant_interests
 
   def applicant_interests
-    object.applicant.nil? ? object.applicant.none : object.applicant.interests
+    object.applicant.nil? ? nil : object.applicant.interests
   end
 
   has_one :applicant, serializer: ApplicantSerializer do
