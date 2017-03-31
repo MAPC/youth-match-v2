@@ -110,6 +110,10 @@ class ImportApplicantsJob < ApplicationJob
 
   def get_address_string(applicant)
     return nil if applicant['addresses'].blank?
+    applicant['addresses'].each do |address|
+      return nil if address.blank?
+      return address['addressstreet1'] if address['addresstype'].blank?
+    end
     applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
   end
 end
