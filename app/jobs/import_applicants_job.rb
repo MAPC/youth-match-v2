@@ -44,7 +44,7 @@ class ImportApplicantsJob < ApplicationJob
                                 participant_essay: applicant_information['field23873'],
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
                                 location: geocode_applicant_address(applicant_information),
-                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' },
+                                address: get_address_string(applicant_information),
                                 workflow_id: workflow_id)
       applicant.save!
     end
@@ -101,5 +101,10 @@ class ImportApplicantsJob < ApplicationJob
 
   def boolean(data)
     data.to_s == 'Yes'
+  end
+
+  def get_address_string(applicant)
+    return nil if applicant_information['addresses'].blank?
+    applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
   end
 end
