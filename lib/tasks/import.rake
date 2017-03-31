@@ -162,6 +162,28 @@ namespace :import do
     end
   end
 
+  desc 'Import 2017 positions from Alicia cleaned CSV file'
+  task positions_data_alicia: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'job-data-cleaned-alicia-descriptions.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row, index|
+      a = Position.new
+      a.title = row['job_title']
+      a.category = row['Job Interest Area']
+      a.duties_responsbilities = row['Key Duties and Responsibilities ']
+      a.ideal_candidate = row['The Ideal Candidate for this Job:']
+      a.open_positions = row['allottments']
+      a.site_name = row['site name']
+      a.external_application_url = row['App Link 1'] || row['App Link 2']
+      a.primary_contact_person = row['Primary Contact Name']
+      a.primary_contact_person_title = row['Primary Contact Title']
+      a.primary_contact_person_phone = row['Primary Contact Phone'].try(:gsub, /\D/, '')
+      a.location = geocode_address(row['street_address'])
+      a.address = row['street_address']
+      a.save
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
@@ -201,6 +223,7 @@ namespace :import do
   end
 
   def geocode_address(street_address)
+    sleep(1)
     response = Faraday.get('https://search.mapzen.com/v1/search/structured',
                            { api_key: Rails.application.secrets.mapzen_api_key,
                              address: street_address, locality: 'Boston', region: 'MA' })
