@@ -76,6 +76,7 @@ class ImportApplicantsJob < ApplicationJob
   end
 
   def geocode_applicant_address(applicant)
+    return nil if applicant['addresses'].blank?
     street_address = applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
     street_address.gsub!(/\s#\d+/i, '')
     geocode_address(street_address)
