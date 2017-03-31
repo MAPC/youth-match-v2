@@ -3,7 +3,7 @@ class ImportApplicantsJob < ApplicationJob
 
   def perform(*args)
     response = icims_search(type: 'applicantworkflows',
-                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="},{"name":"workflow.id","value":["53059"],"operator":">"}],"operator":"&"}')
+                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="},{"name":"applicantworkflow.id","value":["53059"],"operator":">"}],"operator":"&"}')
     workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
