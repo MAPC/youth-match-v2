@@ -79,6 +79,7 @@ class ImportApplicantsJob < ApplicationJob
     return nil if applicant['addresses'].blank?
     applicant['addresses'].each do |address|
       return nil if address.blank?
+      return address['addressstreet1'] if address['addresstype'].blank?
     end
     street_address = applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
     street_address.gsub!(/\s#\d+/i, '')
