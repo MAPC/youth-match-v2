@@ -1,9 +1,5 @@
-class UserSerializer < ActiveModel::Serializer
-  attributes :id, :applicant_interests
-
-  def applicant_interests
-    object.applicant.nil? ? object.applicant.none : object.applicant.interests
-  end
+class RequisitionSerializer < ActiveModel::Serializer
+  attributes :id, :status
 
   has_one :applicant, serializer: ApplicantSerializer do
     # link(:relationships) { applicant_path(id: object.applicant.id) }
@@ -14,15 +10,12 @@ class UserSerializer < ActiveModel::Serializer
     applicant.nil? ? applicant.none : applicant
   end
 
-  has_many :positions, serializer: PositionSerializer do
-    # link(:relationships) { position_path(id: object.id) }
-
-    positions = object.positions
+  has_one :position, serializer: PositionSerializer do
+    # link(:relationships) { position_path(id: object.position.id) }
+    position = object.position
     # The following code is needed to avoid n+1 queries.
     # Core devs are working to remove this necessity.
     # See: https://github.com/rails-api/active_model_serializers/issues/1325
-    positions.loaded? ? positions.none : positions
+    position.nil? ? position.none : position
   end
-
-
 end

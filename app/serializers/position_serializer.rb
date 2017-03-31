@@ -27,4 +27,12 @@ class PositionSerializer < ActiveModel::Serializer
     applicants.loaded? ? applicants : applicants.none
   end
 
+  has_many :requisitions, serializer: RequisitionSerializer do
+    link(:relationships) { position_requisitions_path(position_id: object.id) }
+    requisitions = object.requisitions
+    # The following code is needed to avoid n+1 queries.
+    # Core devs are working to remove this necessity.
+    # See: https://github.com/rails-api/active_model_serializers/issues/1325
+    requisitions.loaded? ? requisitions.none : requisitions 
+  end
 end

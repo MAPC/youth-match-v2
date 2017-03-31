@@ -8,7 +8,7 @@ class PositionsController < ApplicationController
   end
 
   def show
-    @position = Position.find(params[:id]).includes(:applicants)
+    @position = Position.find(params[:id])
     respond_to do |format|
       format.jsonapi { render jsonapi: @position }
     end

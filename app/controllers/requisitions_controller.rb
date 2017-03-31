@@ -1,4 +1,11 @@
 class RequisitionsController < ApplicationController
+  def show
+    @requisitions = Requisition.find(params[:id])
+    respond_to do |format|
+      format.jsonapi { render jsonapi: @requisitions }
+    end
+  end
+
   def update
     @requisition = Requisition.find(params[:id])
     if @requisition.update_attributes(requisition_params)
