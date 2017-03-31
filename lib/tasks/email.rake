@@ -11,13 +11,15 @@ namespace :email do
 
   desc 'Create user accounts for CBOs'
   task create_cbo_accounts: :environment do
-    csv_text = File.read(Rails.root.join('lib', 'import', 'partner-emails-3-fixed.csv'))
+    csv_text = File.read(Rails.root.join('lib', 'import', 'partner-emails-4-fixed.csv'))
     csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
     csv.each_with_index do |row|
       positions = Position.where(site_name: row['Organization Name'])
       user = User.create(email: row['Primary Contact Email'],
                          password: Devise.friendly_token.first(8),
                          positions: positions)
+      puts row['Primary Contact Email'] if user.blank?
+      next if user.blank?
       CboUserMailer.cbo_user_email(user).deliver_now
     end
   end
