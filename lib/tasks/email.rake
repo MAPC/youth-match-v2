@@ -11,7 +11,7 @@ namespace :email do
 
   desc 'Create user accounts for CBOs'
   task create_cbo_accounts: :environment do
-    csv_text = File.read(Rails.root.join('lib', 'import', 'partner-emails-5-fixed.csv'))
+    csv_text = File.read(Rails.root.join('lib', 'import', 'partner-emails-6-fixed.csv'))
     csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
     csv.each_with_index do |row|
       positions = Position.where(site_name: row['Organization Name'])
