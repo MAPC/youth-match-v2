@@ -3,7 +3,7 @@ class ImportApplicantsJob < ApplicationJob
 
   def perform(*args)
     response = icims_search(type: 'applicantworkflows',
-                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
+                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="},{"name":"applicantworkflow.id","value":["59661"],"operator":">"}],"operator":"&"}')
     workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
     workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
@@ -44,7 +44,7 @@ class ImportApplicantsJob < ApplicationJob
                                 participant_essay: applicant_information['field23873'],
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
                                 location: geocode_applicant_address(applicant_information),
-                                address: applicant_information['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' },
+                                address: get_address_string(applicant_information),
                                 workflow_id: workflow_id)
       applicant.save!
     end
@@ -76,7 +76,13 @@ class ImportApplicantsJob < ApplicationJob
   end
 
   def geocode_applicant_address(applicant)
+    return nil if applicant['addresses'].blank?
+    applicant['addresses'].each do |address|
+      return nil if address.blank?
+      return address['addressstreet1'] if address['addresstype'].blank?
+    end
     street_address = applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
+    return nil if street_address.is_a?(Array)
     street_address.gsub!(/\s#\d+/i, '')
     geocode_address(street_address)
   end
@@ -91,6 +97,7 @@ class ImportApplicantsJob < ApplicationJob
   end
 
   def phone(applicant, phone_type)
+    return nil if applicant['phones'].blank?
     applicant['phones'].each do |phone|
       next if phone['phonetype'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
@@ -100,5 +107,14 @@ class ImportApplicantsJob < ApplicationJob
 
   def boolean(data)
     data.to_s == 'Yes'
+  end
+
+  def get_address_string(applicant)
+    return nil if applicant['addresses'].blank?
+    applicant['addresses'].each do |address|
+      return nil if address.blank?
+      return address['addressstreet1'] if address['addresstype'].blank?
+    end
+    applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
   end
 end

@@ -2,7 +2,7 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id, :applicant_interests
 
   def applicant_interests
-    object.applicant.nil? ? object.applicant.none : object.applicant.interests
+    object.applicant.nil? ? nil : object.applicant.interests
   end
 
   has_one :applicant, serializer: ApplicantSerializer do
@@ -11,7 +11,7 @@ class UserSerializer < ActiveModel::Serializer
     # The following code is needed to avoid n+1 queries.
     # Core devs are working to remove this necessity.
     # See: https://github.com/rails-api/active_model_serializers/issues/1325
-    applicant.nil? ? applicant.none : applicant
+    applicant.nil? ? nil : applicant
   end
 
   has_many :positions, serializer: PositionSerializer do
@@ -21,7 +21,7 @@ class UserSerializer < ActiveModel::Serializer
     # The following code is needed to avoid n+1 queries.
     # Core devs are working to remove this necessity.
     # See: https://github.com/rails-api/active_model_serializers/issues/1325
-    positions.loaded? ? positions.none : positions
+    positions.loaded? ? nil : positions
   end
 
 
