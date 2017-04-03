@@ -184,6 +184,21 @@ namespace :import do
     end
   end
 
+  desc 'Update allocation rules for partners'
+  task allocation_data: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'exempt_partners_2017_100_percent.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    Rails.logger.info '======Updating Partner Allocation Rules======'
+    csv.each_with_index do |row|
+      user = User.find_by_email(row['Primary Contact Email'].downcase!)
+      if user
+        user.update(allocation_rule: 1)
+      else
+        Rails.logger.info 'Allocation update failed: ' + row['Primary Contact Email']
+      end
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
