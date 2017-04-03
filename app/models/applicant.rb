@@ -3,6 +3,8 @@ class Applicant < ApplicationRecord
   has_many :preferences
   has_many :requisitions
   has_many :positions, through: :requisitions
+  has_many :pickers, through: :picks, source: :positions
+  has_many :picks
   has_one :offer
   belongs_to :user
   validate :positions_count_within_bounds
