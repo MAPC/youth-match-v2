@@ -6,6 +6,10 @@ class PicksController < ApplicationController
     end
   end
 
+  def create
+    @pick = Pick.new(pick_params)
+  end
+
   def update
     @pick = Pick.find(params[:id])
     if @pick.update_attributes(pick_params)

@@ -14,12 +14,14 @@ Rails.application.routes.draw do
       get 'owned', to: 'positions#owned', on: :collection
       resources :applicants
       resources :requisitions
+      resources :selections
+      resources :picks
     end
     resources :users, only: [:show, :index] do
       resources :positions
     end
     resources :requisitions, only: [:update, :show]
-    resources :picks, only: [:update, :show]
+    resources :picks, only: [:update, :show, :create]
   end
 
   resources :applicant_imports, only: [:create]
