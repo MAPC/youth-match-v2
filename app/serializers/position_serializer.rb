@@ -8,7 +8,8 @@ class PositionSerializer < ActiveModel::Serializer
     :primary_contact_person_title,
     :primary_contact_person_phone,
     :site_phone,
-    :address
+    :address,
+    :neighborhood
 
   def latitude
     object.location.try(:y)
@@ -33,6 +34,6 @@ class PositionSerializer < ActiveModel::Serializer
     # The following code is needed to avoid n+1 queries.
     # Core devs are working to remove this necessity.
     # See: https://github.com/rails-api/active_model_serializers/issues/1325
-    requisitions.loaded? ? requisitions.none : requisitions 
+    requisitions.loaded? ? requisitions.none : requisitions
   end
 end
