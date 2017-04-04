@@ -9,7 +9,11 @@ Rails.application.routes.draw do
     end
 
     resources :offers
+    resource :applicants, module: 'applicants' do
+      resources :interests, only: [:index]
+    end
     resources :applicants, only: [:index, :show, :update]
+
     resources :positions, only: [:index, :show, :update, :owned] do
       get 'owned', to: 'positions#owned', on: :collection
       resources :applicants
