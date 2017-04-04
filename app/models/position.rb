@@ -3,6 +3,8 @@ class Position < ApplicationRecord
   has_many :preferences
   has_many :requisitions
   has_many :applicants, through: :requisitions
+  has_many :selections, through: :picks, source: :applicant
+  has_many :picks
   has_many :users, through: :sites
   has_many :sites
   has_one :offer

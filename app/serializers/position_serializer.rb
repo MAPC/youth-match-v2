@@ -36,4 +36,22 @@ class PositionSerializer < ActiveModel::Serializer
     # See: https://github.com/rails-api/active_model_serializers/issues/1325
     requisitions.loaded? ? requisitions.none : requisitions
   end
+
+  has_many :picks, serializer: PickSerializer do
+    link(:relationships) { position_picks_path(position_id: object.id) }
+    picks = object.picks
+    # The following code is needed to avoid n+1 queries.
+    # Core devs are working to remove this necessity.
+    # See: https://github.com/rails-api/active_model_serializers/issues/1325
+    picks.loaded? ? picks.none : picks
+  end
+
+  has_many :selections, serializer: ApplicantSerializer do
+    link(:relationships) { position_applicants_path(position_id: object.id) }
+    selections = object.selections
+    # The following code is needed to avoid n+1 queries.
+    # Core devs are working to remove this necessity.
+    # See: https://github.com/rails-api/active_model_serializers/issues/1325
+    selections.loaded? ? selections : selections.none
+  end
 end

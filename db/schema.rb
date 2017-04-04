@@ -73,6 +73,16 @@ ActiveRecord::Schema.define(version: 20170403202646) do
     t.index ["position_id"], name: "index_offers_on_position_id", using: :btree
   end
 
+  create_table "picks", force: :cascade do |t|
+    t.integer  "applicant_id"
+    t.integer  "position_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "status"
+    t.index ["applicant_id"], name: "index_picks_on_applicant_id", using: :btree
+    t.index ["position_id"], name: "index_picks_on_position_id", using: :btree
+  end
+
   create_table "positions", force: :cascade do |t|
     t.integer   "icims_id"
     t.string    "title"
@@ -169,6 +179,8 @@ ActiveRecord::Schema.define(version: 20170403202646) do
   end
 
   add_foreign_key "applicants", "users"
+  add_foreign_key "picks", "applicants"
+  add_foreign_key "picks", "positions"
   add_foreign_key "positions", "applicants"
   add_foreign_key "preferences", "applicants"
   add_foreign_key "preferences", "positions"
