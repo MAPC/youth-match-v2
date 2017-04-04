@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       resources :positions
     end
     resources :requisitions, only: [:update, :show]
-    resources :picks, only: [:update, :show, :create]
+    resources :picks, only: [:index, :update, :show, :create]
   end
 
   resources :applicant_imports, only: [:create]
