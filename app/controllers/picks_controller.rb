@@ -1,4 +1,16 @@
 class PicksController < ApplicationController
+  def index
+    @picks = []
+    current_user.positions.each do |position|
+      position.picks.each do |pick|
+        @picks << pick
+      end
+    end
+    respond_to do |format|
+      format.jsonapi { render jsonapi: @picks }
+    end
+  end
+
   def show
     @picks = Pick.find(params[:id])
     respond_to do |format|
