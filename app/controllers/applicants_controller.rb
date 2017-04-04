@@ -3,8 +3,10 @@ class ApplicantsController < ApplicationController
     # todo: investigate why the nested routes aren't
     # returning only associated applicants. for now
     # this logic is necessary. see #51
-    if params
-      @applicants = Applicant.includes(:positions).where('positions.id' => params[:position_id])
+    if params[:position_id]
+      @applicants = Applicant.with_rehire_sites.includes(:positions).where('positions.id' => params[:position_id])
+    elsif params[:interests]
+      @applicants = Applicant.where("interests && ARRAY[?]::varchar[]", params[:interests])
     else
       @applicants = Applicant.all
     end
