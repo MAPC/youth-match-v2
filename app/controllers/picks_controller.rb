@@ -19,7 +19,15 @@ class PicksController < ApplicationController
   end
 
   def create
-    @pick = Pick.new(pick_params)
+    @pick = Pick.create(pick_params)
+    respond_to do |format|
+      format.jsonapi { render jsonapi: @pick }
+    end
+  end
+
+  def destroy
+    @pick = Pick.find(params[:id])
+    @pick.destroy
   end
 
   def update
