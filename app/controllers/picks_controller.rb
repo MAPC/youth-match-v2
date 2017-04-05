@@ -21,13 +21,20 @@ class PicksController < ApplicationController
   def create
     @pick = Pick.create(pick_params)
     respond_to do |format|
-      format.jsonapi { render jsonapi: @pick }
+      if @pick.save
+        format.jsonapi { render jsonapi: @pick }
+      else
+        format.jsonapi { render jsonapi: @pick.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @pick = Pick.find(params[:id])
     @pick.destroy
+    respond_to do |format|
+      format.jsonapi { head :no_content }
+    end
   end
 
   def update
