@@ -199,6 +199,16 @@ namespace :import do
     end
   end
 
+  desc 'Import the Primary Contact EMail'
+  task primary_contact_email: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'job-data-cleaned-alicia-descriptions.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each do |row|
+      position = Position.find_by_title(row['job_title'])
+      position.update(primary_contact_person_email: row['Primary Contact Email']) if position
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
