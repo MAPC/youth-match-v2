@@ -190,7 +190,7 @@ namespace :import do
     csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
     Rails.logger.info '======Updating Partner Allocation Rules======'
     csv.each_with_index do |row|
-      user = User.find_by_email(row['Primary Contact Email'].downcase!)
+      user = User.find_by_email(row['Primary Contact Email'].downcase)
       if user
         user.update(allocation_rule: 1)
       else
