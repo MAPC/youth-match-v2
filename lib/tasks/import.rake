@@ -209,6 +209,31 @@ namespace :import do
     end
   end
 
+  desc 'Check for missing workflow ids'
+  task check_missing_workflows: :environment do
+    local_workflows = Applicant.all.pluck(:workflow_id)
+    remote_workflows = []
+    current_count = 1000
+    while current_count == 1000
+      response = icims_search(type: 'applicantworkflows',
+                              body: %Q{{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="},{"name":"applicantworkflow.id","value":["#{remote_workflows.last}"],"operator":">"}],"operator":"&"}})
+      remote_workflows.push(*response['searchResults'].pluck('id'))
+      current_count = response['searchResults'].pluck('id').count
+    end
+    puts remote_workflows - local_workflows
+  end
+
+  desc 'Update applicant neighborhood data'
+  task update_applicant_neighborhoods: :environment do
+    applicants = Applicant.all.pluck(:icims_id)
+    applicants.each do |applicant_id|
+      applicant_information = icims_get(object: 'people',
+                                        fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
+                                        id: applicant_id)
+      Applicant.find_by_icims_id(applicant_id).update(neighborhood: applicant_information['field50534']['value']) if applicant_information['field50534']
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
@@ -276,5 +301,18 @@ namespace :import do
 
   def boolean(data)
     data.to_s == 'Yes'
+  end
+
+  def missing_workflows
+    local_workflows = Applicant.all.pluck(:workflow_id)
+    remote_workflows = []
+    current_count = 1000
+    while current_count == 1000
+      response = icims_search(type: 'applicantworkflows',
+                              body: %Q{{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="},{"name":"applicantworkflow.id","value":["#{remote_workflows.last}"],"operator":">"}],"operator":"&"}})
+      remote_workflows.push(*response['searchResults'].pluck('id'))
+      current_count = response['searchResults'].pluck('id').count
+    end
+    remote_workflows - local_workflows
   end
 end
