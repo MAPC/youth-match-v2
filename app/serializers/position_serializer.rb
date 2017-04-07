@@ -9,7 +9,8 @@ class PositionSerializer < ActiveModel::Serializer
     :primary_contact_person_phone,
     :site_phone,
     :address,
-    :neighborhood
+    :neighborhood,
+    :primary_contact_person_email
 
   def latitude
     object.location.try(:y)
