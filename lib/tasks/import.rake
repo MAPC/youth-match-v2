@@ -324,6 +324,7 @@ namespace :import do
         puts 'Applicant ID: ' + applicant_id
         puts exception.message
       end
+    end
   end
 
   desc 'Update applicant neighborhood data'
