@@ -3,7 +3,7 @@ namespace :email do
   task applicant_job_picker: :environment do
     Applicant.where(user: nil).each do |applicant|
       next if applicant.email.blank?
-      user = User.create(email: applicant.email,
+      user = User.create(email: applicant.email.downcase,
                          password: Devise.friendly_token.first(8),
                          applicant: applicant)
       ApplicantMailer.job_picker_email(user).deliver_now
