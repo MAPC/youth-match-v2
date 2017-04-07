@@ -413,7 +413,7 @@ namespace :import do
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
                                 location: geocode_applicant_address(applicant_information),
                                 address: get_address_string(applicant_information),
-                                workflow_id: workflow_id,
+                                workflow_id: applicant.workflow_id,
                                 neighborhood: applicant_information['field50534']['value'])
       begin
         applicant.save!
