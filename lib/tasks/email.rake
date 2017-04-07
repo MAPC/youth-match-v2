@@ -6,7 +6,11 @@ namespace :email do
       user = User.create(email: applicant.email.downcase,
                          password: Devise.friendly_token.first(8),
                          applicant: applicant)
-      ApplicantMailer.job_picker_email(user).deliver_now
+      if user.valid?
+        ApplicantMailer.job_picker_email(user).deliver_now
+      else
+        puts 'Failed for: ' + applicant.id
+      end
     end
   end
 
