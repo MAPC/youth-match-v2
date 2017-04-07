@@ -371,7 +371,7 @@ namespace :import do
 
   desc 'Check merge records'
   task update_merge_records: :environment do
-    applicants = Applicant.find_by_email(nil)
+    applicants = Applicant.where(email: nil)
     applicants.each do |applicant|
       merged_id = applicant.first_name.match(/Merged with (\d+)/).captures[0]
       next if Applicant.find_by_icims_id(merged_id)
