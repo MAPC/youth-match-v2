@@ -2,15 +2,26 @@ class ImportApplicantsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    response = icims_search(type: 'applicantworkflows',
-                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="},{"name":"applicantworkflow.id","value":["59661"],"operator":">"}],"operator":"&"}')
-    workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
-    workflows.each do |workflow_id|
+    missing_workflows.each do |workflow_id|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
       applicant_id = workflow['associatedprofile']['id']
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
                                         id: applicant_id)
+      if Applicant.find_by_email(applicant_information['email'])
+        Rails.logger.error 'IMPORT APPLICANT ERROR - Already Exists: ' + applicant_information['email']
+        next
+      end
+      if applicant_information['email'].blank?
+        merged_id = applicant_information['first_name'].match(/Merged with (\d+)/).captures[0]
+        next if merged_id.blank?
+        next if Applicant.find_by_icims_id(merged_id)
+        Rails.logger.info 'MERGED APPLICANT: ' + applicant_information['first_name']
+        applicant_information = icims_get(object: 'people',
+                                        fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
+                                        id: merged_id)
+        applicant_id = merged_id
+      end
       applicant = Applicant.new(first_name: applicant_information['firstname'],
                                 last_name: applicant_information['lastname'],
                                 email: applicant_information['email'],
@@ -45,8 +56,13 @@ class ImportApplicantsJob < ApplicationJob
                                 participant_essay_attached_file: get_attached_essay(applicant_information),
                                 location: geocode_applicant_address(applicant_information),
                                 address: get_address_string(applicant_information),
-                                workflow_id: workflow_id)
-      applicant.save!
+                                workflow_id: workflow_id,
+                                neighborhood: neighborhood(applicant_information))
+      begin
+        applicant.save!
+      rescue ActiveRecord::RecordInvalid => exception
+        Rails.logger.error 'IMPORT APPLICANT ERROR - Failed Applicant ID: ' + applicant_id + ' ' + exception.message
+      end
     end
   end
 
@@ -116,5 +132,23 @@ class ImportApplicantsJob < ApplicationJob
       return address['addressstreet1'] if address['addresstype'].blank?
     end
     applicant['addresses'].each { |address| break address['addressstreet1'] if address['addresstype']['value'] == 'Home' }
+  end
+
+  def missing_workflows
+    local_workflows = Applicant.all.pluck(:workflow_id)
+    remote_workflows = []
+    current_count = 1000
+    while current_count == 1000
+      response = icims_search(type: 'applicantworkflows',
+                              body: %Q{{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="},{"name":"applicantworkflow.id","value":["#{remote_workflows.last}"],"operator":">"}],"operator":"&"}})
+      remote_workflows.push(*response['searchResults'].pluck('id'))
+      current_count = response['searchResults'].pluck('id').count
+    end
+    remote_workflows - local_workflows
+  end
+
+  def neighborhood(applicant)
+    return nil if applicant['field50534'].blank?
+    applicant['field50534']['value']
   end
 end
