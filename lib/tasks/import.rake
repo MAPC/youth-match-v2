@@ -98,6 +98,7 @@ namespace :import do
   desc 'Import applicants from production ICIMS'
   task applicants_from_prod: :environment do
     ImportApplicantsJob.perform_now
+    CreateApplicantUsersJob.perform_now
   end
 
   desc 'Import positions from ICIMS'
