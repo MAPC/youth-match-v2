@@ -9,7 +9,7 @@ namespace :email do
       if user.valid?
         ApplicantMailer.job_picker_email(user).deliver_now
       else
-        puts 'Failed for: ' + applicant.id
+        puts 'APPLICANT USER ACCOUNT CREATION ERROR Failed for: ' + applicant.id
       end
     end
   end
