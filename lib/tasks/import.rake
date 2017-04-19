@@ -426,18 +426,12 @@ namespace :import do
         next
       end
       if response['searchResults'].pluck('id').count == 1
-        position_information = icims_get(object: 'jobs',
-                                          fields: '',
-                                          id: response['searchResults'].pluck('id')[0])
-        position.icims_id = position_information['jobid'].match(/-(\d+)/)[1]
+        position.icims_id = response['searchResults'].pluck('id')[0]
         position.save
       else
-        Rails.logger.error 'There were multiple results for ' + position.title
+        Rails.logger.error 'There were ' + response['searchResults'].pluck('id').count.to_s + ' results for ' + position.title
       end
     end
-    # Get each job by its title. If there are multiple jobs then prompt me. If there is 0 then log an error. 
-    # After getting the matching job, update the icims id.
-    # Then Matt spot checks the non-matching ones or double matching ones.
   end
 
   desc 'Add External IDs to Positions'

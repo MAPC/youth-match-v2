@@ -7,7 +7,8 @@ namespace :email do
                          password: Devise.friendly_token.first(8),
                          applicant: applicant)
       if user.valid?
-        ApplicantMailer.job_picker_email(user).deliver_now
+        # ApplicantMailer.job_picker_email(user).deliver_now
+        update_icims_status_to_candidate_employment_selection(applicant)
       else
         puts 'APPLICANT USER ACCOUNT CREATION ERROR Failed for: ' + applicant.id
       end
@@ -26,6 +27,20 @@ namespace :email do
       puts row['Primary Contact Email'] if user.blank?
       next if user.blank?
       CboUserMailer.cbo_user_email(user).deliver_now
+    end
+  end
+
+  private
+
+  def update_icims_status_to_candidate_employment_selection(applicant)
+    response = Faraday.patch do |req|
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.body = %Q{ {"status":{"id":"C51218"}} }
+      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
+      req.headers["content-type"] = 'application/json'
+    end
+    unless response.success?
+      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id
     end
   end
 end

@@ -25,19 +25,19 @@ class UpdateIcimsJob < ApplicationJob
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id
+      Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
     end
   end
 
   def update_applicant_to_selected(applicant)
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C2028"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Selected by Site Failed for: ' + applicant.id
+      Rails.logger.error 'ICIMS Update Status to Selected by Site Failed for: ' + applicant.id.to_s
     end
   end
 
@@ -52,13 +52,13 @@ class UpdateIcimsJob < ApplicationJob
 
   def update_applicant_to_new_submission(applicant)
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"D10100"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.id
+      Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.id.to_s
     end
   end
 end
