@@ -85,3 +85,10 @@ production:
   host: db.live.mapc.org
   username: editor
   password: <%= ENV['YOUTH-MATCH-V2_DATABASE_PASSWORD'] %>
+
+staging:
+  <<: *default
+  database: youth-match-v2_staging
+  host: db.live.mapc.org
+  username: editor
+  password: <%= ENV['YOUTH-MATCH-V2_DATABASE_PASSWORD'] %>
