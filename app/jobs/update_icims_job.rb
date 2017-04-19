@@ -2,14 +2,14 @@ class UpdateIcimsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Requisition.where(status: :hire).each do |requisition|
-      associate_applicant_with_position(requisition.applicant, requisition.position)
-      update_applicant_to_selected(requisition.applicant)
-    end
-    Pick.where(status: :hire).each do |pick|
-      associate_applicant_with_position(pick.applicant, pick.position)
-      update_applicant_to_selected(pick.applicant)
-    end
+    # Requisition.where(status: :hire).each do |requisition|
+    #   associate_applicant_with_position(requisition.applicant, requisition.position)
+    #   update_applicant_to_selected(requisition.applicant)
+    # end
+    # Pick.where(status: :hire).each do |pick|
+    #   associate_applicant_with_position(pick.applicant, pick.position)
+    #   update_applicant_to_selected(pick.applicant)
+    # end
     not_chosen_applicants.each do |applicant|
       update_applicant_to_new_submission(applicant)
     end
