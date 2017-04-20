@@ -10,6 +10,8 @@ class Requisition < ApplicationRecord
     if self.status == 'hire'
       associate_applicant_with_position(self.applicant, self.position)
       update_applicant_to_selected(self.applicant)
+    else
+      update_applicant_to_candidate_employment_selection(self.applicant)
     end
   end
 
@@ -34,6 +36,18 @@ class Requisition < ApplicationRecord
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Selected by Site Failed for: ' + applicant.id.to_s
+    end
+  end
+
+  def update_applicant_to_candidate_employment_selection(applicant)
+    response = Faraday.patch do |req|
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.body = %Q{ {"status":{"id":"C51218"}} }
+      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
+      req.headers["content-type"] = 'application/json'
+    end
+    unless response.success?
+      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
     end
   end
 end
