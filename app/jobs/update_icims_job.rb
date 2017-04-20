@@ -21,6 +21,7 @@ class UpdateIcimsJob < ApplicationJob
   private
 
   def associate_applicant_with_position(applicant, position)
+    Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
     response = Faraday.post do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows'
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C2028"},"associatedprofile":#{applicant.icims_id}} }
@@ -29,10 +30,13 @@ class UpdateIcimsJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
+      Rails.logger.error response.status
+      Rails.logger.error response.body
     end
   end
 
   def update_applicant_to_selected(applicant)
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to selected: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C2028"}} }
@@ -41,6 +45,8 @@ class UpdateIcimsJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Selected by Site Failed for: ' + applicant.id.to_s
+      Rails.logger.error response.status
+      Rails.logger.error response.body
     end
   end
 
@@ -54,6 +60,7 @@ class UpdateIcimsJob < ApplicationJob
   end
 
   def update_applicant_to_new_submission(applicant)
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to new submission: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"D10100"}} }
@@ -62,10 +69,13 @@ class UpdateIcimsJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.id.to_s
+      Rails.logger.error response.status
+      Rails.logger.error response.body
     end
   end
 
   def update_applicant_to_candidate_employment_selection(applicant)
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C51218"}} }
@@ -74,6 +84,8 @@ class UpdateIcimsJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error response.status
+      Rails.logger.error response.body
     end
   end
 end
