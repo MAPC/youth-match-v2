@@ -2,14 +2,17 @@ class UpdateIcimsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    # Requisition.where(status: :hire).each do |requisition|
-    #   associate_applicant_with_position(requisition.applicant, requisition.position)
-    #   update_applicant_to_selected(requisition.applicant)
-    # end
-    # Pick.where(status: :hire).each do |pick|
-    #   associate_applicant_with_position(pick.applicant, pick.position)
-    #   update_applicant_to_selected(pick.applicant)
-    # end
+    Applicant.joins(:requisitions).distinct.each do |applicant|
+      update_applicant_to_candidate_employment_selection(applicant)
+    end
+    Requisition.where(status: :hire).each do |requisition|
+      associate_applicant_with_position(requisition.applicant, requisition.position)
+      update_applicant_to_selected(requisition.applicant)
+    end
+    Pick.where(status: :hire).each do |pick|
+      associate_applicant_with_position(pick.applicant, pick.position)
+      update_applicant_to_selected(pick.applicant)
+    end
     not_chosen_applicants.each do |applicant|
       update_applicant_to_new_submission(applicant)
     end
@@ -59,6 +62,18 @@ class UpdateIcimsJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.id.to_s
+    end
+  end
+
+  def update_applicant_to_candidate_employment_selection(applicant)
+    response = Faraday.patch do |req|
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.body = %Q{ {"status":{"id":"C51218"}} }
+      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
+      req.headers["content-type"] = 'application/json'
+    end
+    unless response.success?
+      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
     end
   end
 end
