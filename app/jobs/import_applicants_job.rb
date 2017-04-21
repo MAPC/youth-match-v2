@@ -119,7 +119,7 @@ class ImportApplicantsJob < ApplicationJob
   def phone(applicant, phone_type)
     return nil if applicant['phones'].blank?
     applicant['phones'].each do |phone|
-      next if phone['phonetype'].blank?
+      next if phone['phonetype'].blank? || phone['phonenumber'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
     end
     return nil
