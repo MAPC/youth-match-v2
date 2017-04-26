@@ -2,9 +2,9 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Applicant.joins(:requisitions).distinct.each do |applicant|
-      update_applicant_to_candidate_employment_selection(applicant)
-    end
+    # Applicant.joins(:requisitions).distinct.each do |applicant|
+    #   update_applicant_to_candidate_employment_selection(applicant)
+    # end
     Requisition.where(status: :hire).each do |requisition|
       associate_applicant_with_position(requisition.applicant_id, requisition.position_id)
       update_applicant_to_selected(requisition.applicant)
