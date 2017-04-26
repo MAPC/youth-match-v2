@@ -6,18 +6,20 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
       update_applicant_to_candidate_employment_selection(applicant)
     end
     Requisition.where(status: :hire).each do |requisition|
-      associate_applicant_with_position(requisition.applicant, requisition.position)
+      associate_applicant_with_position(requisition.applicant_id, requisition.position_id)
       update_applicant_to_selected(requisition.applicant)
     end
     Pick.where(status: :hire).each do |pick|
-      associate_applicant_with_position(pick.applicant, pick.position)
+      associate_applicant_with_position(pick.applicant_id, pick.position_id)
       update_applicant_to_selected(pick.applicant)
     end
   end
 
   private
 
-  def associate_applicant_with_position(applicant, position)
+  def associate_applicant_with_position(applicant_id, position_id)
+    applicant = Applicant.find(applicant_id)
+    position = Position.find(position_id)
     Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
     response = Faraday.post do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows'
