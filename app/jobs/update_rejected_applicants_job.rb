@@ -19,7 +19,7 @@ class UpdateRejectedApplicantsJob < ApplicationJob
   end
 
   def update_applicant_to_new_submission(applicant)
-    puts "Updating Applicant iCIMS ID #{applicant.icims_id} to new submission: #{applicant.id}"
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to new submission: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"D10100"}} }
