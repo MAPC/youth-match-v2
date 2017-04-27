@@ -27,9 +27,8 @@ class UpdateRejectedApplicantsJob < ApplicationJob
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.id.to_s
-      Rails.logger.error response.status
-      Rails.logger.error response.body
+      Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.icims_id.to_s
+      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
     end
   end
 end

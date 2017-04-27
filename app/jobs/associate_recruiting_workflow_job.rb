@@ -2,9 +2,9 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    # Applicant.joins(:requisitions).distinct.each do |applicant|
-    #   update_applicant_to_candidate_employment_selection(applicant)
-    # end
+    Applicant.joins(:requisitions).distinct.each do |applicant|
+      update_applicant_to_candidate_employment_selection(applicant)
+    end
     Requisition.where(status: :hire).each do |requisition|
       associate_applicant_with_position(requisition.applicant_id, requisition.position_id)
       update_applicant_to_selected(requisition.applicant)
@@ -26,11 +26,11 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C2028"},"associatedprofile":#{applicant.icims_id}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
+
     end
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
-      Rails.logger.error response.status
-      Rails.logger.error response.body
+      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
     end
   end
 
@@ -44,8 +44,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Selected by Site Failed for: ' + applicant.id.to_s
-      Rails.logger.error response.status
-      Rails.logger.error response.body
+      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
     end
   end
 
@@ -59,8 +58,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
-      Rails.logger.error response.status
-      Rails.logger.error response.body
+      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
     end
   end
 end
