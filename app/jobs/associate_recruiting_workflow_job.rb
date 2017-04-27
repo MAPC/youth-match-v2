@@ -58,7 +58,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
+      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
 end
