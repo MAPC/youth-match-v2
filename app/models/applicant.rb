@@ -36,6 +36,10 @@ class Applicant < ApplicationRecord
   end
   alias_method :prefers_interest?, :prefers_interest
 
+  def mode
+    has_transit_pass? ? 'transit' : 'walking'
+  end
+
   private
 
   def compute_grid_id

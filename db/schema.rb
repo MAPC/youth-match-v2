@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170418204247) do
+ActiveRecord::Schema.define(version: 20170502143932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -113,8 +113,9 @@ ActiveRecord::Schema.define(version: 20170418204247) do
     t.integer  "applicant_id"
     t.integer  "position_id"
     t.float    "score"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.float    "travel_time_score"
     t.index ["applicant_id"], name: "index_preferences_on_applicant_id", using: :btree
     t.index ["position_id"], name: "index_preferences_on_position_id", using: :btree
   end

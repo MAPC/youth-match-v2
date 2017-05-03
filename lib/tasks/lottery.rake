@@ -2,12 +2,7 @@ namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
     start_time = Time.now
-    Applicant.chosen(1).each do |applicant|
-      Position.all.each do |position|
-        score = travel_time_score(applicant, position) + interest_score(applicant, position)
-        Preference.create(applicant: applicant, position: position, score: score)
-      end
-    end
+    BuildPreferenceListsJob.perform_now
     puts "Time to run in seconds: #{Time.now - start_time}"
   end
 
@@ -27,7 +22,8 @@ namespace :lottery do
   desc 'Print match results'
   task print: :environment do
     Applicant.chosen(1).each do |applicant|
-      puts "Applicant: #{applicant.email} Position: #{applicant.offer.last.position.id} #{applicant.offer.last.position.title}"
+      preference = Preference.find_by(applicant: applicant, position: applicant.offer.position)
+      puts "Applicant: #{applicant.email}, Position: #{applicant.offer.position.id} #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}"
     end
   end
 
