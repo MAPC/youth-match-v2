@@ -2,14 +2,16 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    # Applicant.joins(:requisitions).distinct.each do |applicant|
-    #   update_applicant_to_candidate_employment_selection(applicant)
-    # end
-    Pick.all.each do |pick|
-      sleep 2
-      associate_applicant_with_position(pick.applicant_id, pick.position_id)
-      update_applicant_to_selected(pick.applicant)
+    Rails.logger.info Applicant.joins(:requisitions).distinct.count
+    Applicant.joins(:requisitions).distinct.each do |applicant|
+      sleep 1
+      update_applicant_to_candidate_employment_selection(applicant)
     end
+    # Pick.all.each do |pick|
+    #   sleep 1
+    #   associate_applicant_with_position(pick.applicant_id, pick.position_id)
+    #   update_applicant_to_selected(pick.applicant)
+    # end
   end
 
   private
