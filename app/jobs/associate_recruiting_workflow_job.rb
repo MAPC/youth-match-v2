@@ -2,9 +2,9 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Applicant.joins(:requisitions).distinct.each do |applicant|
-      update_applicant_to_candidate_employment_selection(applicant)
-    end
+    # Applicant.joins(:requisitions).distinct.each do |applicant|
+    #   update_applicant_to_candidate_employment_selection(applicant)
+    # end
     Pick.all.each do |pick|
       associate_applicant_with_position(pick.applicant_id, pick.position_id)
       update_applicant_to_selected(pick.applicant)
@@ -26,7 +26,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
+      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
 
@@ -40,7 +40,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Selected by Site Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status + ' Body: ' + response.body
+      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
 
