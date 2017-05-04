@@ -3,7 +3,7 @@ class UpdateRejectedApplicantsJob < ApplicationJob
 
   def perform(*args)
     not_chosen_applicants.each do |applicant|
-      update_applicant_to_new_submission(applicant) if status_is_site_selection?(applicant)
+      update_applicant_to_new_submission(applicant) if status_is_candidate_employment_selection?(applicant)
     end
   end
 
@@ -17,9 +17,9 @@ class UpdateRejectedApplicantsJob < ApplicationJob
     Applicant.find(not_chosen_applicants)
   end
 
-  def status_is_site_selection?(applicant)
+  def status_is_candidate_employment_selection?(applicant)
     response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
-    response['status']['id'] == 'C2028' ? true :false
+    response['status']['id'] == 'C51218' ? true : false
   end
 
   def update_applicant_to_new_submission(applicant)
