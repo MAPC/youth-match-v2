@@ -2,11 +2,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Requisition.where(status: :hire).each do |requisition|
-      associate_onboarding_with_position(requisition.applicant, requisition.position)
-      update_applicant_to_selected(requisition.applicant)
-    end
-    Pick.where(status: :hire).each do |pick|
+    Pick.all.each do |pick|
       associate_onboarding_with_position(pick.applicant, pick.position)
       update_applicant_to_selected(pick.applicant)
     end
