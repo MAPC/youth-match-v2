@@ -2,7 +2,7 @@ class UpdateRejectedApplicantsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    not_chosen_applicants.each do |applicant|
+    not_chosen_applicants.first(100).each do |applicant|
       update_applicant_to_new_submission(applicant) if status_is_candidate_employment_selection?(applicant)
     end
   end
