@@ -4,7 +4,9 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   def perform(*args)
     sample_from_first_job = Applicant.joins(:requisitions).distinct.first(100).pluck(:id)
     applicants_that_were_picked = Applicant.joins(:picks).distinct.pluck(:id)
-    pick_ids_to_move = sample_from_first_job & applicants_that_were_picked
+    applicant_ids_to_move = sample_from_first_job & applicants_that_were_picked
+    Rails.logger.info applicant_ids_to_move.to_s
+    pick_ids_to_move = Pick.where(applicant_id: applicant_ids_to_move).pluck(:id)
     Rails.logger.info pick_ids_to_move.to_s
     picks_to_move = Pick.find(pick_ids_to_move)
     picks_to_move.each do |pick|
