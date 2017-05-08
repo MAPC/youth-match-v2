@@ -2,7 +2,12 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Pick.first(100).each do |pick|
+    sample_from_first_job = Applicant.joins(:requisitions).distinct.first(100).pluck(:id)
+    applicants_that_were_picked = Applicant.joins(:picks).distinct.pluck(:id)
+    pick_ids_to_move = sample_from_first_job & applicants_that_were_picked
+    Rails.logger.info pick_ids_to_move.to_s
+    picks_to_move = Pick.find(pick_ids_to_move)
+    picks_to_move.each do |pick|
       sleep 1
       associate_applicant_with_position(pick.applicant_id, pick.position_id)
       update_applicant_to_selected(pick.applicant)
