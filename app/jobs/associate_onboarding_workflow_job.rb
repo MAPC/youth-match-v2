@@ -35,10 +35,15 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
     end
   end
 
-  def get_position(applicant_id)
-    pick = Pick.find_by(applicant_id: applicant_id)
+  def get_position(applicant_icims_id)
+    applicant = Applicant.find_by(icims_id: applicant_icims_id)
+    if applicant.blank?
+      Rails.logger.error "No applicant found for applicant: #{applicant_icims_id}"
+      return nil
+    end
+    pick = Pick.find_by(applicant_id: applicant.id)
     if pick.blank?
-      Rails.logger.error "No pick found for applicant: #{applicant_id}"
+      Rails.logger.error "No pick found for applicant: #{applicant_icims_id}"
       return nil
     end
     Position.find(pick.position_id)
