@@ -159,6 +159,8 @@ GEM
     nenv (0.3.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
+      net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
     netrc (0.11.0)
     nio4r (2.0.0)
@@ -337,6 +339,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   mailgun-ruby
+  net-sftp
   omniauth-google-oauth2
   pg (~> 0.18)
   pry-byebug
