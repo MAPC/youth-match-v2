@@ -10,7 +10,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
 
   def download_update
     Net::SFTP.start('ftp.icims.com', 'boston7884', :password => Rails.application.secrets.icims_sftp_password) do |sftp|
-     data = sftp.download!('/Upload/export.05.08.2017.csv')
+     data = sftp.download!('/Upload/export.05.09.2017.csv')
      csv = CSV.parse(data, headers: true, encoding: 'ISO-8859-1')
      csv.each do |row|
       associate_onboarding_with_position(row['Person : System ID'], row['Onboard Workflow ID'])
