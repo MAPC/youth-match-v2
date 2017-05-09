@@ -21,7 +21,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
   def associate_onboarding_with_position(applicant_id, onboard_workflow)
     position = get_position(applicant_id)
     return nil if position.blank?
-    Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
+    Rails.logger.info "Associate applicant iCIMS ID #{applicant_id} with position iCIMS ID: #{position.icims_id}"
     response = Faraday.patch do |req|
       req.url "https://api.icims.com/customers/7383/onboardworkflows/#{onboard_workflow}"
       req.body = %Q{ { "job":#{position.icims_id} } }
