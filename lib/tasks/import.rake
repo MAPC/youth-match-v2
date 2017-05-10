@@ -181,6 +181,7 @@ namespace :import do
       a.primary_contact_person_phone = row['Primary Contact Phone'].try(:gsub, /\D/, '')
       a.location = geocode_address(row['street_address'])
       a.address = row['street_address']
+      a.external_id = row['external_id']
       a.save
     end
   end
@@ -412,6 +413,37 @@ namespace :import do
         puts 'Applicant ID: ' + applicant_id
         puts exception.message
       end
+    end
+  end
+
+  desc 'Update Position ICIMS IDs'
+  task update_position_icims_ids: :environment do
+    Position.all.each do |position| 
+      response = icims_search(type: 'jobs',
+                              body: %Q{{"filters": [{"name": "job.externalid","value": ["#{position.external_id}"],"operator": "="}]}})
+      if response['searchResults'].blank?
+        Rails.logger.error 'No result for ' + position.title
+        next
+      end
+      if response['searchResults'].pluck('id').count == 1
+        position.icims_id = response['searchResults'].pluck('id')[0]
+        position.save
+      else
+        Rails.logger.error 'There were ' + response['searchResults'].pluck('id').count.to_s + ' results for ' + position.title
+      end
+    end
+  end
+
+  desc 'Add External IDs to Positions'
+  task add_external_ids_to_positions: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'job-data-cleaned-alicia-descriptions.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    postgres_index = Position.first.id
+    csv.each do |row|
+      position = Position.find(postgres_index)
+      position.external_id = row['external_id']
+      position.save
+      postgres_index += 1
     end
   end
 
