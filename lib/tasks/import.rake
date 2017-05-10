@@ -418,7 +418,7 @@ namespace :import do
 
   desc 'Update Position ICIMS IDs'
   task update_position_icims_ids: :environment do
-    Position.all.each do |position| 
+    Position.all.each do |position|
       response = icims_search(type: 'jobs',
                               body: %Q{{"filters": [{"name": "job.externalid","value": ["#{position.external_id}"],"operator": "="}]}})
       if response['searchResults'].blank?
@@ -475,6 +475,8 @@ namespace :import do
       req.body = body
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
+      req.options.timeout = 60
+      req.options.open_timeout = 60
     end
     JSON.parse(response.body)
   end
