@@ -2,14 +2,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    sample_from_first_job = Applicant.joins(:requisitions).distinct.first(100).pluck(:id)
-    applicants_that_were_picked = Applicant.joins(:picks).distinct.pluck(:id)
-    applicant_ids_to_move = sample_from_first_job & applicants_that_were_picked
-    Rails.logger.info applicant_ids_to_move.to_s
-    pick_ids_to_move = Pick.where(applicant_id: applicant_ids_to_move).pluck(:id)
-    Rails.logger.info pick_ids_to_move.to_s
-    picks_to_move = Pick.find(pick_ids_to_move)
-    picks_to_move.each do |pick|
+    Pick.each do |pick|
       sleep 1
       associate_applicant_with_position(pick.applicant_id, pick.position_id)
       update_applicant_to_selected(pick.applicant)
@@ -23,7 +16,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
     position = Position.find(position_id)
     Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows'
+      req.url 'https://api.icims.com/customers/6405/applicantworkflows'
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C2028"},"associatedprofile":#{applicant.icims_id}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -38,7 +31,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   def update_applicant_to_selected(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to selected: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C2028"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'

@@ -10,7 +10,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
 
   def download_update
     Net::SFTP.start('ftp.icims.com', 'boston7884', :password => Rails.application.secrets.icims_sftp_password) do |sftp|
-     data = sftp.download!('/Upload/export.05.09.2017.csv')
+     data = sftp.download!('/Upload/export.csv')
      csv = CSV.parse(data, headers: true, encoding: 'ISO-8859-1')
      csv.each do |row|
       associate_onboarding_with_position(row['Person : System ID'], row['Onboard Workflow ID'])
@@ -23,7 +23,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
     return nil if position.blank?
     Rails.logger.info "Associate applicant iCIMS ID #{applicant_id} with position iCIMS ID: #{position.icims_id}"
     response = Faraday.patch do |req|
-      req.url "https://api.icims.com/customers/7383/onboardworkflows/#{onboard_workflow}"
+      req.url "https://api.icims.com/customers/6405/onboardworkflows/#{onboard_workflow}"
       req.body = %Q{ { "job":#{position.icims_id} } }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
