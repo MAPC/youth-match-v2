@@ -2,7 +2,21 @@ namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
     start_time = Time.now
-    Applicant.chosen(1).each do |applicant|
+
+    chosen_applicant_pool = Applicant.chosen.pluck(:id)
+    last_lottery_number = Applicant.chosen.last.lottery_number
+    chosen_applicant_pool.each do |applicant_id|
+      if Applicant.find(applicant_id).pickers.any?
+        chosen_applicant_pool.delete(applicant_id)
+        last_lottery_number += 1
+        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
+        chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
+      end
+    end
+
+    chosen_applicants = Applicant.find(chosen_applicant_pool)
+
+    chosen_applicants.each do |applicant|
       Position.all.each do |position|
         score = travel_time_score(applicant, position) + interest_score(applicant, position)
         Preference.create(applicant: applicant, position: position, score: score)
@@ -79,7 +93,13 @@ namespace :lottery do
     chosen_applicants.each do |applicant|
       applicant.match_to_position
     end
-    return if Applicant.includes(:offer).where(id: chosen_applicants.map(&:id)).where( :offers => { :applicant_id => nil }).empty? # this isn't working right
+
+    picked_applicants = Pick.all.pluck(:applicant_id)
+    offered_applicants = Offer.all.pluck(:applicant_id)
+    chosen_applicant_pool -= picked_applicants
+    chosen_applicant_pool -= offered_applicants
+    return if chosen_applicant_pool.empty?
+
     if Position.joins("LEFT OUTER JOIN offers ON offers.position_id = positions.id").where("offers.id IS null").any?
       match_applicants_to_positions
     end
