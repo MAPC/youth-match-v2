@@ -2,7 +2,7 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Pick.each do |pick|
+    Pick.all.each do |pick|
       sleep 1
       associate_applicant_with_position(pick.applicant_id, pick.position_id)
       update_applicant_to_selected(pick.applicant)
