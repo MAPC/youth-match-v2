@@ -63,9 +63,23 @@ namespace :lottery do
   end
 
   def match_applicants_to_positions
-    Applicant.chosen.each do |applicant|
+    chosen_applicant_pool = Applicant.chosen.pluck(:id)
+    last_lottery_number = Applicant.chosen.last.lottery_number
+    chosen_applicant_pool.each do |applicant_id|
+      if Applicant.find(applicant_id).pickers.any?
+        chosen_applicant_pool.delete(applicant_id)
+        last_lottery_number += 1
+        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
+        chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
+      end
+    end
+
+    chosen_applicants = Applicant.find(chosen_applicant_pool)
+
+    chosen_applicants.each do |applicant|
       applicant.match_to_position
     end
+    return if Applicant.includes(:offer).where(id: chosen_applicants.map(&:id)).where( :offers => { :applicant_id => nil }).empty? # this isn't working right
     if Position.joins("LEFT OUTER JOIN offers ON offers.position_id = positions.id").where("offers.id IS null").any?
       match_applicants_to_positions
     end
