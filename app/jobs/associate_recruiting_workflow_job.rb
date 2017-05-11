@@ -2,11 +2,14 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Pick.all.each do |pick|
-      sleep 1
-      associate_applicant_with_position(pick.applicant_id, pick.position_id)
-      update_applicant_to_selected(pick.applicant)
-    end
+    associate_applicant_with_position(2589, 663)
+    associate_applicant_with_position(1162, 685)
+    associate_applicant_with_position(5275, 650)
+    # Pick.all.each do |pick|
+    #   sleep 1
+    #   associate_applicant_with_position(pick.applicant_id, pick.position_id)
+    #   update_applicant_to_selected(pick.applicant)
+    # end
   end
 
   private
@@ -20,7 +23,6 @@ class AssociateRecruitingWorkflowJob < ApplicationJob
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C2028"},"associatedprofile":#{applicant.icims_id}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
-
     end
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
