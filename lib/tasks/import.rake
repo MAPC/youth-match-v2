@@ -38,6 +38,7 @@ namespace :import do
       a.icims_id = index
       a.category = row['category']
       a.location = "POINT(" + row['X'] + " " + row['Y'] + ")" # lon lat
+      a.open_positions = 5
       a.save
     end
   end

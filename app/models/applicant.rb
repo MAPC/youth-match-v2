@@ -20,15 +20,16 @@ class Applicant < ApplicationRecord
           # else
           #   puts 'Giving applicant ' + self.id.to_s + ' preferred position: ' + preference.position.id.to_s
           # end
-          Offer.where(position: preference.position).destroy_all
-          Offer.new(applicant: self, position: preference.position).save!
+          Offer.new(applicant: self, position: preference.position, accepted: 'waiting').save!
+          puts "Offer Generated for #{first_name}"
         end
       end
     end
   end
 
   def self.chosen(first = 1)
-    where(lottery_number: first..Position.count).order(:lottery_number)
+    open_positions = Position.sum(:open_positions) - Pick.count
+    where(lottery_number: first..open_positions).order(:lottery_number)
   end
 
   def prefers_interest
