@@ -29,7 +29,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Associate Applicant Onboard Workflow with Position Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'ICIMS Associate Applicant Onboard Workflow with Position Failed for: ' + applicant_id.to_s
       Rails.logger.error response.status
       Rails.logger.error response.body
     end
