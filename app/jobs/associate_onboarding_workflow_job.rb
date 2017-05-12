@@ -9,7 +9,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
   private
 
   def download_update
-    Net::SFTP.start('ftp.icims.com', 'boston7884', :password => Rails.application.secrets.icims_sftp_password) do |sftp|
+    Net::SFTP.start('ftp.icims.com', 'boston3234', :password => Rails.application.secrets.icims_sftp_password) do |sftp|
      data = sftp.download!('/Upload/export.csv')
      csv = CSV.parse(data, headers: true, encoding: 'ISO-8859-1')
      csv.each do |row|
