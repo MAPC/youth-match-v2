@@ -25,6 +25,18 @@ class OffersController < ApplicationController
   def edit
   end
 
+  # GET /offers/1/accept
+  def accept
+    @offer = current_user.applicant.offer
+    @offer.update(accepted: 'yes')
+  end
+
+  # GET /offers/1/decline
+  def decline
+    @offer = current_user.applicant.offer
+    @offer.update(accepted: 'no_bottom_waitlist')
+  end
+
   # POST /offers
   # POST /offers.json
   def create
@@ -43,7 +55,7 @@ class OffersController < ApplicationController
   # PATCH/PUT /offers/1.json
   def update
     respond_to do |format|
-      if @offer.update(offer_params)
+      if @offer.update(filter_params)
         format.jsonapi { render :show, status: :ok, location: @offer }
       else
         format.jsonapi { render jsonapi: @offer.errors, status: :unprocessable_entity }

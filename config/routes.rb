@@ -29,5 +29,8 @@ Rails.application.routes.draw do
   resources :update_icims, only: [:create]
   root to: 'offers#index'
 
+  get 'offers/accept/:id', to: 'offers#accept'
+  get 'offers/decline/:id', to: 'offers#decline'
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
