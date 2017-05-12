@@ -25,13 +25,13 @@ class OffersController < ApplicationController
   def edit
   end
 
-  # GET /offers/1/accept
+  # GET /offers/accept
   def accept
     @offer = current_user.applicant.offer
     @offer.update(accepted: 'yes')
   end
 
-  # GET /offers/1/decline
+  # GET /offers/decline
   def decline
     @offer = current_user.applicant.offer
     @offer.update(accepted: 'no_bottom_waitlist')
