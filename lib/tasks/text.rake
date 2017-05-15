@@ -21,6 +21,9 @@ namespace :text do
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: 'Congrats, you got a summer job offer! Please check your email. You must still upload documents to your City of Boston profile and complete work tasks.'
+    rescue Twilio::REST::RequestError => e
+      puts e
+    end
   end
 
   def parent(phone)
@@ -28,5 +31,8 @@ namespace :text do
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: 'The City of Boston has offered your child a summer job! Please remind them to check their email to upload documents to their profile and complete work tasks.'
+    rescue Twilio::REST::RequestError => e
+      puts e
+    end
   end
 end
