@@ -8,8 +8,8 @@ namespace :text do
       applicant = Applicant.find_by(icims_id: row['Person : System ID'])
       next if applicant.blank?
       if applicant.receive_text_messages
-        young_person(applicant.mobile_phone)
-        parent(applicant.guardian_phone)
+        young_person(applicant.mobile_phone) if applicant.mobile_phone
+        parent(applicant.guardian_phone) if applicant.guardian_phone
       end
     end
   end
