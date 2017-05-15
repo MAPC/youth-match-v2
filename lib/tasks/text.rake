@@ -14,6 +14,17 @@ namespace :text do
     end
   end
 
+  desc 'Text folks who were picked more than once'
+  task multiple_picks: :environment do
+    applicant_ids = Pick.find_by_sql('SELECT applicant_id, COUNT(*) FROM picks GROUP BY applicant_id HAVING COUNT(*) > 1').pluck(:applicant_id)
+    applicants = Applicant.find(applicant_ids)
+    applicants.each do |applicant|
+      if applicant.receive_text_messages
+        notify(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+      end
+    end
+  end
+
   private
 
   def young_person(phone)
@@ -33,6 +44,17 @@ namespace :text do
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: 'The City of Boston has offered your child a summer job! Please remind them to check their email to upload documents to their profile and complete work tasks.'
+    rescue Twilio::REST::RequestError => e
+      puts e
+    end
+  end
+
+  def notify(phone)
+    begin
+    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
+                                      Rails.application.secrets.twilio_auth_token
+    client.messages.create from: '6176168535', to: phone,
+                           body: "You’ve been selected by multiple job sites.Please contact the YEE office at 617-635-4202 to pick your job by 5/17 @ 5:00 pm or we'll select your job for you."
     rescue Twilio::REST::RequestError => e
       puts e
     end
