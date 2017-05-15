@@ -3,25 +3,7 @@ namespace :lottery do
   task build_preference_lists: :environment do
     start_time = Time.now
 
-    chosen_applicant_pool = Applicant.chosen.pluck(:id)
-    last_lottery_number = Applicant.chosen.last.lottery_number
-    chosen_applicant_pool.each do |applicant_id|
-      if Applicant.find(applicant_id).pickers.any?
-        chosen_applicant_pool.delete(applicant_id)
-        last_lottery_number += 1
-        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
-        chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
-      end
-    end
-
-    chosen_applicants = Applicant.find(chosen_applicant_pool)
-
-    chosen_applicants.each do |applicant|
-      Position.all.each do |position|
-        score = travel_time_score(applicant, position) + interest_score(applicant, position)
-        Preference.create(applicant: applicant, position: position, score: score)
-      end
-    end
+    BuildPreferenceListsJob.perform_now
     puts "Time to run in seconds: #{Time.now - start_time}"
   end
 
@@ -40,8 +22,9 @@ namespace :lottery do
 
   desc 'Print match results'
   task print: :environment do
-    Applicant.chosen(1).each do |applicant|
-      puts "Applicant: #{applicant.email} Position: #{applicant.offer.last.position.id} #{applicant.offer.last.position.title}"
+    all_chosen_applicants.each do |applicant|
+      preference = Preference.find_by(applicant: applicant, position: applicant.offer.position)
+      puts "Applicant: #{applicant.email}, Position: #{applicant.offer.position.id} #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}"
     end
   end
 
@@ -103,5 +86,20 @@ namespace :lottery do
     if Position.joins("LEFT OUTER JOIN offers ON offers.position_id = positions.id").where("offers.id IS null").any?
       match_applicants_to_positions
     end
+  end
+
+  def all_chosen_applicants
+    chosen_applicant_pool = Applicant.chosen.pluck(:id)
+    last_lottery_number = Applicant.chosen.last.lottery_number
+    chosen_applicant_pool.each do |applicant_id|
+      if Applicant.find(applicant_id).pickers.any?
+        chosen_applicant_pool.delete(applicant_id)
+        last_lottery_number += 1
+        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
+        chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
+      end
+    end
+
+    Applicant.find(chosen_applicant_pool)
   end
 end
