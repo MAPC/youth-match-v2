@@ -17,6 +17,7 @@ namespace :text do
   private
 
   def young_person(phone)
+    begin
     client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
@@ -27,6 +28,7 @@ namespace :text do
   end
 
   def parent(phone)
+    begin
     client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
