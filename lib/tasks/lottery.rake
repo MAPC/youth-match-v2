@@ -33,6 +33,7 @@ namespace :lottery do
     # Need to constrain this to acceptors from this run only in future
     Offer.where(accepted: 'yes').each do |offer|
       update_applicant_to_placement_accepted(offer.applicant)
+      associate_applicant_with_position(offer.applicant_id, offer.position_id)
     end
   end
 
@@ -199,6 +200,22 @@ namespace :lottery do
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
+    end
+  end
+
+  def associate_applicant_with_position(applicant_id, position_id)
+    applicant = Applicant.find(applicant_id)
+    position = Position.find(position_id)
+    Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
+    response = Faraday.post do |req|
+      req.url 'https://api.icims.com/customers/6405/applicantworkflows'
+      req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C36951"},"associatedprofile":#{applicant.icims_id}} }
+      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
+      req.headers["content-type"] = 'application/json'
+    end
+    unless response.success?
+      Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
