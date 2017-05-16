@@ -125,8 +125,13 @@ namespace :lottery do
   def new_match_applicants_to_positions
     Applicant.chosen.each do |applicant|
       applicant.match_to_position
-      update_applicant_to_lottery_placed(applicant)
     end
+
+    # We match applicants to jobs. Now some applicants were placed then got knocked out by a better match.
+    # These applicants still need to appropriately match.
+
+    # Applicant.chosen where no offers exist then we need to keep matching
+    # Do not match if there are no open positions
 
     # if there are any open positions, then run match applicants to positions
     # Position count of associated offers is less than integer open_positions.
