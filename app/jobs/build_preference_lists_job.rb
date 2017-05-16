@@ -8,22 +8,8 @@ class BuildPreferenceListsJob < ApplicationJob
 
   private
 
-  def chosen_applicant_pool
-    pool = Applicant.chosen.pluck(:id)
-    last_lottery_number = Applicant.chosen.last.lottery_number
-    pool.each do |applicant_id|
-      if Applicant.find(applicant_id).pickers.any?
-        pool.delete(applicant_id)
-        last_lottery_number += 1
-        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
-        pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
-      end
-    end
-    return Applicant.find(pool)
-  end
-
   def assign_travel_time_scores
-    chosen_applicant_pool.each do |applicant|
+    Applicant.chosen.each do |applicant|
       Position.all.each do |position|
         Preference.create(applicant: applicant, position: position, travel_time_score: travel_time_score(applicant, position))
       end
@@ -31,7 +17,7 @@ class BuildPreferenceListsJob < ApplicationJob
   end
 
   def assign_scores
-    chosen_applicant_pool.each do |applicant|
+    Applicant.chosen.each do |applicant|
       applicant.preferences.order(travel_time_score: :asc).each_with_index do |preference, index|
         preference.score = normalize_travel_time_score(preference.applicant, index) + interest_score(preference.applicant, preference.position)
         preference.save

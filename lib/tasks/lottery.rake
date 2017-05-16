@@ -2,6 +2,7 @@ namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
     start_time = Time.now
+    update_lottery_activated_status
     BuildPreferenceListsJob.perform_now
     puts "Time to run in seconds: #{Time.now - start_time}"
   end
@@ -52,6 +53,13 @@ namespace :lottery do
     end
   end
 
+  desc 'Update status of chosen candidates for this round'
+  task update_matched_candidates: :environment do
+    Applicant.chosen.each do |applicant|
+      update_applicant_to_lottery_placed(applicant)
+    end
+  end
+
   private
 
   def travel_time_score(applicant, position)
@@ -86,20 +94,19 @@ namespace :lottery do
   def match_applicants_to_positions
     chosen_applicant_pool = Applicant.chosen.pluck(:id)
     last_lottery_number = Applicant.chosen.last.lottery_number
-    chosen_applicant_pool.each do |applicant_id|
-      if Applicant.find(applicant_id).pickers.any?
-        chosen_applicant_pool.delete(applicant_id)
-        last_lottery_number += 1
-        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
-        chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
-      end
-    end
+    # chosen_applicant_pool.each do |applicant_id|
+    #   if Applicant.find(applicant_id).pickers.any?
+    #     chosen_applicant_pool.delete(applicant_id)
+    #     last_lottery_number += 1
+    #     break if Applicant.find_by(lottery_number: last_lottery_number).blank?
+    #     chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
+    #   end
+    # end
 
     chosen_applicants = Applicant.find(chosen_applicant_pool)
 
     chosen_applicants.each do |applicant|
       applicant.match_to_position
-      update_applicant_to_lottery_placed(applicant)
     end
 
     picked_applicants = Pick.all.pluck(:applicant_id)
@@ -108,9 +115,26 @@ namespace :lottery do
     chosen_applicant_pool -= offered_applicants
     return if chosen_applicant_pool.empty?
 
+
+    # keep going if we have positions without offers, needs to be fixed to keep going if not all offers are filled
     if Position.joins("LEFT OUTER JOIN offers ON offers.position_id = positions.id").where("offers.id IS null").any?
       match_applicants_to_positions
     end
+  end
+
+  def new_match_applicants_to_positions
+    Applicant.chosen.each do |applicant|
+      applicant.match_to_position
+      update_applicant_to_lottery_placed(applicant)
+    end
+
+    # if there are any open positions, then run match applicants to positions
+    # Position count of associated offers is less than integer open_positions.
+    # Issues: exempt picks need to be subtracted in or outside icims
+    # Need to subtract accepted offers
+    # Just accept open positions minus number of currently associated applicants as my open_positions number
+    # then subtract offers as we generate them in my app. But how do we avoid double counting offers?
+    # Only subtract "waiting" offers
   end
 
   def all_chosen_applicants
@@ -146,6 +170,12 @@ namespace :lottery do
     response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
     Rails.logger.info response['status']['id'].to_s
     response['status']['id'] == 'D10100' ? true : false
+  end
+
+  def status_is_lottery_activated?(applicant)
+    response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
+    Rails.logger.info response['status']['id'].to_s
+    response['status']['id'] == 'C38354' ? true : false
   end
 
   def update_applicant_to_lottery_placed(applicant)
@@ -217,6 +247,16 @@ namespace :lottery do
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
+    end
+  end
+
+  def update_lottery_activated_status
+    Applicant.all.each do |applicant|
+      if status_is_lottery_activated?(applicant)
+        applicant.update(lottery_activated: true)
+      else
+        applicant.update(lottery_activated: false)
+      end
     end
   end
 end
