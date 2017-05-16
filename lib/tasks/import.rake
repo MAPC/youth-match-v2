@@ -99,7 +99,6 @@ namespace :import do
   desc 'Import applicants from production ICIMS'
   task applicants_from_prod: :environment do
     ImportApplicantsJob.perform_now
-    CreateApplicantUsersJob.perform_now
   end
 
   desc 'Import positions from ICIMS'
@@ -454,7 +453,8 @@ namespace :import do
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
                                         id: applicant.icims_id)
-      applicant.update(email: applicant_information['email'],
+      applicant.update( first_name: applicant_information['firstname'],
+                        email: applicant_information['email'],
                         interests: [applicant_information['field51027'],
                                     applicant_information['field51034'],
                                     applicant_information['field51053'],
@@ -481,6 +481,13 @@ namespace :import do
                                         fields: 'numberofpositions',
                                         id: position.icims_id)
       position.update(open_positions: position_information['numberofpositions'])
+    end
+  end
+
+  desc 'Merge merged records'
+  task fix_merged_records: :environment do
+    Applicant.where(email: nil).each do |applicant|
+      merge_record(applicant.id, merged_record_icims_id(applicant))
     end
   end
 
@@ -581,5 +588,28 @@ namespace :import do
       current_count = response['searchResults'].pluck('id').count
     end
     remote_workflows - local_workflows
+  end
+
+  def merged_record_icims_id(applicant_information)
+    if applicant_information['firstname'].match(/Merged with (\d+)/)
+      applicant_information['firstname'].match(/Merged with (\d+)/).captures[0]
+    end
+    return nil
+  end
+
+  def merge_record(old_record_id, merged_record_icims_id)
+    # move the associations from the old record to the new record. Run this after importing latest data.
+    old_applicant_record = Applicant.find(old_record_id)
+    existing_applicant = Applicant.find_by_icims_id(merged_record_icims_id)
+    if existing_applicant
+      Pick.find_by(applicant: old_applicant_record).update(applicant: existing_applicant)
+      Requisiton.where(applicant_id: old_applicant_record.id).each do |requisition|
+        requisition.update(applicant_id: existing_applicant.id)
+      end
+      Offer.where(applicant_id: old_applicant_record.id).each do |offer|
+        offer.update(applicant_id: existing_applicant.id)
+      end
+    end
+    old_applicant_record.destroy
   end
 end
