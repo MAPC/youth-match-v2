@@ -1,31 +1,35 @@
-<p>Congratulations <%= @user.applicant.first_name %>!</p>
+<div class="ui container">
+  <div class="ui basic segment">
+    <p>Congratulations <%= @user.applicant.first_name %>!</p>
 
-<p>You're one click away from having a summer job. Please respond to this email right away so you don't lose your spot!</p>
+    <p>You're one click away from having a summer job. Please respond to this email right away so you don't lose your spot!</p>
 
-<p>We matched you with a job opportunity:</p>
+    <p>We matched you with a job opportunity:</p>
 
-<p><%= @position.title %> at <br>
-<%= @position.site_name %> <br>
-<%= @position.address %></p>
+    <p><%= @position.title %> at <br>
+    <%= @position.site_name %> <br>
+    <%= @position.address %></p>
 
-<p>You have 72 hours to accept or decline this job offer. If you don't respond by then, we will drop your name to the bottom of our waitlist.</p>
+    <p>You have 72 hours to accept or decline this job offer. If you don't respond by then, we will drop your name to the bottom of our waitlist.</p>
 
-<p>Have questions? Call Youth Engagement and Employment at 617-635-4202, or email us at <a href="mailto:youthline@boston.gov">youthline@boston.gov</a>.</p>
+    <p>Have questions? Call Youth Engagement and Employment at 617-635-4202, or email us at <a href="mailto:youthline@boston.gov">youthline@boston.gov</a>.</p>
 
-<p>Once you click one of the below buttons, you’ll only be able to change your response by calling us at 617-635-4202.</p>
+    <p>Once you click one of the below buttons, you’ll only be able to change your response by calling us at 617-635-4202.</p>
 
-<p>Accept this offer and you'll have a job this summer!</p>
+    <p>Accept this offer and you'll have a job this summer!</p>
 
-<p><a href="<%= @accept_url %>"><h2>Accept</h2></a></p>
+    <p><a href="<%= @accept_url %>"><h2>Accept</h2></a></p>
 
-<p>Decline if you don't want this job. We'll ask you to fill out a short survey. Please keep in mind: we will drop you to the bottom of our waitlist, and you may not receive another job offer through SuccessLink.</p>
+    <p>Decline if you don't want this job. We'll ask you to fill out a short survey. Please keep in mind: we will drop you to the bottom of our waitlist, and you may not receive another job offer through SuccessLink.</p>
 
-<p><a href="<%= @decline_url %>"><h2>Decline</h2></a></p>
+    <p><a href="<%= @decline_url %>"><h2>Decline</h2></a></p>
 
-<p>Thank you!</p>
+    <p>Thank you!</p>
 
-<p>Deron</p>
+    <p>Deron</p>
 
-<p>BCYF Youth Engagement and Employment<br>
-1483 Tremont St., Boston, MA 02201<br>
-youthline@boston.gov | 617-635-4202</p>
+    <p>BCYF Youth Engagement and Employment<br>
+    1483 Tremont St., Boston, MA 02201<br>
+    youthline@boston.gov | 617-635-4202</p>
+  </div>
+</div>
