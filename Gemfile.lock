@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/doabit/semantic-ui-sass.git
+  revision: 48f03deab9131ad1583eda53c16b3eb83e11c178
+  specs:
+    semantic-ui-sass (2.2.10.1)
+      sass (>= 3.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -46,6 +53,8 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    addressable (2.5.1)
+      public_suffix (~> 2.0, >= 2.0.2)
     airbrussh (1.1.2)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (7.1.4)
@@ -72,6 +81,8 @@ GEM
       activesupport
     coderay (1.1.1)
     concurrent-ruby (1.0.5)
+    css_parser (1.5.0)
+      addressable
     debug_inspector (0.0.2)
     devise (4.2.1)
       bcrypt (~> 3.0)
@@ -123,6 +134,7 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hashie (3.5.5)
+    htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http_parser.rb (0.6.0)
@@ -188,6 +200,13 @@ GEM
       omniauth (~> 1.2)
     orm_adapter (0.5.0)
     pg (0.19.0)
+    premailer (1.10.4)
+      addressable
+      css_parser (>= 1.4.10)
+      htmlentities (>= 4.0.0)
+    premailer-rails (1.9.6)
+      actionmailer (>= 3, < 6)
+      premailer (~> 1.7, >= 1.7.9)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -197,6 +216,7 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
+    public_suffix (2.0.5)
     puma (3.7.0)
     rack (2.0.1)
     rack-cors (0.4.0)
@@ -340,8 +360,10 @@ DEPENDENCIES
   listen (~> 3.0.5)
   mailgun-ruby
   net-sftp
+  nokogiri
   omniauth-google-oauth2
   pg (~> 0.18)
+  premailer-rails
   pry-byebug
   pry-rails
   puma (~> 3.0)
@@ -351,6 +373,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (~> 5.0)
   scout_apm
+  semantic-ui-sass!
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
