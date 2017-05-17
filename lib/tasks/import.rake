@@ -551,6 +551,7 @@ namespace :import do
     return nil if applicant['phones'].blank?
     applicant['phones'].each do |phone|
       next if phone['phonetype'].blank?
+      next if phone['phonenumber'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
     end
     return nil

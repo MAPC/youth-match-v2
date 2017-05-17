@@ -11,7 +11,7 @@ namespace :lottery do
   task assign_lottery_numbers: :environment do
     Applicant.order("RANDOM()").each_with_index do |applicant, index|
       applicant.lottery_number = index
-      update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
+      # update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
       applicant.save!
     end
   end
@@ -26,6 +26,13 @@ namespace :lottery do
     all_chosen_applicants.each do |applicant|
       preference = Preference.find_by(applicant: applicant, position: applicant.offer.position)
       puts "Applicant: #{applicant.email}, Position: #{applicant.offer.position.id} #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}"
+    end
+  end
+
+  desc 'Update status of applicants to lottery activated'
+  task update_lottery_activated_candidates: :environment do
+    Applicant.all.each do |applicant|
+      update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
     end
   end
 
