@@ -30,6 +30,16 @@ namespace :email do
     end
   end
 
+  desc 'Create User Accounts for Applicants'
+  task create_applicant_accounts: :environment do
+    Applicant.where(user: nil).each do |applicant|
+      next if applicant.email.blank?
+      user = User.create(email: applicant.email.downcase,
+                         password: Devise.friendly_token.first(8),
+                         applicant: applicant)
+    end
+  end
+
   private
 
   def update_icims_status_to_candidate_employment_selection(applicant)

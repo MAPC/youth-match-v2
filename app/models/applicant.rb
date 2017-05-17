@@ -27,9 +27,10 @@ class Applicant < ApplicationRecord
     end
   end
 
-  def self.chosen(first = 1)
+  def self.chosen
     open_positions = Position.sum(:open_positions) - Pick.count
-    where(lottery_number: first..open_positions).order(:lottery_number)
+    # pull count of records of database equal to open positions that are in the lottery
+    where(lottery_activated: true).order(:lottery_number).first(open_positions)
   end
 
   def prefers_interest

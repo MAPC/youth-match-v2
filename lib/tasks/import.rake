@@ -449,7 +449,8 @@ namespace :import do
 
   desc 'Update applicant information from ICIMS'
   task refresh_applicant_data: :environment do
-    Applicant.all.each do |applicant|
+    Applicant.where("updated_at < ?", 2.days.ago).each do |applicant|
+      puts "Updating applicant #{applicant.first_name} #{applicant.icims_id}"
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
                                         id: applicant.icims_id)
@@ -469,8 +470,7 @@ namespace :import do
                         guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
                         guardian_email: applicant_information['field51090'],
                         location: geocode_applicant_address(applicant_information),
-                        address: get_address_string(applicant_information),
-                        neighborhood: applicant_information['field50534']['value'])
+                        address: get_address_string(applicant_information))
     end
   end
 
@@ -541,6 +541,7 @@ namespace :import do
     response = Faraday.get('https://search.mapzen.com/v1/search/structured',
                            { api_key: Rails.application.secrets.mapzen_api_key,
                              address: street_address, locality: 'Boston', region: 'MA' })
+    return nil if JSON.parse(response.body)['features'].blank?
     return nil if JSON.parse(response.body)['features'].count == 0
     coordinates = JSON.parse(response.body)['features'][0]['geometry']['coordinates']
     return 'POINT(' + coordinates[0].to_s + ' ' + coordinates[1].to_s + ')'
@@ -550,6 +551,7 @@ namespace :import do
     return nil if applicant['phones'].blank?
     applicant['phones'].each do |phone|
       next if phone['phonetype'].blank?
+      next if phone['phonenumber'].blank?
       return phone['phonenumber'].gsub(/\D/, '') if phone['phonetype']['value'] == phone_type
     end
     return nil
