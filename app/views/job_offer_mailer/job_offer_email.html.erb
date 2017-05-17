@@ -18,11 +18,11 @@
 
     <p>Accept this offer and you'll have a job this summer!</p>
 
-    <p><a href="<%= @accept_url %>"><h2>Accept</h2></a></p>
+    <p><a class="ui positive button accent-color" href="<%= @accept_url %>">Accept</a></p>
 
     <p>Decline if you don't want this job. We'll ask you to fill out a short survey. Please keep in mind: we will drop you to the bottom of our waitlist, and you may not receive another job offer through SuccessLink.</p>
 
-    <p><a href="<%= @decline_url %>"><h2>Decline</h2></a></p>
+    <p><a class="ui button" href="<%= @decline_url %>">Decline</a></p>
 
     <p>Thank you!</p>
 
@@ -31,5 +31,7 @@
     <p>BCYF Youth Engagement and Employment<br>
     1483 Tremont St., Boston, MA 02201<br>
     youthline@boston.gov | 617-635-4202</p>
+
+    <%= image_tag('COB_B_Blue-01.png', class: 'ui small image') %> 
   </div>
 </div>
