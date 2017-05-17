@@ -1,3 +1,24 @@
 // Place all the styles related to the Offers controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+$font-url: 'https://fonts.googleapis.com/css?family=Source+Sans+Pro';
+$font-family: 'Source Sans Pro';
+@import "semantic-ui";
+$blue: #1A5678;
+$gray: #4E4C4A;
+$yellow: #FCF4C4;
+$white: #FFFFF7;
+
+body {
+  background-color: $white;
+}
+
+.dark-primary-color    { background: $blue !important; }
+.default-primary-color { background: #03A9F4 !important; }
+.light-primary-color   { background: #B3E5FC !important; }
+.text-primary-color    { color: #FFFFFF !important; }
+.accent-color          { background: $blue !important; color: white !important; }
+.primary-text-color    { color: #212121 !important; }
+.secondary-text-color  { color: #757575 !important; }
+.divider-color         { border-color: #BDBDBD !important; }
