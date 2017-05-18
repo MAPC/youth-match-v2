@@ -23,7 +23,7 @@ namespace :lottery do
 
   desc 'Print match results'
   task print: :environment do
-    all_chosen_applicants.each do |applicant|
+    Applicant.chosen.each do |applicant|
       preference = Preference.find_by(applicant: applicant, position: applicant.offer.position)
       puts "Applicant: #{applicant.email}, Position: #{applicant.offer.position.id} #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}"
     end
@@ -111,7 +111,7 @@ namespace :lottery do
     # How to know if open_positions?
     # Take the sum of open_positions and then subtract the number of waiting offers
     # set open positions to open_positions from icims minus workflows from icims so we're always sync'd
-    if Position.all.sum(:open_positions) > Offer.where(accepted: 'waiting').count
+    if Position.all.sum(:open_positions) > Offer.where(accepted: 'waiting').count # or Offer.where(accepted: 'waiting').count == Applicant.chosen.count
       match_applicants_to_positions
     end
 
@@ -124,21 +124,6 @@ namespace :lottery do
     # Only subtract "waiting" offers
 
     #we need to set offer status to expired for applicants that do not answer the call so that we have no waiting offers during the lottery
-  end
-
-  def all_chosen_applicants
-    chosen_applicant_pool = Applicant.chosen.pluck(:id)
-    last_lottery_number = Applicant.chosen.last.lottery_number
-    chosen_applicant_pool.each do |applicant_id|
-      if Applicant.find(applicant_id).pickers.any?
-        chosen_applicant_pool.delete(applicant_id)
-        last_lottery_number += 1
-        break if Applicant.find_by(lottery_number: last_lottery_number).blank?
-        chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
-      end
-    end
-
-    Applicant.find(chosen_applicant_pool)
   end
 
   def update_applicant_to_lottery_activated(applicant)
@@ -168,7 +153,7 @@ namespace :lottery do
   end
 
   def update_applicant_to_lottery_placed(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery placed: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38356"}} }
@@ -176,13 +161,13 @@ namespace :lottery do
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'ICIMS Update Status to Lottery Placed Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
 
   def update_applicant_to_placement_accepted(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to placement accepted: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C36951"}} }
@@ -190,13 +175,13 @@ namespace :lottery do
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'ICIMS Update Status to Lottery Placement Accepted Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
 
   def update_applicant_to_lottery_waitlist(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery waitlist: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C51162"}} }
@@ -204,13 +189,13 @@ namespace :lottery do
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'ICIMS Update Status to Lottery Waitlist Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
 
   def update_applicant_to_lottery_expired(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery expired: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38355"}} }
@@ -218,7 +203,7 @@ namespace :lottery do
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'ICIMS Update Status to Lottery Expired Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
