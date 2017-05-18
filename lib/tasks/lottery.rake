@@ -2,8 +2,8 @@ namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
     start_time = Time.now
-    update_lottery_activated_status
-    BuildPreferenceListsJob.perform_now
+    # update_lottery_activated_status
+    BuildPreferenceListsJob.perform_later
     puts "Time to run in seconds: #{Time.now - start_time}"
   end
 

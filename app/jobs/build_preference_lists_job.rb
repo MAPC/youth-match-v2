@@ -9,7 +9,7 @@ class BuildPreferenceListsJob < ApplicationJob
   private
 
   def assign_travel_time_scores
-    Applicant.all.each do |applicant|
+    Applicant.chosen.each do |applicant|
       Position.all.each do |position|
         Preference.create(applicant: applicant, position: position, travel_time_score: travel_time_score(applicant, position))
       end
