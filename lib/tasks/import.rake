@@ -480,7 +480,15 @@ namespace :import do
       position_information = icims_get(object: 'jobs',
                                         fields: 'numberofpositions',
                                         id: position.icims_id)
-      position.update(open_positions: position_information['numberofpositions'])
+      # get the number of folks in the four bin/statuses that are excluded:
+      # Selected by Site C2028
+      # Onboarding C23504
+      # Documents Ready C51324
+      # OHR Compliance C23505
+      response = icims_search(type: 'applicantworkflows',
+                              body: %Q{{"filters":[{"name":"applicantworkflow.status","value":["C2028","C23504","C51324","C23505"],"operator":"="},{"name":"applicantworkflow.job.id","value":["#{position.icims_id}"],"operator":"="}],"operator":"&"}})
+      open_position_count = position_information['numberofpositions'].to_i - response['searchResults'].pluck('id').count
+      position.update(open_positions: open_position_count)
     end
   end
 
@@ -507,7 +515,7 @@ namespace :import do
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
@@ -515,7 +523,7 @@ namespace :import do
 
   def icims_search(type:, body:)
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/6405/search/' + type
+      req.url 'https://api.icims.com/customers/7383/search/' + type
       req.body = body
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -593,8 +601,8 @@ namespace :import do
   end
 
   def merged_record_icims_id(applicant_information)
-    if applicant_information['firstname'].match(/Merged with (\d+)/)
-      applicant_information['firstname'].match(/Merged with (\d+)/).captures[0]
+    if applicant_information.first_name.match(/Merged with (\d+)/)
+      applicant_information.first_name.match(/Merged with (\d+)/).captures[0]
     end
     return nil
   end

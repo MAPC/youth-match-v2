@@ -99,37 +99,6 @@ namespace :lottery do
   end
 
   def match_applicants_to_positions
-    chosen_applicant_pool = Applicant.chosen.pluck(:id)
-    last_lottery_number = Applicant.chosen.last.lottery_number
-    # chosen_applicant_pool.each do |applicant_id|
-    #   if Applicant.find(applicant_id).pickers.any?
-    #     chosen_applicant_pool.delete(applicant_id)
-    #     last_lottery_number += 1
-    #     break if Applicant.find_by(lottery_number: last_lottery_number).blank?
-    #     chosen_applicant_pool.push(Applicant.find_by(lottery_number: last_lottery_number).id)
-    #   end
-    # end
-
-    chosen_applicants = Applicant.find(chosen_applicant_pool)
-
-    chosen_applicants.each do |applicant|
-      applicant.match_to_position
-    end
-
-    picked_applicants = Pick.all.pluck(:applicant_id)
-    offered_applicants = Offer.all.pluck(:applicant_id)
-    chosen_applicant_pool -= picked_applicants
-    chosen_applicant_pool -= offered_applicants
-    return if chosen_applicant_pool.empty?
-
-
-    # keep going if we have positions without offers, needs to be fixed to keep going if not all offers are filled
-    if Position.joins("LEFT OUTER JOIN offers ON offers.position_id = positions.id").where("offers.id IS null").any?
-      match_applicants_to_positions
-    end
-  end
-
-  def new_match_applicants_to_positions
     Applicant.chosen.each do |applicant|
       applicant.match_to_position
     end
@@ -175,13 +144,13 @@ namespace :lottery do
   def update_applicant_to_lottery_activated(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38354"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Candidate Employment Selection Failed for: ' + applicant.id.to_s
+      Rails.logger.error 'ICIMS Update Status to Lottery Activated Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
@@ -201,7 +170,7 @@ namespace :lottery do
   def update_applicant_to_lottery_placed(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38356"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -215,7 +184,7 @@ namespace :lottery do
   def update_applicant_to_placement_accepted(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C36951"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -229,7 +198,7 @@ namespace :lottery do
   def update_applicant_to_lottery_waitlist(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C51162"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -243,7 +212,7 @@ namespace :lottery do
   def update_applicant_to_lottery_expired(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38355"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -259,7 +228,7 @@ namespace :lottery do
     position = Position.find(position_id)
     Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows'
+      req.url 'https://api.icims.com/customers/7383/applicantworkflows'
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C36951"},"associatedprofile":#{applicant.icims_id}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -268,6 +237,13 @@ namespace :lottery do
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
+  end
+
+  def icims_get(object:, fields: '', id:)
+    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+                           { fields: fields },
+                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
+    JSON.parse(response.body)
   end
 
   def update_lottery_activated_status
