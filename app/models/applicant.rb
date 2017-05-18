@@ -1,10 +1,10 @@
 class Applicant < ApplicationRecord
   before_validation :compute_grid_id, if: 'location.present?'
-  has_many :preferences
-  has_many :requisitions
+  has_many :preferences, dependent: :destroy
+  has_many :requisitions, dependent: :destroy
   has_many :positions, through: :requisitions
   has_many :pickers, through: :picks, source: :position
-  has_many :picks
+  has_many :picks, dependent: :destroy
   has_one :offer
   belongs_to :user
   validate :positions_count_within_bounds

@@ -601,7 +601,7 @@ namespace :import do
   end
 
   def merged_record_icims_id(applicant_information)
-    if applicant_information.first_name.match(/Merged with (\d+)/)
+    if applicant_information.first_name.match?(/Merged with (\d+)/)
       applicant_information.first_name.match(/Merged with (\d+)/).captures[0]
     end
     return nil
