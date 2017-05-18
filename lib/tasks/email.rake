@@ -40,6 +40,12 @@ namespace :email do
     end
   end
 
+  desc 'Email a user their job offer'
+  task email_lottery_job_offer: :environment do
+    applicant = Offer.first.applicant
+    JobOfferMailer.job_offer_email(applicant.user)
+  end
+
   private
 
   def update_icims_status_to_candidate_employment_selection(applicant)
