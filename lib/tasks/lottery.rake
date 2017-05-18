@@ -25,7 +25,7 @@ namespace :lottery do
   task print: :environment do
     Applicant.chosen.each do |applicant|
       preference = Preference.find_by(applicant: applicant, position: applicant.offer.position)
-      puts "Applicant: #{applicant.email}, Position ICIMS ID: #{applicant.offer.position.icims_id}, Position Title: #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}"
+      puts "Applicant ICIMS ID: #{applicant.icims_id}, Applicant: #{applicant.email}, Position ICIMS ID: #{applicant.offer.position.icims_id}, Position Title: #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}"
     end
   end
 
