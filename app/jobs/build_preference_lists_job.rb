@@ -2,6 +2,7 @@ class BuildPreferenceListsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
+    Preference.delete_all
     assign_travel_time_scores
     assign_scores
   end
@@ -17,7 +18,7 @@ class BuildPreferenceListsJob < ApplicationJob
   end
 
   def assign_scores
-    Applicant.all.each do |applicant|
+    Applicant.chosen.each do |applicant|
       applicant.preferences.order(travel_time_score: :asc).each_with_index do |preference, index|
         preference.score = normalize_travel_time_score(preference.applicant, index) + interest_score(preference.applicant, preference.position)
         preference.save

@@ -127,7 +127,7 @@ namespace :lottery do
   end
 
   def update_applicant_to_lottery_activated(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to employment selection: #{applicant.id}"
+    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery activated: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38354"}} }
