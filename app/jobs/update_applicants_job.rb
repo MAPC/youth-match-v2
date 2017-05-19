@@ -2,7 +2,7 @@ class UpdateApplicantsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    Applicant.where("updated_at < ?", 2.days.ago).each do |applicant|
+    Applicant.all.each do |applicant|
       Rails.logger.info "Updating applicant #{applicant.first_name} #{applicant.icims_id}"
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
