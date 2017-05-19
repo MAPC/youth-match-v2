@@ -1,4 +1,4 @@
-class UpdateApplicantsJob < ApplicationJob
+class UpdateApplicantsFromIcimsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
