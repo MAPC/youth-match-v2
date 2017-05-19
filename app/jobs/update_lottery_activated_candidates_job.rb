@@ -11,6 +11,7 @@ class UpdateLotteryActivatedCandidatesJob < ApplicationJob
 
   def status_is_new_submission?(applicant)
     response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
+    Rails.logger.info response['status'].to_s
     response['status']['id'] == 'D10100' ? true : false
   end
 
