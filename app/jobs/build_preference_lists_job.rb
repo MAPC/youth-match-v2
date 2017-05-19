@@ -10,7 +10,7 @@ class BuildPreferenceListsJob < ApplicationJob
   private
 
   def assign_travel_time_scores
-    Applicant.chosen.each do |applicant|
+    Applicant.all.each do |applicant|
       Position.all.each do |position|
         Preference.create(applicant: applicant, position: position, travel_time_score: travel_time_score(applicant, position))
       end
@@ -18,7 +18,7 @@ class BuildPreferenceListsJob < ApplicationJob
   end
 
   def assign_scores
-    Applicant.chosen.each do |applicant|
+    Applicant.all.each do |applicant|
       applicant.preferences.order(travel_time_score: :asc).each_with_index do |preference, index|
         preference.score = normalize_travel_time_score(preference.applicant, index) + interest_score(preference.applicant, preference.position)
         preference.save
