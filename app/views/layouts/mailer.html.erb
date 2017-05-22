@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <style type="text/css">
-      <%= Rails.application.assets_manifest.find_sources('scaffolds.scss').to_s.html_safe %>
+      <%= Rails.application.assets_manifest.find('scaffolds.scss').first.to_s.html_safe %>
     </style>
   </head>
 
