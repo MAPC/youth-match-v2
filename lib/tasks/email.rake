@@ -42,8 +42,28 @@ namespace :email do
 
   desc 'Email a user their job offer'
   task email_lottery_job_offer: :environment do
-    applicant = Offer.first.applicant
-    JobOfferMailer.job_offer_email(applicant.user)
+    Applicant.chosen.first(30).each do |applicant|
+      JobOfferMailer.job_offer_email(applicant.user)
+    end
+  end
+
+  desc 'Update user accounts'
+  task user_test_emails: :environment do
+    Applicant.chosen.first(30).each_with_index do |applicant, index|
+      if index < 5
+        applicant.user.update(email: 'princewill.dimgba@boston.gov')
+      elsif index >= 5 && index < 10
+        applicant.user.update(email: 'linda.monteiro@boston.gov')
+      elsif index >= 10 && index < 15
+        applicant.user.update(email: 'tierra.lyons@boston.gov')
+      elsif index >= 15 && index < 20
+        applicant.user.update(email: 'ann.braga@boston.gov')
+      elsif index >= 20 && index < 25
+        applicant.user.update(email: 'rashad.cope@boston.gov')
+      elsif index >= 25 && index < 30
+        applicant.user.update(email: 'deron.jackson@boston.gov')
+      end
+    end
   end
 
   private
