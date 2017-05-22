@@ -167,7 +167,7 @@ namespace :lottery do
     rescue Faraday::Error::ConnectionFailed => e
       Rails.logger.error "Connection failed: #{e}"
     end
-    unless response.success? || response.blank?
+    unless response.blank? || response.success?
       Rails.logger.error 'ICIMS Update Status to Lottery Placed Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
