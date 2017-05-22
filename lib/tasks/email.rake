@@ -50,17 +50,17 @@ namespace :email do
   desc 'Update user accounts'
   task user_test_emails: :environment do
     Applicant.chosen.first(30).each_with_index do |applicant, index|
-      if index < 5
+      if index.between(0,4)
         applicant.user.update(email: 'princewill.dimgba@boston.gov')
-      elsif index >= 5 && index < 10
+      elsif index.between(5,9)
         applicant.user.update(email: 'linda.monteiro@boston.gov')
-      elsif index >= 10 && index < 15
+      elsif index.between(10,14)
         applicant.user.update(email: 'tierra.lyons@boston.gov')
-      elsif index >= 15 && index < 20
+      elsif index.between(15,19)
         applicant.user.update(email: 'ann.braga@boston.gov')
-      elsif index >= 20 && index < 25
+      elsif index.between(20,24)
         applicant.user.update(email: 'rashad.cope@boston.gov')
-      elsif index >= 25 && index < 30
+      elsif index.between(25,29)
         applicant.user.update(email: 'deron.jackson@boston.gov')
       end
     end
