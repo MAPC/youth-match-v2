@@ -43,7 +43,7 @@ namespace :email do
   desc 'Email a user their job offer'
   task email_lottery_job_offer: :environment do
     Applicant.chosen.first(7).each do |applicant|
-      JobOfferMailer.job_offer_email(applicant.user)
+      JobOfferMailer.job_offer_email(applicant.user).deliver_later
     end
   end
 
