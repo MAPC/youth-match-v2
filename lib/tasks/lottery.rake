@@ -154,13 +154,18 @@ namespace :lottery do
 
   def update_applicant_to_lottery_placed(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery placed: #{applicant.id}"
+    sleep 1
+    begin
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38356"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
+      req.options.timeout = 60
+      req.options.open_timeout = 60
+    end
+    rescue Faraday::Error::ConnectionFailed => e
+      Rails.logger.error "Connection failed: #{e}"
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Lottery Placed Failed for: ' + applicant.id.to_s
