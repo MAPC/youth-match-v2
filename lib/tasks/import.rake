@@ -450,7 +450,7 @@ namespace :import do
   desc 'Update applicant information from ICIMS'
   task refresh_applicant_data: :environment do
     Applicant.all.each do |applicant|
-      UpdateApplicantsFromIcimsJob(applicant).perform_later
+      UpdateApplicantsFromIcimsJob.perform_later(applicant)
     end
   end
 
