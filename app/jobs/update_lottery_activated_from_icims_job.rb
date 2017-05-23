@@ -21,7 +21,7 @@ class UpdateLotteryActivatedFromIcimsJob < ApplicationJob
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
