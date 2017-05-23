@@ -34,6 +34,10 @@ gem 'devise'
 gem 'omniauth-google-oauth2'
 gem 'mailgun-ruby'
 gem 'net-sftp'
+gem 'semantic-ui-sass', git: 'https://github.com/doabit/semantic-ui-sass.git'
+gem 'nokogiri'
+gem 'premailer-rails'
+gem 'sidekiq'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

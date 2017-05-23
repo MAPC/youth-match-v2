@@ -10,8 +10,7 @@ class Position < ApplicationRecord
   has_many :offers
 
   def open?
-    lottery_slots = open_positions - picks.count
-    lottery_slots -= offers.where(accepted: 'yes').count
+    lottery_slots = open_positions
     lottery_slots -= offers.where(accepted: 'waiting').count
     return true if lottery_slots > 0
     return false
