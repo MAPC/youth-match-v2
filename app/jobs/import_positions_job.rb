@@ -1,18 +1,17 @@
 class ImportPositionsJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
-    response = icims_search(type: 'jobs', body: '{"filters":[{"name":"job.jobtitle","value":["successlink"],"operator":"="}]}')
-    jobs = response['searchResults'].pluck('id') - Position.all.pluck(:icims_id)
-    jobs.each do |job_id|
-      job = icims_get(object: 'jobs', id: job_id)
-      job_address = get_address_from_icims(job['joblocation']['address'])
-      position = Position.new(icims_id: job_id,
-                              title: job['jobtitle'],
-                              # category: ,
-                              location: geocode_address(job_address['addressstreet1']))
-      position.save!
-    end
+  def perform(icims_id)
+    job = icims_get(object: 'jobs', id: icims_id, fields: 'overview,responsibilities,qualifications,positiontype,numberofpositions,jobtitle,joblocation,field51224')
+    job_address = get_address_from_icims(job['joblocation']['address'])
+    position = Position.new(icims_id: icims_id,
+                            title: job['jobtitle'],
+                            category: job['field51224'],
+                            duties_responsibilities: job['responsibilities'],
+                            address: job_address['addressstreet1'],
+                            site_name: job['joblocation']['value'],
+                            location: geocode_address(job_address['addressstreet1']))
+    position.save!
   end
 
   private
