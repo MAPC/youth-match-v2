@@ -32,7 +32,7 @@ namespace :lottery do
   desc 'Update status of applicants to lottery activated'
   task update_lottery_activated_candidates: :environment do
     Applicant.all.each do |applicant|
-      update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
+      UpdateLotteryActivatedCandidatesJob.perform_later(applicant)
     end
   end
 

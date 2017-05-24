@@ -1,10 +1,8 @@
 class UpdateLotteryActivatedCandidatesJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
-    Applicant.all.each do |applicant|
-      update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
-    end
+  def perform(applicant)
+    update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
   end
 
   private
