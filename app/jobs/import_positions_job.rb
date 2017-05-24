@@ -7,7 +7,7 @@ class ImportPositionsJob < ApplicationJob
     position = Position.new(icims_id: icims_id,
                             title: job['jobtitle'],
                             category: job['field51224'],
-                            duties_responsibilities: job['responsibilities'],
+                            duties_responsbilities: job['responsibilities'],
                             address: job_address['addressstreet1'],
                             site_name: job['joblocation']['value'],
                             location: geocode_address(job_address['addressstreet1']))
