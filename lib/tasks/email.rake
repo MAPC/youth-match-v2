@@ -72,7 +72,7 @@ namespace :email do
 
   def update_icims_status_to_candidate_employment_selection(applicant)
     response = Faraday.patch do |req|
-      req.url = 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C51218"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
