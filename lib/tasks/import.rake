@@ -366,7 +366,7 @@ namespace :import do
     applicants = Applicant.where(email: nil)
     applicants.each do |applicant|
       merged_id = applicant.first_name.match(/Merged with (\d+)/).captures[0]
-      puts 'Applicant not imported: ' + applicant.first_name + ' ' + applicant.last_name
+      puts 'Applicant not imported: ' + merged_id + 'Old ID: ' + applicant.icims_id
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
                                         id: merged_id)
