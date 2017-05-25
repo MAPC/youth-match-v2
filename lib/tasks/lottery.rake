@@ -67,6 +67,13 @@ namespace :lottery do
     end
   end
 
+  desc 'Update lottery activated status from ICIMS'
+  task update_lottery_activated_from_icims: :environment do
+    Applicant.all.each do |applicant|
+      UpdateLotteryActivatedFromIcimsJob.perform_later(applicant)
+    end
+  end
+
   private
 
   def travel_time_score(applicant, position)

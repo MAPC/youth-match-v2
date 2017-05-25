@@ -1,15 +1,13 @@
 class UpdateLotteryActivatedFromIcimsJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
-    Applicant.all.each do |applicant|
-      if status_is_lottery_activated?(applicant)
-        Rails.logger.info 'Updating applicant to lottery activated:' + applicant.icims_id.to_s
-        applicant.update(lottery_activated: true)
-      else
-        Rails.logger.info 'Updating applicant to not lottery activated:' + applicant.icims_id.to_s
-        applicant.update(lottery_activated: false)
-      end
+  def perform(applicant)
+    if status_is_lottery_activated?(applicant)
+      Rails.logger.info 'Updating applicant to lottery activated:' + applicant.icims_id.to_s
+      applicant.update(lottery_activated: true)
+    else
+      Rails.logger.info 'Updating applicant to not lottery activated:' + applicant.icims_id.to_s
+      applicant.update(lottery_activated: false)
     end
   end
 
