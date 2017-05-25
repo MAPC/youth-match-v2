@@ -473,6 +473,16 @@ namespace :import do
     end
   end
 
+  desc 'Set exempt requisitions to zero openings'
+  task zero_exempt_reqs: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'reqs_exempt.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each do |row|
+      position = Position.find_by_icims_id(row['ID'])
+      position.update(open_positions: 0)
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
