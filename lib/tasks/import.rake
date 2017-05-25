@@ -479,7 +479,7 @@ namespace :import do
     csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
     csv.each do |row|
       position = Position.find_by_icims_id(row['ID'])
-      position.update(open_positions: 0)
+      position.update(open_positions: 0) if position
     end
   end
 
