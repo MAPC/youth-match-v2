@@ -25,6 +25,27 @@ namespace :text do
     end
   end
 
+  desc 'Text young people and parents who did not reply'
+  task no_responses: :environment do
+    Offer.where(accepted: 'waiting').each do |offer|
+      applicant = Applicant.find(offer.applicant_id)
+      if applicant.receive_text_messages
+        young_person(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+        parent(applicant.guardian_phone) if applicant.guardian_phone && applicant.guardian_phone.length == 10
+      end
+    end
+  end
+
+  desc 'Text accepted applicants'
+  task accepted_responses: :environment do
+    Offer.where(accepted: 'yes').each do |offer|
+      applicant = Applicant.find(offer.applicant_id)
+      if applicant.receive_text_messages
+        onboard_reminder(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+      end
+    end
+  end
+
   private
 
   def young_person(phone)
@@ -44,6 +65,17 @@ namespace :text do
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: 'The City of Boston has offered your child a summer job! Please remind them to check their email to upload documents to their profile and complete work tasks.'
+    rescue Twilio::REST::RequestError => e
+      puts e
+    end
+  end
+
+  def onboard_reminder(phone)
+    begin
+    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
+                                      Rails.application.secrets.twilio_auth_token
+    client.messages.create from: '6176168535', to: phone,
+                           body: 'Complete your summer job hiring! Please bring uploaded documents to “GET HIRED” on Saturday, June 3rd, 2017 9am-4pm at YEE: 1483 Tremont St, Boston, MA 02120'
     rescue Twilio::REST::RequestError => e
       puts e
     end
