@@ -2,24 +2,21 @@ require 'csv'
 namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
-    start_time = Time.now
-    # update_lottery_activated_status
     BuildPreferenceListsJob.perform_later
-    puts "Time to run in seconds: #{Time.now - start_time}"
   end
 
   desc 'Assign lottery numbers'
   task assign_lottery_numbers: :environment do
     Applicant.order("RANDOM()").each_with_index do |applicant, index|
       applicant.lottery_number = index
-      # update_applicant_to_lottery_activated(applicant) if status_is_new_submission?(applicant)
       applicant.save!
     end
   end
 
+  # Run rake lottery:update_lottery_activated_from_icims before this!
   desc 'Match the applicants to their jobs'
   task match: :environment do
-    match_applicants_to_positions
+    MatchApplicantsWithPositionsJob.perform_later
   end
 
   desc 'Print match results'
@@ -87,35 +84,6 @@ namespace :lottery do
 
   private
 
-  def travel_time_score(applicant, position)
-    minutes = travel_time(applicant, position) / 60
-    applicant.prefers_nearby? ? care(minutes) : dont_care(minutes)
-  end
-
-  def travel_time(applicant, position)
-    return TravelTime.find_by(
-      input_id:     applicant.grid_id,
-      target_id:    position.grid_id,
-      travel_mode:  applicant.has_transit_pass ? "transit" : "walking"
-    ).time
-  rescue NoMethodError
-    40.minutes.to_i
-  end
-
-  def care(minutes)
-    minutes < 30 ? (0.008 * (minutes ** 2)) - (0.5833 * minutes) + 5 : -5
-  end
-
-  def dont_care(minutes)
-    minutes < 40 ? (-0.25 * minutes) + 5 : -5
-  end
-
-  def interest_score(applicant, position)
-    magnitude = applicant.prefers_interest? ? 5 : 3
-    matches = (applicant.interests & [position.category]).any? ? 1 : -1
-    return magnitude * matches
-  end
-
   def match_applicants_to_positions
     Applicant.chosen.each do |applicant|
       applicant.match_to_position
@@ -158,18 +126,6 @@ namespace :lottery do
     end
   end
 
-  def status_is_new_submission?(applicant)
-    response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
-    Rails.logger.info response['status']['id'].to_s
-    response['status']['id'] == 'D10100' ? true : false
-  end
-
-  def status_is_lottery_activated?(applicant)
-    response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
-    Rails.logger.info response['status']['id'].to_s
-    response['status']['id'] == 'C38354' ? true : false
-  end
-
   def update_applicant_to_lottery_placed(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery placed: #{applicant.id}"
     sleep 1
@@ -196,15 +152,5 @@ namespace :lottery do
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
-  end
-
-  def update_lottery_activated_status
-    Applicant.all.each do |applicant|
-      if status_is_lottery_activated?(applicant)
-        applicant.update(lottery_activated: true)
-      else
-        applicant.update(lottery_activated: false)
-      end
-    end
   end
 end
