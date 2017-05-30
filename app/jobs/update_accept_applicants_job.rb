@@ -16,8 +16,8 @@ class UpdateAcceptApplicantsJob < ApplicationJob
       req.body = %Q{ {"status":{"id":"C36951"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
+      req.options.timeout = 30
+      req.options.open_timeout = 30
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Lottery Placement Accepted Failed for: ' + applicant.id.to_s
@@ -34,8 +34,8 @@ class UpdateAcceptApplicantsJob < ApplicationJob
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C36951"},"associatedprofile":#{applicant.icims_id}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
+      req.options.timeout = 30
+      req.options.open_timeout = 30
     end
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s

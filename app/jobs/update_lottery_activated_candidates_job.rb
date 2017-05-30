@@ -20,6 +20,8 @@ class UpdateLotteryActivatedCandidatesJob < ApplicationJob
       req.body = %Q{ {"status":{"id":"C38354"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
+      req.options.timeout = 30
+      req.options.open_timeout = 30
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Lottery Activated Failed for: ' + applicant.id.to_s

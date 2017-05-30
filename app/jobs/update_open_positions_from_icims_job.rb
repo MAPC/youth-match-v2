@@ -32,8 +32,8 @@ class UpdateOpenPositionsFromIcimsJob < ApplicationJob
       req.body = body
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
-      req.options.timeout = 60
-      req.options.open_timeout = 60
+      req.options.timeout = 30
+      req.options.open_timeout = 30
     end
     JSON.parse(response.body)
   end

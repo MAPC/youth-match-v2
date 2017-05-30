@@ -19,6 +19,8 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
       req.body = %Q{ { "job":#{position.icims_id} } }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
+      req.options.timeout = 30
+      req.options.open_timeout = 30
     end
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant Onboard Workflow with Position Failed for: ' + applicant_id.to_s

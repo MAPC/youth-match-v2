@@ -24,13 +24,14 @@ class UpdateRejectedApplicantsJob < ApplicationJob
   end
 
   def update_applicant_to_new_submission(applicant)
-    sleep 1
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to new submission: #{applicant.id}"
     response = Faraday.patch do |req|
       req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"D10100"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
+      req.options.timeout = 30
+      req.options.open_timeout = 30
     end
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.icims_id.to_s
