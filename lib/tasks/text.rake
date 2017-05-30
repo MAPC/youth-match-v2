@@ -75,7 +75,7 @@ namespace :text do
     client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
-                           body: 'Complete your summer job hiring! Please bring uploaded documents to “GET HIRED” on Saturday, June 3rd, 2017 9am-4pm at YEE: 1483 Tremont St, Boston, MA 02120'
+                           body: 'Complete your summer job hiring! Please bring uploaded documents to “GET HIRED” on Saturday, June 3rd, 2017 9am-5pm at YEE: 1483 Tremont St, Boston, MA 02120'
     rescue Twilio::REST::RequestError => e
       puts e
     end
