@@ -1,3 +1,4 @@
+require 'csv'
 namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
@@ -71,6 +72,17 @@ namespace :lottery do
   task update_lottery_activated_from_icims: :environment do
     Applicant.all.each do |applicant|
       UpdateLotteryActivatedFromIcimsJob.perform_later(applicant)
+    end
+  end
+
+  desc 'Associate Onboard Workflows with Lottery Positions'
+  task associate_lottery_onboard_workflows: :environment do
+    Net::SFTP.start('ftp.icims.com', 'boston3234', :password => Rails.application.secrets.icims_sftp_password) do |sftp|
+      data = sftp.download!('/Upload/export.csv')
+      csv = CSV.parse(data, headers: true, encoding: 'ISO-8859-1')
+      csv.each do |row|
+        AssociateOnboardingWorkflowJob.perform_later(row['Person : System ID'], row['Onboard Workflow ID'])
+      end
     end
   end
 
