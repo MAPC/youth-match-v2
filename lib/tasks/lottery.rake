@@ -41,15 +41,14 @@ namespace :lottery do
   task update_accepted_candidates: :environment do
     # Need to constrain this to acceptors from this run only in future
     Offer.where(accepted: 'yes').each do |offer|
-      update_applicant_to_placement_accepted(offer.applicant)
-      associate_applicant_with_position(offer.applicant_id, offer.position_id)
+      UpdateAcceptApplicantsJob.perform_later(offer.id)
     end
   end
 
   desc 'Update status of candidates that declined their job offers'
   task update_declined_candidates: :environment do
     Offer.where(accepted: 'no_bottom_waitlist').each do |offer|
-      update_applicant_to_lottery_waitlist(offer.applicant)
+      UpdateDeclineApplicantsJob.perform_later(offer.id)
     end
   end
 
@@ -57,7 +56,7 @@ namespace :lottery do
   task update_expired_candidates: :environment do
     Offer.where(accepted: 'waiting').each do |offer|
       offer.update(accepted: 'expired')
-      update_applicant_to_lottery_expired(offer.applicant)
+      UpdateExpiredApplicantsJob.perform_later(offer.id)
     end
   end
 
@@ -188,77 +187,6 @@ namespace :lottery do
     end
     unless response.blank? || response.success?
       Rails.logger.error 'ICIMS Update Status to Lottery Placed Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
-    end
-  end
-
-  def update_applicant_to_placement_accepted(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to placement accepted: #{applicant.id}"
-    response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
-      req.body = %Q{ {"status":{"id":"C36951"}} }
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
-    end
-    unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Lottery Placement Accepted Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
-    end
-  end
-
-  def update_applicant_to_lottery_waitlist(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery waitlist: #{applicant.id}"
-    response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
-      req.body = %Q{ {"status":{"id":"C51162"}} }
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
-    end
-    unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Lottery Waitlist Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
-    end
-  end
-
-  def update_applicant_to_lottery_expired(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery expired: #{applicant.id}"
-    sleep 1
-    begin
-    response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
-      req.body = %Q{ {"status":{"id":"C38355"}} }
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
-    end
-    rescue Faraday::Error::ConnectionFailed => e
-      Rails.logger.error "Connection failed: #{e}"
-    end
-    unless response.blank? || response.success?
-      Rails.logger.error 'ICIMS Update Status to Lottery Expired Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
-    end
-  end
-
-  def associate_applicant_with_position(applicant_id, position_id)
-    applicant = Applicant.find(applicant_id)
-    position = Position.find(position_id)
-    Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
-    response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows'
-      req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C36951"},"associatedprofile":#{applicant.icims_id}} }
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 90
-      req.options.open_timeout = 90
-    end
-    unless response.success?
-      Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
   end
