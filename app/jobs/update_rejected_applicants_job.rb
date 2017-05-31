@@ -26,7 +26,7 @@ class UpdateRejectedApplicantsJob < ApplicationJob
   def update_applicant_to_new_submission(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to new submission: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"D10100"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -40,7 +40,7 @@ class UpdateRejectedApplicantsJob < ApplicationJob
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)

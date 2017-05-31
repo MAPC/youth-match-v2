@@ -18,7 +18,7 @@ class ImportPositionsJob < ApplicationJob
 
   def icims_search(type:, body:)
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/7383/search/' + type
+      req.url 'https://api.icims.com/customers/6405/search/' + type
       req.body = body
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -29,7 +29,7 @@ class ImportPositionsJob < ApplicationJob
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
