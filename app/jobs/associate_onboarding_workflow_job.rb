@@ -15,7 +15,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
     end
     Rails.logger.info "Associate applicant iCIMS ID #{applicant_id} with position iCIMS ID: #{position.icims_id}"
     response = Faraday.patch do |req|
-      req.url "https://api.icims.com/customers/6405/onboardworkflows/#{onboard_workflow}"
+      req.url "https://api.icims.com/customers/7383/onboardworkflows/#{onboard_workflow}"
       req.body = %Q{ { "job":#{position.icims_id} } }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
