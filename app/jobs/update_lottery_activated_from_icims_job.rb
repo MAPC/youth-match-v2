@@ -1,15 +1,13 @@
 class UpdateLotteryActivatedFromIcimsJob < ApplicationJob
   queue_as :default
 
-  def perform(*args)
-    Applicant.all.each do |applicant|
-      if status_is_lottery_activated?(applicant)
-        Rails.logger.info 'Updating applicant to lottery activated:' + applicant.icims_id.to_s
-        applicant.update(lottery_activated: true)
-      else
-        Rails.logger.info 'Updating applicant to not lottery activated:' + applicant.icims_id.to_s
-        applicant.update(lottery_activated: false)
-      end
+  def perform(applicant)
+    if status_is_lottery_activated?(applicant)
+      Rails.logger.info 'Updating applicant to lottery activated:' + applicant.icims_id.to_s
+      applicant.update(lottery_activated: true)
+    else
+      Rails.logger.info 'Updating applicant to not lottery activated:' + applicant.icims_id.to_s
+      applicant.update(lottery_activated: false)
     end
   end
 
@@ -21,7 +19,7 @@ class UpdateLotteryActivatedFromIcimsJob < ApplicationJob
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)

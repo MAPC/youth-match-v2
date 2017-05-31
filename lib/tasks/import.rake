@@ -46,7 +46,7 @@ namespace :import do
   desc 'Import applicants from ICIMS'
   task applicants_from_icims: :environment do
     response = icims_search(type: 'applicantworkflows',
-                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634 "],"operator":"="}],"operator":"&"}')
+                            body: '{"filters":[{"name":"applicantworkflow.status","value":["D10100","C12295","D10105","C22001","C12296"],"operator":"="},{"name":"applicantworkflow.job.id","value":["12634"],"operator":"="}],"operator":"&"}')
     workflows = response['searchResults'].pluck('id') - Applicant.all.pluck(:workflow_id)
     puts 'Number of applicants: ' + workflows.count.to_s
     workflows.each do |workflow_id|
@@ -366,55 +366,60 @@ namespace :import do
     applicants = Applicant.where(email: nil)
     applicants.each do |applicant|
       merged_id = applicant.first_name.match(/Merged with (\d+)/).captures[0]
-      next if Applicant.find_by_icims_id(merged_id)
-      puts 'Applicant not imported: ' + applicant.first_name
+      puts 'Applicant not imported: ' + merged_id.to_s + 'Old ID: ' + applicant.icims_id.to_s
       applicant_information = icims_get(object: 'people',
                                         fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
                                         id: merged_id)
-      applicant = Applicant.new(first_name: applicant_information['firstname'],
-                                last_name: applicant_information['lastname'],
-                                email: applicant_information['email'],
-                                icims_id: merged_id,
-                                interests: [applicant_information['field51027'],
-                                            applicant_information['field51034'],
-                                            applicant_information['field51053'],
-                                            applicant_information['field51054'],
-                                            applicant_information['field51055']],
-                                prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
-                                has_transit_pass: boolean(applicant_information['field36999']),
-                                receive_text_messages: boolean(applicant_information['field50527']),
-                                mobile_phone: phone(applicant_information, 'Mobile'),
-                                home_phone: phone(applicant_information, 'Home'),
-                                guardian_name: applicant_information['field51088'],
-                                guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
-                                guardian_email: applicant_information['field51090'],
-                                in_school: boolean(applicant_information['field23807']),
-                                school_type: applicant_information['field51062'],
-                                bps_student: boolean(applicant_information['field23809']),
-                                bps_school_name: applicant_information['field23810'],
-                                current_grade_level: applicant_information['field23849'],
-                                english_first_language: boolean(applicant_information['field23850']),
-                                first_language: applicant_information['field23851'],
-                                fluent_other_language: boolean(applicant_information['field23852']),
-                                other_languages: applicant_information['field29895'].try(:pluck, 'value'),
-                                held_successlink_job_before: boolean(applicant_information['field51122']),
-                                previous_job_site: applicant_information['field51123'],
-                                wants_to_return_to_previous_job: boolean(applicant_information['field51124']),
-                                superteen_participant: boolean(applicant_information['field51125']),
-                                participant_essay: applicant_information['field23873'],
-                                participant_essay_attached_file: get_attached_essay(applicant_information),
-                                location: geocode_applicant_address(applicant_information),
-                                address: get_address_string(applicant_information),
-                                workflow_id: applicant.workflow_id,
-                                neighborhood: applicant_information['field50534']['value'])
-      begin
-        applicant.save!
-      rescue ActiveRecord::RecordInvalid => exception
-        puts 'Applicant ID: ' + applicant_id
-        puts exception.message
-      end
+      applicant.update(first_name: applicant_information['firstname'],
+                        last_name: applicant_information['lastname'],
+                        email: applicant_information['email'],
+                        icims_id: merged_id,
+                        interests: [applicant_information['field51027'],
+                                    applicant_information['field51034'],
+                                    applicant_information['field51053'],
+                                    applicant_information['field51054'],
+                                    applicant_information['field51055']],
+                        prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
+                        has_transit_pass: boolean(applicant_information['field36999']),
+                        receive_text_messages: boolean(applicant_information['field50527']),
+                        mobile_phone: phone(applicant_information, 'Mobile'),
+                        home_phone: phone(applicant_information, 'Home'),
+                        guardian_name: applicant_information['field51088'],
+                        guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
+                        guardian_email: applicant_information['field51090'],
+                        in_school: boolean(applicant_information['field23807']),
+                        school_type: applicant_information['field51062'],
+                        bps_student: boolean(applicant_information['field23809']),
+                        bps_school_name: applicant_information['field23810'],
+                        current_grade_level: applicant_information['field23849'],
+                        english_first_language: boolean(applicant_information['field23850']),
+                        first_language: applicant_information['field23851'],
+                        fluent_other_language: boolean(applicant_information['field23852']),
+                        other_languages: applicant_information['field29895'].try(:pluck, 'value'),
+                        held_successlink_job_before: boolean(applicant_information['field51122']),
+                        previous_job_site: applicant_information['field51123'],
+                        wants_to_return_to_previous_job: boolean(applicant_information['field51124']),
+                        superteen_participant: boolean(applicant_information['field51125']),
+                        participant_essay: applicant_information['field23873'],
+                        participant_essay_attached_file: get_attached_essay(applicant_information),
+                        location: geocode_applicant_address(applicant_information),
+                        address: get_address_string(applicant_information),
+                        workflow_id: applicant.workflow_id,
+                        neighborhood: applicant_information['field50534']['value'])
     end
   end
+
+  desc 'Update applicants without locations'
+  task update_applicant_locations: :environment do
+    applicants = Applicant.where(location: nil)
+    applicants.each do |applicant|
+      applicant_information = icims_get(object: 'people',
+                                        fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
+                                        id: applicant.icims_id)
+      applicant.update(location: geocode_applicant_address(applicant_information))
+    end
+  end
+
 
   desc 'Update Position ICIMS IDs'
   task update_position_icims_ids: :environment do
@@ -449,47 +454,15 @@ namespace :import do
 
   desc 'Update applicant information from ICIMS'
   task refresh_applicant_data: :environment do
-    Applicant.where("updated_at < ?", 2.days.ago).each do |applicant|
-      puts "Updating applicant #{applicant.first_name} #{applicant.icims_id}"
-      applicant_information = icims_get(object: 'people',
-                                        fields: 'firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
-                                        id: applicant.icims_id)
-      applicant.update( first_name: applicant_information['firstname'],
-                        email: applicant_information['email'],
-                        interests: [applicant_information['field51027'],
-                                    applicant_information['field51034'],
-                                    applicant_information['field51053'],
-                                    applicant_information['field51054'],
-                                    applicant_information['field51055']],
-                        prefers_nearby: applicant_information['field51069'] == 'Distance to Home',
-                        has_transit_pass: boolean(applicant_information['field36999']),
-                        receive_text_messages: boolean(applicant_information['field50527']),
-                        mobile_phone: phone(applicant_information, 'Mobile'),
-                        home_phone: phone(applicant_information, 'Home'),
-                        guardian_name: applicant_information['field51088'],
-                        guardian_phone: applicant_information['field51089'].try(:gsub, /\D/, ''),
-                        guardian_email: applicant_information['field51090'],
-                        location: geocode_applicant_address(applicant_information),
-                        address: get_address_string(applicant_information))
+    Applicant.all.each do |applicant|
+      UpdateApplicantsFromIcimsJob.perform_later(applicant)
     end
   end
 
   desc 'Update position information from ICIMS'
   task refresh_position_data: :environment do
     Position.all.each do |position|
-      position_information = icims_get(object: 'jobs',
-                                        fields: 'numberofpositions',
-                                        id: position.icims_id)
-      # get the number of folks in the four bin/statuses that are excluded:
-      # Selected by Site C2028
-      # Onboarding C23504
-      # Documents Ready C51324
-      # OHR Compliance C23505
-      response = icims_search(type: 'applicantworkflows',
-                              body: %Q{{"filters":[{"name":"applicantworkflow.status","value":["C2028","C23504","C51324","C23505"],"operator":"="},{"name":"applicantworkflow.job.id","value":["#{position.icims_id}"],"operator":"="}],"operator":"&"}})
-      open_position_count = position_information['numberofpositions'].to_i - response['searchResults'].pluck('id').count
-      open_position_count = 0 if open_position_count < 0
-      position.update(open_positions: open_position_count)
+      UpdateOpenPositionsFromIcimsJob.perform_later(position)
     end
   end
 
@@ -497,6 +470,16 @@ namespace :import do
   task fix_merged_records: :environment do
     Applicant.where(email: nil).each do |applicant|
       merge_record(applicant.id, merged_record_icims_id(applicant))
+    end
+  end
+
+  desc 'Set exempt requisitions to zero openings'
+  task zero_exempt_reqs: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'reqs_exempt.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each do |row|
+      position = Position.find_by_icims_id(row['ID'])
+      position.update(open_positions: 0) if position
     end
   end
 
@@ -516,7 +499,7 @@ namespace :import do
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
@@ -524,7 +507,7 @@ namespace :import do
 
   def icims_search(type:, body:)
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/7383/search/' + type
+      req.url 'https://api.icims.com/customers/6405/search/' + type
       req.body = body
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'

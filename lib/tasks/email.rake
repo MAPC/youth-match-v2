@@ -42,7 +42,7 @@ namespace :email do
 
   desc 'Email a user their job offer'
   task email_lottery_job_offer: :environment do
-    Applicant.chosen.first(7).each do |applicant|
+    Applicant.chosen.each do |applicant|
       JobOfferMailer.job_offer_email(applicant.user).deliver_later
     end
   end
@@ -72,7 +72,7 @@ namespace :email do
 
   def update_icims_status_to_candidate_employment_selection(applicant)
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C51218"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
