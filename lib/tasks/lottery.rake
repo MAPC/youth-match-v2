@@ -84,20 +84,6 @@ namespace :lottery do
 
   private
 
-  def update_applicant_to_lottery_activated(applicant)
-    Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery activated: #{applicant.id}"
-    response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
-      req.body = %Q{ {"status":{"id":"C38354"}} }
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-    end
-    unless response.success?
-      Rails.logger.error 'ICIMS Update Status to Lottery Activated Failed for: ' + applicant.id.to_s
-      Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
-    end
-  end
-
   def update_applicant_to_lottery_placed(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery placed: #{applicant.id}"
     sleep 1
