@@ -1,14 +1,14 @@
 class AssociateOnboardingWorkflowJob < ApplicationJob
   queue_as :default
 
-  def perform(applicant_id, onboard_workflow_id)
-    associate_onboarding_with_position(applicant_id, onboard_workflow_id)
+  def perform(applicant_icims_id, onboard_workflow_id)
+    associate_onboarding_with_position(applicant_icims_id, onboard_workflow_id)
   end
 
   private
 
-  def associate_onboarding_with_position(applicant_id, onboard_workflow)
-    position = get_position(applicant_id)
+  def associate_onboarding_with_position(applicant_icims_id, onboard_workflow)
+    position = get_position(applicant_icims_id)
     if position.blank?
       Rails.logger.error "No position found for applicant: #{applicant_id}"
       return nil

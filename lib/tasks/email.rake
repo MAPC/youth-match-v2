@@ -47,6 +47,13 @@ namespace :email do
     end
   end
 
+  desc 'Update user account email addresses'
+  task update_user_emails: :environment do
+    Applicant.all.each do |applicant|
+      applicant.user.update(email: applicant.email)
+    end
+  end
+
   desc 'Update user accounts'
   task user_test_emails: :environment do
     Applicant.chosen.first(7).each_with_index do |applicant, index|

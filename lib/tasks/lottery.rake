@@ -1,4 +1,7 @@
 require 'csv'
+
+LOTTERY_DATE = DateTime.new(2017, 6, 1)
+
 namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
@@ -22,8 +25,8 @@ namespace :lottery do
   desc 'Print match results'
   task print: :environment do
     Applicant.chosen.each do |applicant|
-      preference = Preference.find_by(applicant: applicant, position: applicant.offer.position)
-      puts "Applicant ICIMS ID: #{applicant.icims_id}, Applicant: #{applicant.email}, Position ICIMS ID: #{applicant.offer.position.icims_id}, Position Title: #{applicant.offer.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}, Applicant Interests: #{applicant.interests}, Open Positions: #{applicant.offer.position.open_positions}, Prefers Nearby: #{applicant.prefers_nearby}"
+      preference = Preference.find_by(applicant: applicant, position: applicant.offers.order(:created_at).last.position)
+      puts "Applicant ICIMS ID: #{applicant.icims_id}, Applicant: #{applicant.email}, Position ICIMS ID: #{applicant.offers.order(:created_at).last.position.icims_id}, Position Title: #{applicant.offers.order(:created_at).last.position.title}, Score: #{preference.score}, Travel Time Score: #{preference.travel_time_score}, Applicant Interests: #{applicant.interests}, Open Positions: #{applicant.offers.order(:created_at).last.position.open_positions}, Prefers Nearby: #{applicant.prefers_nearby}"
     end
   end
 
@@ -37,22 +40,25 @@ namespace :lottery do
   desc 'Update status of candidates that accepted their job offers'
   task update_accepted_candidates: :environment do
     # Need to constrain this to acceptors from this run only in future
-    Offer.where(accepted: 'yes').each do |offer|
+    Offer.where(accepted: 'yes', created_at: LOTTERY_DATE.midnight..LOTTERY_DATE.end_of_day).each do |offer|
+      offer.applicant.update(lottery_activated: false)
       UpdateAcceptApplicantsJob.perform_later(offer.id)
     end
   end
 
   desc 'Update status of candidates that declined their job offers'
   task update_declined_candidates: :environment do
-    Offer.where(accepted: 'no_bottom_waitlist').each do |offer|
+    Offer.where(accepted: 'no_bottom_waitlist', created_at: LOTTERY_DATE.midnight..LOTTERY_DATE.end_of_day).each do |offer|
+      offer.applicant.update(lottery_activated: false)
       UpdateDeclineApplicantsJob.perform_later(offer.id)
     end
   end
 
   desc 'Update status of candidates that failed to respond to job offers'
   task update_expired_candidates: :environment do
-    Offer.where(accepted: 'waiting').each do |offer|
+    Offer.where(accepted: 'waiting', created_at: LOTTERY_DATE.midnight..LOTTERY_DATE.end_of_day).each do |offer|
       offer.update(accepted: 'expired')
+      offer.applicant.update(lottery_activated: false)
       UpdateExpiredApplicantsJob.perform_later(offer.id)
     end
   end

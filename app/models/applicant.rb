@@ -5,7 +5,7 @@ class Applicant < ApplicationRecord
   has_many :positions, through: :requisitions
   has_many :pickers, through: :picks, source: :position
   has_many :picks, dependent: :destroy
-  has_one :offer
+  has_many :offers
   belongs_to :user
  #  validate :positions_count_within_bounds
   scope :first_timers, -> { joins("LEFT JOIN rehire_sites ON applicants.icims_id = rehire_sites.icims_id WHERE rehire_sites.icims_id IS NULL") }
@@ -13,7 +13,8 @@ class Applicant < ApplicationRecord
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|
-      unless self.offer.present?
+      unless self.offers.where(accepted: 'waiting').present?
+        next if offers.pluck(:position_id).include?(preference.position_id)
         if preference.position.open? || preference.position.prefers?(self)
           # if preference.position.open?
           #   puts 'Giving applicant ' + self.id.to_s + ' open position: ' + preference.position.id.to_s

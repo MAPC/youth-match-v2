@@ -27,14 +27,22 @@ class OffersController < ApplicationController
 
   # GET /offers/accept
   def accept
-    @offer = current_user.applicant.offer
-    @offer.update(accepted: 'yes')
+    @offer = current_user.applicant.offers.order(:created_at).last
+    if current_user.applicant.lottery_activated?
+      @offer.update(accepted: 'yes')
+    else
+      render plain: 'Your offer expired.'
+    end
   end
 
   # GET /offers/decline
   def decline
-    @offer = current_user.applicant.offer
-    @offer.update(accepted: 'no_bottom_waitlist')
+    @offer = current_user.applicant.offers.order(:created_at).last
+    if current_user.applicant.lottery_activated?
+      @offer.update(accepted: 'no_bottom_waitlist')
+    else
+      render plain: 'Your offer expired.'
+    end
   end
 
   # POST /offers
