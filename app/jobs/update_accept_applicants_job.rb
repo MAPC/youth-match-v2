@@ -40,6 +40,7 @@ class UpdateAcceptApplicantsJob < ApplicationJob
     unless response.success?
       Rails.logger.error 'ICIMS Associate Applicant with Position Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
+      retry_job wait: 5.minutes, queue: :default if response.status == 500
     end
   end
 end
