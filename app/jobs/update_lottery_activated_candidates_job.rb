@@ -16,7 +16,7 @@ class UpdateLotteryActivatedCandidatesJob < ApplicationJob
   def update_applicant_to_lottery_activated(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to lottery activated: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/6405/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/applicantworkflows/" + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C38354"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -26,11 +26,12 @@ class UpdateLotteryActivatedCandidatesJob < ApplicationJob
     unless response.success?
       Rails.logger.error 'ICIMS Update Status to Lottery Activated Failed for: ' + applicant.id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
+      retry_job wait: 5.minutes, queue: :default if response.status == 500
     end
   end
 
   def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/6405/#{object}/#{id}",
+    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
                            { fields: fields },
                            authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
     JSON.parse(response.body)
