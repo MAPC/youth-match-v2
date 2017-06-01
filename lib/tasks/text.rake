@@ -51,13 +51,13 @@ namespace :text do
     Offer.where(accepted: 'yes').each do |offer|
       applicant = Applicant.find(offer.applicant_id)
       if applicant.receive_text_messages
-        onboard_reminder2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+        onboard_reminder_2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
       end
     end
     Pick.all.each do |pick|
       applicant = Applicant.find(pick.applicant_id)
       if applicant.receive_text_messages
-        onboard_reminder2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+        onboard_reminder_2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
       end
     end
   end
