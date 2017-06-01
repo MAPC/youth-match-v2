@@ -46,6 +46,22 @@ namespace :text do
     end
   end
 
+  desc 'Exempt and lottery yes reminder about onboarding'
+  task onboarding_reminder: :environment do
+    Offer.where(accepted: 'yes').each do |offer|
+      applicant = Applicant.find(offer.applicant_id)
+      if applicant.receive_text_messages
+        onboard_reminder2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+      end
+    end
+    Pick.all.each do |pick|
+      applicant = Applicant.find(pick.applicant_id)
+      if applicant.receive_text_messages
+        onboard_reminder2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
+      end
+    end
+  end
+
   private
 
   def young_person(phone)
@@ -76,6 +92,17 @@ namespace :text do
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: 'Complete your summer job hiring! Please bring uploaded documents to “GET HIRED” on Saturday, June 3rd, 2017 9am-5pm at YEE: 1483 Tremont St, Boston, MA 02120'
+    rescue Twilio::REST::RequestError => e
+      puts e
+    end
+  end
+
+  def onboard_reminder_2(phone)
+    begin
+    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
+                                      Rails.application.secrets.twilio_auth_token
+    client.messages.create from: '6176168535', to: phone,
+                           body: 'To finish the City of Boston summer job hiring process, you must upload documents bit.ly/summerjobdocs & complete tasks in your account bit.ly/successlinklogin​. You must also bring documents in person to verify at YEE: 1483 Tremont St, Boston, MA 02120​​, weekdays 2-7pm, OR come this weekend Saturday 9-5 or Sunday 12-4​​.'
     rescue Twilio::REST::RequestError => e
       puts e
     end
