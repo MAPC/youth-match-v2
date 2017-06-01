@@ -12,7 +12,7 @@ class UpdateAcceptApplicantsJob < ApplicationJob
   def update_applicant_to_placement_accepted(applicant)
     Rails.logger.info "Updating Applicant iCIMS ID #{applicant.icims_id} to placement accepted: #{applicant.id}"
     response = Faraday.patch do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows/' + applicant.workflow_id.to_s
+      req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/applicantworkflows/" + applicant.workflow_id.to_s
       req.body = %Q{ {"status":{"id":"C36951"}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
@@ -30,7 +30,7 @@ class UpdateAcceptApplicantsJob < ApplicationJob
     position = Position.find(position_id)
     Rails.logger.info "Associate applicant iCIMS ID #{applicant.icims_id} with position: #{applicant.id}"
     response = Faraday.post do |req|
-      req.url 'https://api.icims.com/customers/7383/applicantworkflows'
+      req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/applicantworkflows"
       req.body = %Q{ {"baseprofile":#{position.icims_id},"status":{"id":"C36951"},"associatedprofile":#{applicant.icims_id}} }
       req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
       req.headers["content-type"] = 'application/json'
