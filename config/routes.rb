@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   devise_for :users, :controllers => { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'sessions' }
   get 'travel_time/get'
@@ -31,6 +33,10 @@ Rails.application.routes.draw do
 
   get 'offers/accept'
   get 'offers/decline'
+
+  authenticate :user do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
