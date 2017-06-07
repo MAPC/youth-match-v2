@@ -10,10 +10,10 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
   def associate_onboarding_with_position(applicant_icims_id, onboard_workflow)
     position = get_position(applicant_icims_id)
     if position.blank?
-      Rails.logger.error "No position found for applicant: #{applicant_id}"
+      Rails.logger.error "No position found for applicant: #{applicant_icims_id}"
       return nil
     end
-    Rails.logger.info "Associate applicant iCIMS ID #{applicant_id} with position iCIMS ID: #{position.icims_id}"
+    Rails.logger.info "Associate applicant iCIMS ID #{applicant_icims_id} with position iCIMS ID: #{position.icims_id}"
     response = Faraday.patch do |req|
       req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/onboardworkflows/#{onboard_workflow}"
       req.body = %Q{ { "job":#{position.icims_id} } }
@@ -23,7 +23,7 @@ class AssociateOnboardingWorkflowJob < ApplicationJob
       req.options.open_timeout = 30
     end
     unless response.success?
-      Rails.logger.error 'ICIMS Associate Applicant Onboard Workflow with Position Failed for: ' + applicant_id.to_s
+      Rails.logger.error 'ICIMS Associate Applicant Onboard Workflow with Position Failed for: ' + applicant_icims_id.to_s
       Rails.logger.error response.status
       Rails.logger.error response.body
     end
