@@ -46,14 +46,8 @@ namespace :text do
     end
   end
 
-  desc 'Exempt and lottery yes reminder about onboarding'
+  desc 'Exempt reminder about onboarding'
   task onboarding_reminder: :environment do
-    Offer.where(accepted: 'yes').each do |offer|
-      applicant = Applicant.find(offer.applicant_id)
-      if applicant.receive_text_messages
-        onboard_reminder_2(applicant.mobile_phone) if applicant.mobile_phone && applicant.mobile_phone.length == 10
-      end
-    end
     Pick.all.each do |pick|
       applicant = Applicant.find(pick.applicant_id)
       if applicant.receive_text_messages
