@@ -55,3 +55,7 @@ set :branch, 'develop'
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'
