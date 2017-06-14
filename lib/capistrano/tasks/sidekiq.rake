@@ -1,7 +1,7 @@
 namespace :sidekiq do
   task :quiet do
     on roles(:app) do
-      puts capture("pgrep -f 'sidekiq-youth-match-v2' | xargs kill -TSTP")
+      puts capture("pgrep -f 'sidekiq 5.0.0 youth-match-v2' | xargs kill -TSTP")
     end
   end
   task :restart do
