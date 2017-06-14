@@ -6,7 +6,7 @@ namespace :sidekiq do
   end
   task :restart do
     on roles(:app) do
-      execute :sudo, :initctl, :restart, :workers
+      execute :sudo, :systemctl, :restart, 'sidekiq-youth-match-v2'
     end
   end
 end
