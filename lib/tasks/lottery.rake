@@ -1,6 +1,6 @@
 require 'csv'
 
-LOTTERY_DATE = DateTime.new(2017, 6, 1)
+LOTTERY_DATE = DateTime.new(2017, 6, 13)
 
 namespace :lottery do
   desc 'Build the preference lists'
