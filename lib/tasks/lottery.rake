@@ -90,7 +90,7 @@ namespace :lottery do
 
   desc 'Associate Missing Onboard Workflows with Lottery Positions'
   task associate_missing_lottery_onboard_workflows: :environment do
-    csv_text = File.read(Rails.root.join('lib', 'import', 'missing_onboarding_workflows.csv'))
+    csv_text = File.read(Rails.root.join('lib', 'import', 'missing_onboarding_workflows_2.csv'))
     csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
     csv.each do |row|
       AssociateOnboardingWorkflowJob.perform_later(row['Person : System ID'], row['Onboard Workflow ID'])
