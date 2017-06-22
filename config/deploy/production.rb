@@ -24,6 +24,7 @@ server "54.145.243.75", user: "youth-match-v2", roles: %w{app db web}
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
+set :passenger_restart_command, 'rvmsudo passenger-config restart-app'
 
 # Custom SSH Options
 # ==================
@@ -51,3 +52,6 @@ server "54.145.243.75", user: "youth-match-v2", roles: %w{app db web}
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'
