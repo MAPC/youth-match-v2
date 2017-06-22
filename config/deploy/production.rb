@@ -24,7 +24,7 @@ server "54.145.243.75", user: "youth-match-v2", roles: %w{app db web}
 # For available Capistrano configuration variables see the documentation page.
 # http://capistranorb.com/documentation/getting-started/configuration/
 # Feel free to add new variables to customise your setup.
-set :passenger_restart_command, 'rvmsudo passenger-config restart-app'
+set :passenger_restart_command, 'sudo passenger-config restart-app'
 
 # Custom SSH Options
 # ==================
