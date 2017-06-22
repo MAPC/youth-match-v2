@@ -28,6 +28,7 @@ server "174.129.122.98", user: "youth-match-v2", roles: %w{app db web}
 # Feel free to add new variables to customise your setup.
 
 set :branch, 'develop'
+set :passenger_restart_command, 'rvmsudo passenger-config restart-app'
 
 # Custom SSH Options
 # ==================
@@ -55,3 +56,7 @@ set :branch, 'develop'
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+
+after 'deploy:starting', 'sidekiq:quiet'
+after 'deploy:reverted', 'sidekiq:restart'
+after 'deploy:published', 'sidekiq:restart'
