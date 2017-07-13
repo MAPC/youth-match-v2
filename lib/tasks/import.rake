@@ -413,6 +413,7 @@ namespace :import do
   task update_applicant_locations: :environment do
     applicants = Applicant.where(location: nil)
     applicants.each do |applicant|
+      sleep 1
       applicant.update(location: geocode_address(applicant.address))
     end
   end
