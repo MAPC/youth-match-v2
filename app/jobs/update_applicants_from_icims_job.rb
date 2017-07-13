@@ -63,6 +63,7 @@ class UpdateApplicantsFromIcimsJob < ApplicationJob
     response = Faraday.get('https://search.mapzen.com/v1/search/structured',
                            { api_key: Rails.application.secrets.mapzen_api_key,
                              address: street_address, locality: 'Boston', region: 'MA' })
+    raise 'Hit Mapzen rate limit' if response.headers['X-ApiaxleProxy-Qps-Left'] == 0
     return nil if JSON.parse(response.body)['features'].blank?
     return nil if JSON.parse(response.body)['features'].count == 0
     coordinates = JSON.parse(response.body)['features'][0]['geometry']['coordinates']
