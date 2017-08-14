@@ -1,15 +1,6 @@
 require 'csv'
 
 namespace :import do
-  desc 'Import seed data'
-  task seed: :environment do
-    puts "\nImporting the grid"
-    sh "psql #{Rails.configuration.database_configuration[Rails.env]['database']} < lib/seeds/boxes.sql"
-    puts "\n== Importing grid travel times.
-          WARNING: Importing this 1GB file will take a while. =="
-    sh "psql #{Rails.configuration.database_configuration[Rails.env]['database']} < lib/seeds/travel_times.sql"
-  end
-
   desc 'Import applicant test data'
   task applicant_test_data: :environment do
     csv_text = File.read(Rails.root.join('lib', 'import', 'applicants.csv'))
