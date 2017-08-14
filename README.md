@@ -8,13 +8,12 @@ You will need to setup a .env file with some API keys. We use MapZen for geocodi
 
 To test and prove the lottery works:
 
-1. `rake import:seed` if you did not run `bin/setup`
-2. `rake import:applicant_test_data`
-3. `rake import:position_test_data`
-4. `rake lottery:assign_lottery_numbers` to pick lottery winners
-5. `rake lottery:build_preference_lists` to build preference lists
-6. `rake lottery:match` to match positions to jobs
-7. `rake lottery:print` to print information about the lottery results
+1. `rake import:applicant_test_data`
+2. `rake import:position_test_data`
+3. `rake lottery:assign_lottery_numbers` to pick lottery winners
+4. `rake lottery:build_preference_lists` to build preference lists
+5. `rake lottery:match` to match positions to jobs
+6. `rake lottery:print` to print information about the lottery results
 
 
 ## Contact
