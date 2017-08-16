@@ -66,6 +66,15 @@ namespace :text do
     end
   end
 
+  desc 'Text control group applicants'
+  task control_group: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'yee_non_participants.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each do |row|
+      control_group_message(row['mobile_phone']) if row['mobile_phone']
+    end
+  end
+
   private
 
   def young_person(phone)
@@ -118,6 +127,17 @@ namespace :text do
                                       Rails.application.secrets.twilio_auth_token
     client.messages.create from: '6176168535', to: phone,
                            body: "You’ve been selected by multiple job sites.Please contact the YEE office at 617-635-4202 to pick your job by 5/17 @ 5:00 pm or we'll select your job for you."
+    rescue Twilio::REST::RequestError => e
+      puts e
+    end
+  end
+
+  def control_group_message(phone)
+    begin
+    client = Twilio::REST::Client.new Rails.application.secrets.twilio_account_sid,
+                                      Rails.application.secrets.twilio_auth_token
+    client.messages.create from: '6176168535', to: phone,
+                           body: 'You have been selected by the Mayor’s Office of Workforce Development for a chance to win a free iPad Mini by taking a 10 minute survey about your summer experiences!  You must take the survey by midnight Friday September 1st to be entered to win!  To fill out the survey, follow this link: http://bit.ly/cityofbostonsurvey'
     rescue Twilio::REST::RequestError => e
       puts e
     end
