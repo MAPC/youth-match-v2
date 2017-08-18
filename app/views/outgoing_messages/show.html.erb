@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>To:</strong>
+  <%= @outgoing_message.to %>
+</p>
+
+<p>
+  <strong>Body:</strong>
+  <%= @outgoing_message.body %>
+</p>
+
+<%= link_to 'Edit', edit_outgoing_message_path(@outgoing_message) %> |
+<%= link_to 'Back', outgoing_messages_path %>

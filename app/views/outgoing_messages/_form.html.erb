@@ -1,0 +1,27 @@
+<%= form_for(outgoing_message) do |f| %>
+  <% if outgoing_message.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(outgoing_message.errors.count, "error") %> prohibited this outgoing_message from being saved:</h2>
+
+      <ul>
+      <% outgoing_message.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="ui input">
+    <%= f.label :to, class: 'ui label' %>
+    <%= f.text_field :to %>
+  </div>
+
+  <div class="ui input">
+    <%= f.label :body, class: 'ui label' %>
+    <%= f.text_field :body, size: 160 %>
+  </div>
+
+  <div class="ui input">
+    <%= f.submit 'Send Message', class: 'ui button' %>
+  </div>
+<% end %>
