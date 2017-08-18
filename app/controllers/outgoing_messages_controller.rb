@@ -53,6 +53,6 @@ class OutgoingMessagesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def outgoing_message_params
-      params.require(:outgoing_message).permit(:to, :body)
+      params.require(:outgoing_message).permit(:body, to: [])
     end
 end

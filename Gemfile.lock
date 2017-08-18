@@ -302,6 +302,9 @@ GEM
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (~> 3.3, >= 3.3.3)
+    simple_form (3.5.0)
+      actionpack (> 4, < 5.2)
+      activemodel (> 4, < 5.2)
     slop (3.6.0)
     spring (2.0.1)
       activesupport (>= 4.2)
@@ -384,6 +387,7 @@ DEPENDENCIES
   scout_apm
   semantic-ui-sass!
   sidekiq
+  simple_form
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)
