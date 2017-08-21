@@ -8,7 +8,7 @@ class SendTextWorker
     client.messages.create from: '6176168535', to: to,
                            body: message
     rescue Twilio::REST::RequestError => e
-      Rails.logger.error e
+      Rails.logger.error 'Twilio Error: ' + e
     end
   end
 end
