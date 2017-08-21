@@ -2,13 +2,15 @@ require 'rails_helper'
 
 RSpec.describe "outgoing_messages/index", type: :view do
   before(:each) do
+    user = FactoryGirl.create(:user)
+    sign_in user
     assign(:outgoing_messages, [
       OutgoingMessage.create!(
-        :to => "",
+        :to => ["1231231234"],
         :body => "Body"
       ),
       OutgoingMessage.create!(
-        :to => "",
+        :to => ["9879879876"],
         :body => "Body"
       )
     ])
@@ -16,7 +18,8 @@ RSpec.describe "outgoing_messages/index", type: :view do
 
   it "renders a list of outgoing_messages" do
     render
-    assert_select "tr>td", :text => "".to_s, :count => 2
-    assert_select "tr>td", :text => "Body".to_s, :count => 2
+    expect(rendered).to match(/1231231234/)
+    expect(rendered).to match(/9879879876/)
+    expect(rendered).to match(/Body/)
   end
 end

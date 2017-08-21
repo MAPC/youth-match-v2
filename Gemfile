@@ -47,6 +47,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails'
   gem 'rails-controller-testing'
+  gem 'capybara'
   gem 'factory_girl_rails'
   gem 'dotenv-rails'
   gem 'vcr'

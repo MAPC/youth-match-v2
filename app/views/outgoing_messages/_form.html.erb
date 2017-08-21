@@ -1,4 +1,4 @@
-<%= simple_form_for @outgoing_message, html: { class: "ui form"}, defaults: { wrapper_html: { class: 'field' } } do |f| %>
+<%= simple_form_for outgoing_message, html: { class: "ui form"}, defaults: { wrapper_html: { class: 'field' } } do |f| %>
   <%= f.input :to, as: :array %>
   <%= f.input :body %>
   <%= f.button :submit, 'Send Message!', class: 'ui button' %>

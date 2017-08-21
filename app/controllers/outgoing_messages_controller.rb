@@ -24,6 +24,9 @@ class OutgoingMessagesController < ApplicationController
     @outgoing_message = OutgoingMessage.new(outgoing_message_params)
 
     if @outgoing_message.save
+      @outgoing_message.to.each do |phone_number|
+        SendTextWorker.perform_async(phone_number, @outgoing_message.body)
+      end
       redirect_to @outgoing_message, notice: 'Outgoing message was successfully created.'
     else
       render :new

@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "outgoing_messages/new", type: :view do
   before(:each) do
+    user = FactoryGirl.create(:user)
+    sign_in user
     assign(:outgoing_message, OutgoingMessage.new(
       :to => "",
       :body => "MyString"
@@ -10,12 +12,7 @@ RSpec.describe "outgoing_messages/new", type: :view do
 
   it "renders new outgoing_message form" do
     render
-
-    assert_select "form[action=?][method=?]", outgoing_messages_path, "post" do
-
-      assert_select "input#outgoing_message_to[name=?]", "outgoing_message[to]"
-
-      assert_select "input#outgoing_message_body[name=?]", "outgoing_message[body]"
-    end
+    expect(rendered).to have_selector "textarea[name='outgoing_message[to][]']"
+    expect(rendered).to have_selector "input[name='outgoing_message[body]']"
   end
 end
