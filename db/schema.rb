@@ -9,7 +9,6 @@
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended that you check this file into your version control system.
-
 ActiveRecord::Schema.define(version: 20170831203337) do
 
   # These are extensions that must be enabled in order to support this database
@@ -73,6 +72,13 @@ ActiveRecord::Schema.define(version: 20170831203337) do
     t.datetime "updated_at",   null: false
     t.index ["applicant_id"], name: "index_offers_on_applicant_id", using: :btree
     t.index ["position_id"], name: "index_offers_on_position_id", using: :btree
+  end
+
+  create_table "outgoing_messages", force: :cascade do |t|
+    t.text     "to",         default: [],              array: true
+    t.string   "body"
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "picks", force: :cascade do |t|

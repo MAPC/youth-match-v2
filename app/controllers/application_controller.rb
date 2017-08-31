@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user_from_token!
   before_action :authenticate_from_params!
   before_action :authenticate_user!
+  semantic_breadcrumb :index, :root_path
 
   def authenticate_user_from_token!
     authenticate_with_http_token do |token, options|

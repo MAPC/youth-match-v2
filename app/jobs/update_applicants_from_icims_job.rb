@@ -1,4 +1,5 @@
 class UpdateApplicantsFromIcimsJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(applicant)
@@ -37,13 +38,6 @@ class UpdateApplicantsFromIcimsJob < ApplicationJob
     return nil if applicant['field23872'].blank?
     file_location = applicant['field23872']['file'].gsub!('binary', 'text')
     Faraday.get(file_location, {}, authorization: "Basic #{Rails.application.secrets.icims_authorization_key}").body
-  end
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
   end
 
   def phone(applicant, phone_type)

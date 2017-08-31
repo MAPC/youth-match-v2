@@ -1,4 +1,5 @@
 class UpdateLotteryActivatedFromIcimsJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(applicant)
@@ -16,12 +17,5 @@ class UpdateLotteryActivatedFromIcimsJob < ApplicationJob
   def status_is_lottery_activated?(applicant)
     response = icims_get(object: 'applicantworkflows', id: applicant.workflow_id)
     response['status']['id'] == 'C38354' ? true : false
-  end
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
   end
 end

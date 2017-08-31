@@ -32,6 +32,8 @@ module YouthMatchV2
     config.middleware.use ActionDispatch::Flash
     config.middleware.use Rack::MethodOverride
 
+    config.autoload_paths << "#{Rails.root}/app/jobs/concerns"
+
     config.middleware.insert_before 0, Rack::Cors,
       debug:  DEBUG_CORS,
       logger: (-> { Rails.logger }) do

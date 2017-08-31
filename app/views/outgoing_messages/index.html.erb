@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Outgoing Messages</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>To</th>
+      <th>Body</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @outgoing_messages.each do |outgoing_message| %>
+      <tr>
+        <td><%= outgoing_message.to %></td>
+        <td><%= outgoing_message.body %></td>
+        <td><%= link_to 'Show', outgoing_message %></td>
+        <td><%= link_to 'Edit', edit_outgoing_message_path(outgoing_message) %></td>
+        <td><%= link_to 'Destroy', outgoing_message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Outgoing Message', new_outgoing_message_path %>

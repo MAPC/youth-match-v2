@@ -29,6 +29,8 @@ Rails.application.routes.draw do
 
   resources :applicant_imports, only: [:create]
   resources :update_icims, only: [:create]
+  resources :outgoing_messages
+
   root to: 'offers#index'
 
   get 'offers/accept'

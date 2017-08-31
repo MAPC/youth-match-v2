@@ -98,13 +98,7 @@ namespace :import do
     jobs = response['searchResults'].pluck('id')
     puts 'Importing ' + jobs.count.to_s + 'jobs'
     jobs.each do |job_id|
-      job = icims_get(object: 'jobs', id: job_id)
-      job_address = get_address_from_icims(job['joblocation']['address'])
-      position = Position.new(icims_id: job_id,
-                              title: job['jobtitle'],
-                              # category: ,
-                              location: geocode_address(job_address['addressstreet1']))
-      position.save!
+      ImportPositionsJob.perform_now(job_id)
     end
   end
 

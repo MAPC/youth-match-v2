@@ -1,4 +1,5 @@
 class UpdateOpenPositionsFromIcimsJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(position)
@@ -16,26 +17,5 @@ class UpdateOpenPositionsFromIcimsJob < ApplicationJob
     open_position_count = position_information['numberofpositions'].to_i - response['searchResults'].pluck('id').count
     open_position_count = 0 if open_position_count < 0
     position.update(open_positions: open_position_count)
-  end
-
-  private
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
-  end
-
-  def icims_search(type:, body:)
-    response = Faraday.post do |req|
-      req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/search/" + type
-      req.body = body
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 30
-      req.options.open_timeout = 30
-    end
-    JSON.parse(response.body)
   end
 end
