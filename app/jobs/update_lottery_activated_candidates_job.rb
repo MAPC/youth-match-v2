@@ -1,4 +1,5 @@
 class UpdateLotteryActivatedCandidatesJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(applicant)
@@ -28,12 +29,5 @@ class UpdateLotteryActivatedCandidatesJob < ApplicationJob
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
       retry_job wait: 5.minutes, queue: :default if response.status == 500
     end
-  end
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/7383/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
   end
 end

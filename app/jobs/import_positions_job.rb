@@ -1,4 +1,5 @@
 class ImportPositionsJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(icims_id)
@@ -15,25 +16,6 @@ class ImportPositionsJob < ApplicationJob
   end
 
   private
-
-  def icims_search(type:, body:)
-    response = Faraday.post do |req|
-      req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/search/" + type
-      req.body = body
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 30
-      req.options.open_timeout = 30
-    end
-    JSON.parse(response.body)
-  end
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
-  end
 
   def get_address_from_icims(address_url)
     response = Faraday.get(address_url,

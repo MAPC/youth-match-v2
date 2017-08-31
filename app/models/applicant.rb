@@ -8,6 +8,8 @@ class Applicant < ApplicationRecord
   has_many :offers
   belongs_to :user
  #  validate :positions_count_within_bounds
+ validates :email, presence: true
+ validates :icims_id, presence: true
   scope :first_timers, -> { joins("LEFT JOIN rehire_sites ON applicants.icims_id = rehire_sites.icims_id WHERE rehire_sites.icims_id IS NULL") }
   scope :with_rehire_sites, -> { select('*').joins("LEFT OUTER JOIN rehire_sites ON rehire_sites.icims_id = applicants.icims_id") }
 

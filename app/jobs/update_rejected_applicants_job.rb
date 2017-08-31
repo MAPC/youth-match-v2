@@ -1,4 +1,5 @@
 class UpdateRejectedApplicantsJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(*args)
@@ -10,9 +11,7 @@ class UpdateRejectedApplicantsJob < ApplicationJob
   private
 
   def not_chosen_applicants
-    chosen_applicants = []
-    chosen_applicants << Pick.all.pluck(:applicant_id)
-    chosen_applicants.flatten!
+    chosen_applicants = Pick.all.pluck(:applicant_id)
     not_chosen_applicants = Applicant.all.pluck(:id) - chosen_applicants
     Applicant.find(not_chosen_applicants)
   end
@@ -37,12 +36,5 @@ class UpdateRejectedApplicantsJob < ApplicationJob
       Rails.logger.error 'ICIMS Update Status to New Submission Failed for: ' + applicant.icims_id.to_s
       Rails.logger.error 'Status: ' + response.status.to_s + ' Body: ' + response.body
     end
-  end
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
   end
 end

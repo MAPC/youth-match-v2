@@ -1,15 +1,15 @@
 class ImportApplicantJob < ApplicationJob
+  include IcimsQueryable
   queue_as :default
 
   def perform(icims_id)
-    applicant_id = icims_id
     applicant_information = icims_get(object: 'people',
                                       fields: 'id,firstname,middlename,lastname,email,phones,field50527,addresses,field50534,source,sourcename,field51088,field51089,field51090,field23807,field51062,field23809,field23810,field23849,field23850,field23851,field23852,field29895,field36999,field51069,field51122,field51123,field51124,field51125,field51027,field51034,field51053,field51054,field51055,field23872,field23873',
-                                      id: applicant_id)
+                                      id: icims_id)
     applicant = Applicant.new(first_name: applicant_information['firstname'],
                               last_name: applicant_information['lastname'],
                               email: applicant_information['email'],
-                              icims_id: applicant_id,
+                              icims_id: icims_id,
                               interests: [applicant_information['field51027'],
                                           applicant_information['field51034'],
                                           applicant_information['field51053'],
@@ -44,7 +44,7 @@ class ImportApplicantJob < ApplicationJob
     begin
       applicant.save!
     rescue ActiveRecord::RecordInvalid => exception
-      Rails.logger.error 'IMPORT APPLICANT ERROR - Failed Applicant ID: ' + applicant_id + ' ' + exception.message
+      Rails.logger.error 'IMPORT APPLICANT ERROR - Failed Applicant ID: ' + icims_id + ' ' + exception.message
     end
   end
 
@@ -54,25 +54,6 @@ class ImportApplicantJob < ApplicationJob
     return nil if applicant['field23872'].blank?
     file_location = applicant['field23872']['file'].gsub!('binary', 'text')
     Faraday.get(file_location, {}, authorization: "Basic #{Rails.application.secrets.icims_authorization_key}").body
-  end
-
-  def icims_get(object:, fields: '', id:)
-    response = Faraday.get("https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/#{object}/#{id}",
-                           { fields: fields },
-                           authorization: "Basic #{Rails.application.secrets.icims_authorization_key}")
-    JSON.parse(response.body)
-  end
-
-  def icims_search(type:, body:)
-    response = Faraday.post do |req|
-      req.url "https://api.icims.com/customers/#{Rails.application.secrets.icims_customer_id}/search/" + type
-      req.body = body
-      req.headers['authorization'] = "Basic #{Rails.application.secrets.icims_authorization_key}"
-      req.headers["content-type"] = 'application/json'
-      req.options.timeout = 30
-      req.options.open_timeout = 30
-    end
-    JSON.parse(response.body)
   end
 
   def geocode_applicant_address(applicant)
