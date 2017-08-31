@@ -3,10 +3,10 @@ class ImportApplicantsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    missing_workflows.each do |workflow_id|
+    missing_workflows.each_with_index do |workflow_id, index|
       workflow = icims_get(object: 'applicantworkflows', id: workflow_id)
       applicant_id = workflow['associatedprofile']['id']
-      ImportApplicantJob.perform_later(applicant_id)
+      ImportApplicantJob.perform_in(index, applicant_id)
     end
   end
 
