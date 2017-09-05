@@ -297,6 +297,15 @@ namespace :import do
     end
   end
 
+  desc 'Geocode Applicant Addresses'
+  task geocode_applicants: :environment do
+    Applicant.where(location: nil).each do |applicant|
+      applicant.location = geocode_address(applicant.address)
+      applicant.save
+      sleep 1
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)

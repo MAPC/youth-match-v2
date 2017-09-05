@@ -38,11 +38,19 @@ class BuildPreferenceListsJob < ApplicationJob
   end
 
   def travel_time(applicant, position)
-    TravelTime.find_by(
-      input_id:     applicant.grid_id,
-      target_id:    position.grid_id,
-      travel_mode:  applicant.mode
-    ).time
+    conn = Faraday.new :request => { :params_encoder => Faraday::FlatParamsEncoder }
+    response = conn.get do |req|
+      req.url 'http://prep.mapc.org:8989/route'
+      req.params['point'] = ["#{applicant.location.lat},#{applicant.location.long}", "#{position.location.lat},#{position.location.long}"]
+      req.params['type'] = 'json'
+      req.params['locale'] = 'en-US'
+      req.params['vehicle'] = 'pt'
+      req.params['weighting'] = 'fastest'
+      req.params['elevation'] = 'false'
+      req.params['pt.earliest_departure_time'] = "2017-09-01T09:00:00.000Z"
+    end
+    routes = JSON.parse(response.body)
+    return routes['paths'][0]['time'].to_i / 1000
   rescue NoMethodError
     40.minutes.to_i
   end
