@@ -5,7 +5,11 @@ LOTTERY_DATE = DateTime.new(2017, 6, 23)
 namespace :lottery do
   desc 'Build the preference lists'
   task build_preference_lists: :environment do
-    BuildPreferenceListsJob.perform_later
+    Applicant.all.each do |applicant|
+      Position.all.each do |position|
+        BuildTravelTimePreferenceJob.perform_later(applicant.id, position.id)
+      end
+    end
   end
 
   desc 'Assign lottery numbers'

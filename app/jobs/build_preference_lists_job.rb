@@ -41,17 +41,18 @@ class BuildPreferenceListsJob < ApplicationJob
     conn = Faraday.new :request => { :params_encoder => Faraday::FlatParamsEncoder }
     response = conn.get do |req|
       req.url 'http://prep.mapc.org:8989/route'
-      req.params['point'] = ["#{applicant.location.lat},#{applicant.location.long}", "#{position.location.lat},#{position.location.long}"]
+      req.params['point'] = ["#{applicant.location.lat},#{applicant.location.lon}", "#{position.location.lat},#{position.location.lon}"]
       req.params['type'] = 'json'
       req.params['locale'] = 'en-US'
       req.params['vehicle'] = 'pt'
       req.params['weighting'] = 'fastest'
       req.params['elevation'] = 'false'
-      req.params['pt.earliest_departure_time'] = "2017-09-01T09:00:00.000Z"
+      req.params['pt.earliest_departure_time'] = '2017-09-01T09:00:00.000Z'
     end
     routes = JSON.parse(response.body)
-    return routes['paths'][0]['time'].to_i / 1000
-  rescue NoMethodError
+    routes['paths'][0]['time'].to_i / 1000
+  rescue
+    Rails.logger.error 'Rescued Faraday Error'
     40.minutes.to_i
   end
 
