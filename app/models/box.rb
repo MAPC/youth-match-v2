@@ -9,7 +9,6 @@ class Box < ApplicationRecord
     else
       location = latlong[:location]
     end
-    # Why doesn't #{location} work here and I have to use point: location?
     where('ST_Intersects(geom, :point)', point: location).first
   end
 end
