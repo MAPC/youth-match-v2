@@ -5,7 +5,6 @@ RSpec.describe Box, type: :model do
     pending "No need to test that PostGIS works but we can if we want later"
     box = create(:box)
     # Create a point at MAPC. x = longitude and y = latitude
-    binding.pry
     expect(Box.intersects('-71.061315, 42.355059').g250m_id).to eq(148221)
   end
 end
