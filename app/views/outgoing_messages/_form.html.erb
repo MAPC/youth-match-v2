@@ -1,5 +1,10 @@
 <%= simple_form_for outgoing_message, html: { class: "ui form"}, defaults: { wrapper_html: { class: 'field' } } do |f| %>
-  <%= f.input :to, as: :array %>
+  <% if outgoing_message.new_record? %>
+    To: Applicants Currently Selected for Lottery
+    <%= f.input :to, as: :hidden, input_html: { value: @selected_applicant_mobile_phone_numbers.try(:compact) } %>
+  <% else %>
+    <%= f.input :to, as: :array %>
+  <% end %>
   <%= f.input :body %>
   <%= f.button :submit, 'Send Message!', class: 'ui button' %>
 <% end %>

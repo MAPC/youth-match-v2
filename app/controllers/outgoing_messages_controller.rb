@@ -13,6 +13,7 @@ class OutgoingMessagesController < ApplicationController
   # GET /outgoing_messages/new
   def new
     @outgoing_message = OutgoingMessage.new
+    @selected_applicant_mobile_phone_numbers = Applicant.chosen.pluck(:mobile_phone)
   end
 
   # GET /outgoing_messages/1/edit
