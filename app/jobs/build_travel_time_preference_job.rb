@@ -21,11 +21,11 @@ class BuildTravelTimePreferenceJob < ApplicationJob
   def travel_time(applicant, position)
     conn = Faraday.new :request => { :params_encoder => Faraday::FlatParamsEncoder }
     response = conn.get do |req|
-      req.url 'http://prep.mapc.org:8989/route'
+      req.url 'http://127.0.0.1:8989/route'
       req.params['point'] = ["#{applicant.location.lat},#{applicant.location.lon}", "#{position.location.lat},#{position.location.lon}"]
       req.params['type'] = 'json'
       req.params['locale'] = 'en-US'
-      req.params['vehicle'] = 'foot' # applicant.mode
+      req.params['vehicle'] = 'pt' # applicant.mode
       req.params['weighting'] = 'fastest'
       req.params['elevation'] = 'false'
       req.params['pt.earliest_departure_time'] = '2017-09-01T09:00:00.000Z'
