@@ -10,6 +10,7 @@ export default DS.Model.extend({
   positions: DS.hasMany('position'),
   applicant_interests: DS.attr('json-null-to-empty'),
   allocation_rule: DS.attr('number', { defaultValue: 2 }),
+  account_type: DS.attr('string', { defaultValue: 'youth' }),
   
   picks_count: Ember.computed('positions.@each.picks', function() {
     return this.get('positions').then(positions=> {
