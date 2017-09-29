@@ -1,0 +1,21 @@
+<section class="route login">
+
+  <form {{action 'authenticate' on="submit"}}>
+    <article class="form-item">
+      <label for="email">Email</label>
+      {{input placeholder="Enter Email" type="email" value=email}}
+    </article>
+
+    <article class="form-item">
+      <label for="password">Password</label>
+      {{input placeholder="Enter Password" type="password" value=password}}
+    </article>
+
+    <button type="submit">Login</button>
+
+    {{#if errorMessage}}
+      <p>{{errorMessage}}</p>
+    {{/if}}
+  </form>
+
+</section>
