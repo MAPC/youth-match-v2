@@ -5,6 +5,7 @@ export default Ember.Controller.extend({
 
   session: Ember.inject.service('session'),
 
+
   @action
   authenticate()  {
     const { email, password, session } = this.getProperties('email', 'password', 'session');

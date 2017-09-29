@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :applicant_interests, :allocation_rule
+  attributes :id, :applicant_interests, :allocation_rule, :email, :account_type
 
   def applicant_interests
     object.applicant.nil? ? nil : object.applicant.interests
