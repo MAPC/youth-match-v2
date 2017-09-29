@@ -8,6 +8,14 @@
 if Rails.env.development? || Rails.env.test?
   sh "pg_restore -Fc -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/travel_times.dump" || true
   sh "pg_restore -Fc -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/boxes.dump" || true
+
+  User.create([
+    { email: 'youth@seed.org', password: 'password' }, 
+    { email: 'partner@seed.org', password: 'password', account_type: 'partner' }, 
+    { email: 'admin@seed.org', password: 'password', account_type: 'admin' },
+    { email: 'invalid@seed.org', password: 'password', account_type: 'invalid' },
+  ])
+
 else
   sh "pg_restore -Fc -h #{Rails.configuration.database_configuration[Rails.env]['host']} -U #{Rails.configuration.database_configuration[Rails.env]['username']} -w -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/travel_times.dump" || true
   sh "pg_restore -Fc -h #{Rails.configuration.database_configuration[Rails.env]['host']} -U #{Rails.configuration.database_configuration[Rails.env]['username']} -w -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/boxes.dump" || true

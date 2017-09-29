@@ -10,6 +10,9 @@ class User < ApplicationRecord
   has_many :positions, through: :sites
   has_many :sites
 
+  validates_inclusion_of :account_type, in: ['youth', 'partner', 'admin']
+
+
   def ensure_authentication_token
     if authentication_token.blank?
       self.authentication_token = generate_authentication_token
