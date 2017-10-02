@@ -15,8 +15,7 @@ export default DS.Model.extend({
   picks_count: Ember.computed('positions.@each.picks', function() {
     return this.get('positions').then(positions=> {
       return RSVP.all(positions.invoke('get', 'picks')).then(picks=> {
-        console.log(picks);
-        return picks.mapBy('length').reduce((num, cur, i) => { return num+cur; },0);
+        return picks.mapBy('length').reduce((num, cur) => { return num+cur; },0);
       });
     })
   }),
