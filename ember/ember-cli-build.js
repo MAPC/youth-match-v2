@@ -7,6 +7,15 @@ module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     babel: {
       optional: ['transform-decorators-legacy', 'es7.decorators'] 
+    },
+    fingerprint: {
+      exclude: [
+        'images/layer-2x.png',
+        'images/layers.png',
+        'images/marker-icon-2x.png',
+        'images/marker-icon.png',
+        'images/marker-shadow.png',
+      ] 
     }
   });
 
