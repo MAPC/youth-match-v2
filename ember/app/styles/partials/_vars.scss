@@ -1,5 +1,3 @@
-$color_accent: #ffec40;
-
 $color_bg-light: #fdfeff;
 $color_bg-medium: #f1f2f2;
 
@@ -19,15 +17,9 @@ $color_font-dark: #555;
 $color_state-warn: #f7b045;
 
 
-$font_family-secondary: 'roboto', serif;
-$font_family-primary: 'clone-rounded-latin', sans-serif;
+$font_family-primary: 'Montserrat', sans-serif;
+
 
 $layout_content-width: 75%;
 $layout_content-width--max: 1024px;
-
 $layout_content-width--full: 90%;
-
-$layout_nav-height: 60px;
-$layout_nav-height--small: 48px;
-
-$layout_index-width: $layout_content-width + 10%;
