@@ -1,0 +1,16 @@
+body {
+  color: $color_font-dark;
+  font-family: $font_family-primary;
+
+  background: $color_bg-light;
+}
+
+.content-wrapper {
+  width: $layout_content-width;
+  max-width: $layout_content-width--max;
+  margin: 0 auto;
+
+  @include media('medium') {
+    width: $layout_content-width--full;
+  }
+}

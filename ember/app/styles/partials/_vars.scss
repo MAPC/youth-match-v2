@@ -1,0 +1,33 @@
+$color_accent: #ffec40;
+
+$color_bg-light: #fdfeff;
+$color_bg-medium: #f1f2f2;
+
+$color_brand-primary: #1D74F2;
+$color_brand-secondary: #13e3bc;
+$color_brand-tertiary: #9176e3;
+
+$color_brand-primary--light: lighten($color_brand-primary, 10);
+$color_brand-primary--dark: darken($color_brand-primary, 25);
+
+$color_brand-primary--hover: mix(black, $color_brand-primary, 10);
+
+$color_font-light: #f1f2f2;
+$color_font-medium: #ccc;
+$color_font-dark: #555;
+
+$color_state-warn: #f7b045;
+
+
+$font_family-secondary: 'roboto', serif;
+$font_family-primary: 'clone-rounded-latin', sans-serif;
+
+$layout_content-width: 75%;
+$layout_content-width--max: 1024px;
+
+$layout_content-width--full: 90%;
+
+$layout_nav-height: 60px;
+$layout_nav-height--small: 48px;
+
+$layout_index-width: $layout_content-width + 10%;
