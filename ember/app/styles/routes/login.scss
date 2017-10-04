@@ -1,6 +1,66 @@
 .route.login {
+  min-height: 100vh;
+
+
+  text-align: center;
+
+  background: #F4A558;
+
 
   form {
+    @extend ._vertical-center;
+    top: 35%;
+
+    .boston-logo {
+      $size: 70px;
+
+      top: $size / 2.5;
+      z-index: 5;
+
+      width: $size; 
+      padding: ($size / 6) ($size / 3.6);
+      margin: 0 auto;
+
+      background: $color_bg-dark;
+    }
+
+    .form-content {
+      width: 520px;
+      margin: 0 auto;
+      padding: 45px 35px 0px;
+
+      background: $color_bg-light;
+
+      border: 5px solid $color_brand-red;
+
+      h2 {
+        margin: 15px auto 20px;
+        font-size: 32px;
+      }
+
+      input {
+        width: 100%;  
+        margin: 10px 0;
+        padding: 10px 25px 10px 60px;
+
+        font-size: 20px;
+        font-weight: 300;
+
+        border: 1px solid $color_bg-medium;
+        outline: none; 
+
+        &::-webkit-input-placeholder, 
+        &:-moz-placeholder,
+        &::-moz-placeholder,
+        &:-ms-input-placeholder {
+          color: $color_font-medium; 
+        }
+      }
+
+      button {
+        margin: 25px auto 40px; 
+      }
+    }
     
   }
 

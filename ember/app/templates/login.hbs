@@ -1,21 +1,28 @@
 <section class="route login">
 
   <form {{action 'authenticate' on="submit"}}>
-    <article class="form-item">
-      <label for="email">Email</label>
-      {{input placeholder="Enter Email" type="email" value=email}}
-    </article>
+    <img src="assets/images/boston-logo.svg" class="boston-logo">
 
-    <article class="form-item">
-      <label for="password">Password</label>
-      {{input placeholder="Enter Password" type="password" value=password}}
-    </article>
+    <div class="form-content">
 
-    <button type="submit">Login</button>
+      <h2>LOGIN</h2>
 
-    {{#if errorMessage}}
-      <p>{{errorMessage}}</p>
-    {{/if}}
+      <article class="form-item">
+        {{input placeholder="Username" type="email" value=email}}
+      </article>
+
+      <article class="form-item">
+        {{input placeholder="Password" type="password" value=password}}
+      </article>
+
+      <button type="submit">LOG IN</button>
+    </div><!--/ .form-content -->
+
+    <div class="form-error">
+      {{#if errorMessage}} 
+        <p>{{errorMessage}}</p>
+      {{/if}}
+    </div>
   </form>
 
 </section>
