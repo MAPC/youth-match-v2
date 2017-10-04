@@ -1,10 +1,22 @@
 .route.dashboard {
 
   main {
-    left: $layout_nav-width;
+    margin-left: $layout_nav-width - 1px;
 
-    width: calc(100% - 200px);
-    height: 100%; 
+    width: calc(100% - $layout_nav-width);
+    min-height: 100vh; 
+    padding: 2vh;
+
+    background: $color_brand-blue;
+    background: linear-gradient(to bottom, $color_brand-blue 0%, mix($color_brand-blue, $color_brand-red, 45) 80%, $color_brand-red 100%);
+  }
+
+  .main__content {
+    padding: 25px;
+    width: 100%;
+    min-height: 96vh;
+
+    background: $color_bg-light; 
   }
 
 }

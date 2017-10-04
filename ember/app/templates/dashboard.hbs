@@ -1,19 +1,33 @@
 <section class="route dashboard">
 
   <nav class="dashboard__nav">
+
+    <header>
+      <img src="/assets/images/boston-logo.svg" class="boston-logo">
+      <h1>SUCCESSLINK</h1>
+    </header>
+
     {{nav-link-list user=model.user}}
 
-    {{#if session.isAuthenticated}}
-      <a {{action 'invalidateSession'}}>Logout</a>
-    {{else}}
-      {{#unless isLoginRoute}}
-        {{link-to 'Login' 'login'}}
-      {{/unless}}
-    {{/if}}
+    <div class="session-handlers">
+      {{#if session.isAuthenticated}}
+        <button {{action 'invalidateSession'}}>Logout</button>
+      {{else}}
+        {{#unless isLoginRoute}}
+          {{link-to 'Login' 'login'}}
+        {{/unless}}
+      {{/if}}
+    </div>
   </nav>
 
   <main>
-    {{outlet}}
+    <div class="main__content">
+      <div class="identifier">
+        {{model.user.applicant.first_name}}
+      </div>
+
+      {{outlet}}
+    </div>
   </main>
 
 </section>

@@ -7,6 +7,39 @@ nav {
   height: 100vh;
 
   background: $color_bg-light;
+  border-right: 1px solid $color_bg-medium--accent;
 
-  border-right: 1px solid $color_bg-medium;
+
+  &.dashboard__nav {
+
+    header {
+      & > * { display: inline-block; }
+
+      h1 {
+        top: -20px;
+        width: ($layout_nav-width - $layout_logo-size) - 15px;
+        margin: 0;
+
+        text-align: center;
+        font-size: 28px; 
+      }
+    }
+
+    .session-handlers {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      text-align: center;
+
+      & > * { 
+        display: block; 
+
+        width: 100%;
+        padding: 16px;
+      }
+    }
+     
+  }
 }

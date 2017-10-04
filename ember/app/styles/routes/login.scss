@@ -3,62 +3,56 @@
 
   text-align: center;
 
-  background: #F4A558;
+  background: $color_bg-medium;
 
 
   form {
     @extend ._vertical-center;
     top: 35%;
 
-    .boston-logo {
-      $size: 70px;
-
-      top: $size / 2.5;
-      z-index: 5;
-
-      width: $size; 
-      padding: ($size / 6) ($size / 3.6);
-      margin: 0 auto;
-
-      background: $color_bg-dark;
-    }
+    .boston-logo { top: $layout_logo-size / 2.5; }
 
     .form-content {
-      width: 520px;
+      $border-width: 4px;
+
+      width: 450px;
       margin: 0 auto;
-      padding: 45px 35px 0px;
+      padding: 40px 30px 0px;
 
       background: $color_bg-light;
 
-      border: 5px solid $color_brand-red;
+      border: $border-width;
+      border-style: solid;
+      border-image: linear-gradient(to bottom, $color_brand-yellow 0%, $color_brand-red 100%) 1 100%;
+
+      &:after, &:before {
+        content: '';
+        position: absolute;
+        left: -$border-width;
+        z-index: 1;
+        display: block;
+
+        width: calc(100% + 8px);
+      }
+
+      &:before {
+        top: -$border-width; 
+        border-top: $border-width solid $color_brand-yellow;
+      }
+
+      &:after {
+        bottom: -$border-width;
+        border-bottom: $border-width solid $color_brand-red; 
+      }
 
       h2 {
-        margin: 15px auto 20px;
-        font-size: 32px;
+        margin: 10px auto 16px;
+        font-size: 28px;
       }
 
-      input {
-        width: 100%;  
-        margin: 10px 0;
-        padding: 12px 25px 12px 60px;
+      input { width: 100%; }
 
-        font-size: 20px;
-        font-weight: 300;
-
-        border: 1px solid $color_bg-medium;
-        outline: none; 
-
-        &::-webkit-input-placeholder, 
-        &:-moz-placeholder,
-        &::-moz-placeholder,
-        &:-ms-input-placeholder {
-          color: $color_font-medium; 
-        }
-      }
-
-      button {
-        margin: 25px auto 40px; 
-      }
+      button { margin: 20px auto 35px; }
     }
     
   }

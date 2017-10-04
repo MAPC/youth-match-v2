@@ -1,12 +1,18 @@
 $color_bg-light: #FFFFFF;
-$color_bg-medium: #95989A;
+$color_bg-medium: #F2F2F2;
+$color_bg-medium--dark: #95989A;
 $color_bg-dark: #091F2F;
+
+$color_bg-medium--active: darken($color_bg-medium, 25);
+$color_bg-medium--accent: darken($color_bg-medium, 3);
 
 $color_brand-red: #FB4D42;
 $color_brand-blue: #288BE4;
 $color_brand-yellow: #E8EF37;
 
-$color_font-light: #f1f2f2;
+$color_brand-blue--active: darken($color_brand-blue, 8);
+
+$color_font-light: #FFFFFF;
 $color_font-medium: #95989A;
 $color_font-dark: #091F2F;
 
@@ -16,8 +22,7 @@ $color_state-warn: #f7b045;
 $font_family-primary: 'Montserrat', sans-serif;
 
 
-$layout_nav-width: 370px;
+$layout_logo-size: 60px;
 
-$layout_content-width: 75%;
-$layout_content-width--max: 1024px;
-$layout_content-width--full: 90%;
+$layout_nav-width: 320px;
+$layout_nav-width--x-large: 370px;

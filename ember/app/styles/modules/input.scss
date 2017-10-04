@@ -1,0 +1,23 @@
+input {
+  margin: 9px 0;
+  padding: 11px 20px;
+
+  font-size: 16px;
+  font-weight: 300;
+
+  border: 1px solid $color_bg-medium--accent;
+  outline: none; 
+  transition: .2s border-color;
+
+  &::-webkit-input-placeholder, 
+  &:-moz-placeholder,
+  &::-moz-placeholder,
+  &:-ms-input-placeholder {
+    color: $color_font-medium; 
+  }
+
+  &:focus {
+    border-color: $color_bg-medium--active; 
+    transition: .2s border-color;
+  }
+}

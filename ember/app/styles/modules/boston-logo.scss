@@ -1,0 +1,9 @@
+img.boston-logo {
+  z-index: 5;
+
+  width: $layout_logo-size; 
+  padding: ($layout_logo-size / 6) ($layout_logo-size / 3.6);
+  margin: 0 auto;
+
+  background: $color_bg-dark;
+}
