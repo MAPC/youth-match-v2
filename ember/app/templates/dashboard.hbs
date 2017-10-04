@@ -1,7 +1,7 @@
 <section class="route dashboard">
 
   <nav class="dashboard__nav">
-    {{nav-link-list}}
+    {{nav-link-list user=model.user}}
 
     {{#if session.isAuthenticated}}
       <a {{action 'invalidateSession'}}>Logout</a>

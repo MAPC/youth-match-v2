@@ -12,7 +12,7 @@ if Rails.env.development? || Rails.env.test?
   User.create([
     { email: 'youth@seed.org', password: 'password' }, 
     { email: 'partner@seed.org', password: 'password', account_type: 'partner' }, 
-    { email: 'admin@seed.org', password: 'password', account_type: 'admin' },
+    { email: 'staff@seed.org', password: 'password', account_type: 'staff' },
     { email: 'invalid@seed.org', password: 'password', account_type: 'invalid' },
   ])
 

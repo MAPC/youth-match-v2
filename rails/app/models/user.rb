@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_many :positions, through: :sites
   has_many :sites
 
-  validates_inclusion_of :account_type, in: ['youth', 'partner', 'admin']
+  validates_inclusion_of :account_type, in: ['youth', 'partner', 'staff']
 
 
   def ensure_authentication_token

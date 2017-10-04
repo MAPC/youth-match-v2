@@ -13,7 +13,7 @@ Router.map(function() {
       this.route('job');
     });
     this.route('partner');
-    this.route('admin');
+    this.route('staff');
   });
 });
 
