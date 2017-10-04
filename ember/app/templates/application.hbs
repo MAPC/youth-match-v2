@@ -1,19 +1,5 @@
 <section class="route application">
 
-  <nav class="application__nav">
-    {{nav-link-list}}
-
-    {{#if session.isAuthenticated}}
-      <a {{action 'invalidateSession'}}>Logout</a>
-    {{else}}
-      {{#unless isLoginRoute}}
-        {{link-to 'Login' 'login'}}
-      {{/unless}}
-    {{/if}}
-  </nav>
-
-  <main>
-    {{outlet}}
-  </main>
+  {{outlet}}
 
 </section>

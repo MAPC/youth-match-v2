@@ -24,7 +24,7 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.jobs.[]', 'model.jobs.@each.isSelected')
+  @computed('model.positions.[]', 'model.positions.@each.isSelected')
   clusters(positions) {
      const grouped = nest().key(row => row.get('site_name'))
                            .entries(positions.toArray())
@@ -48,7 +48,7 @@ export default Ember.Controller.extend({
   @action
   linkTo(model, event) {
     event.target.bringToFront();
-    this.transitionToRoute('youth.job', model.id);
+    this.transitionToRoute('dashboard.youth.job', model.id);
   },
 
 
@@ -68,7 +68,7 @@ export default Ember.Controller.extend({
 
   @action
   linkToApplicant(job) {
-    this.transitionToRoute('youth.job', job.id);
+    this.transitionToRoute('dashboard.youth.job', job.id);
   },
 
 

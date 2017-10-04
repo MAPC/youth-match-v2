@@ -3,7 +3,10 @@ nav {
   left: 0;
   top: 0;
 
+  width: $layout_nav-width;
   height: 100vh;
 
   background: $color_bg-light;
+
+  border-right: 1px solid $color_bg-medium;
 }
