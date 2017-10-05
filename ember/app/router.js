@@ -10,7 +10,11 @@ Router.map(function() {
   this.route('login');
   this.route('dashboard', function() {
     this.route('youth', function() {
-      this.route('job');
+      this.route('profile');
+
+      this.route('jobs', function() {
+        this.route('job');
+      });
     });
     this.route('partner');
     this.route('staff');

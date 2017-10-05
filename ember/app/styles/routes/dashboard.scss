@@ -12,11 +12,18 @@
   }
 
   .main__content {
-    padding: 25px;
+    padding: 45px 60px;
     width: 100%;
     min-height: 96vh;
 
     background: $color_bg-light; 
   }
 
+  h2 {
+    font-size: 30px;
+    font-weight: 600;
+    color: $color_brand-red; 
+  }
+
+  h3 { font-size: 16px; }
 }

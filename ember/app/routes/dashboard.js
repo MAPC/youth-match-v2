@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import { action } from 'ember-decorators/object';
 
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, {
@@ -17,8 +18,11 @@ export default Ember.Route.extend(AuthenticatedRouteMixin, {
 
   afterModel(user) {
     const accountType = user.get('account_type');
+    const pathSegments = window.location.pathname.split('/');
 
-    this.transitionTo(`dashboard.${accountType}`);
-  }
+    if (pathSegments[1] !== 'dashboard' && pathSegments[2] !== accountType) {
+      this.transitionTo(`dashboard.${accountType}`);
+    }
+  },
 
 });

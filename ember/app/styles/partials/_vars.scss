@@ -10,6 +10,7 @@ $color_brand-red: #FB4D42;
 $color_brand-blue: #288BE4;
 $color_brand-yellow: #E8EF37;
 
+$color_brand-red--transparent: rgba($color_brand-red, .8);
 $color_brand-blue--active: darken($color_brand-blue, 8);
 
 $color_font-light: #FFFFFF;

@@ -1,0 +1,57 @@
+.component.nav-link-list {
+  $speed: .1s;
+
+  width: 100%;
+
+
+  a {
+    display: block;
+
+    width: 100%;
+
+    text-align: center;
+
+    background: $color_bg-light;
+    transition: background $speed;
+
+    &.active, &:hover {
+      background: $color_brand-red; 
+      transition: background $speed;
+
+      span {   
+        color: $color_bg-light; 
+        transition: color $speed, border-color $speed;
+      }
+
+      span, & + a span { 
+        border-color: rgba($color_brand-red, 0); 
+        transition: border-color $speed, color $speed;
+      }
+    } 
+
+    &:first-of-type span { border-top: none; }
+
+    &:not(.active):hover {
+      background: $color_brand-red--transparent;
+    }
+
+  }
+
+  span {
+    right: 2.5%;
+    display: inline-block;
+
+    width: 85%; 
+    padding: 15px 15px;
+    margin: 0 auto;
+    
+    color: $color_font-dark;
+    text-align: left;
+    font-weight: 600;
+    font-size: 20px;
+
+    border-top: 1px solid $color_bg-dark;
+
+    transition: color $speed, border-color $speed;
+  }
+}

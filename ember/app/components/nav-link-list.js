@@ -5,19 +5,19 @@ export default Ember.Component.extend({
 
   @computed('user')
   isYouth(user) {
-    return user.get('account_type').toLowerCase() === 'youth';
+    return true;//user.get('account_type').toLowerCase() === 'youth';
   },
 
 
   @computed('user')
   isStaff(user) {
-    return user.get('account_type').toLowerCase() === 'staff';
+    return false;//user.get('account_type').toLowerCase() === 'staff';
   },
 
 
   @computed('user')
   isPartner(user) {
-    return user.get('account_type').toLowerCase() === 'partner';
+    return false;//user.get('account_type').toLowerCase() === 'partner';
   },
 
 

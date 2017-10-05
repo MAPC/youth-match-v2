@@ -1,1 +1,18 @@
-{{yield}}
+<ul class="component nav-link-list">
+
+  {{#if isYouth}}
+    {{#link-to 'dashboard.youth.jobs'}}
+      <span>VIEW AVAILABLE JOBS</span>
+    {{/link-to}}
+    {{#link-to 'dashboard.youth.profile'}} 
+      <span>EDIT PROFILE</span>
+    {{/link-to}}
+  {{/if}}
+
+  {{#if isStaff}}
+  {{/if}}
+
+  {{#if isPartner}}
+  {{/if}}
+
+</ul>

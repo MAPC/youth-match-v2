@@ -1,11 +1,16 @@
 import Ember from 'ember';
-import { action } from 'ember-decorators/object';
+import { computed, action } from 'ember-decorators/object';
 
 
 export default Ember.Controller.extend({
 
   session: Ember.inject.service('session'),
 
+  @computed('model')
+  user(model) {
+    console.log(model);
+    return model;
+  },
 
   @action
   invalidateSession()  {
