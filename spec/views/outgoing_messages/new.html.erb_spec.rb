@@ -12,7 +12,6 @@ RSpec.describe "outgoing_messages/new", type: :view do
 
   it "renders new outgoing_message form" do
     render
-    expect(rendered).to have_selector "textarea[name='outgoing_message[to][]']"
     expect(rendered).to have_selector "input[name='outgoing_message[body]']"
   end
 end

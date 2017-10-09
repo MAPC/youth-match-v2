@@ -1,0 +1,26 @@
+<h1>Applicants</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Applicant</th>
+      <th>Position</th>
+      <th>Accepted</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @applicants.each do |applicant| %>
+      <tr>
+        <td><%= applicant.first_name %></td>
+        <td><%= applicant.last_name %></td>
+        <td><%= applicant.email %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to "Sign in with Google", user_google_oauth2_omniauth_authorize_path %>
