@@ -1,0 +1,22 @@
+<div class="component jobs-grid">
+
+  <ul>
+    {{#each model as |position|}}
+      <li>
+        {{#link-to 'dashboard.youth.jobs.job' position.id}}
+          <h6>{{position.category}}</h6>
+
+          <div class="job-description">
+            <h4>{{position.site_name}}</h4>
+            <h5>{{position.title}}</h5>
+
+            <p>
+              {{truncate-text position.duties_responsbilities limit=100}}
+            </p>
+          </div>
+        {{/link-to}}
+      </li>
+    {{/each}}
+  </ul>
+
+</div>

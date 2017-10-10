@@ -7,6 +7,7 @@ import { computed, action } from 'ember-decorators/object';
 export default Ember.Controller.extend({
 
   mapState: Ember.inject.service(),
+  jobsIndexController: Ember.inject.controller('dashboard.youth.jobs.index'),
 
 
   /**
@@ -14,37 +15,22 @@ export default Ember.Controller.extend({
    */
 
   fields: ['site_name', 'title', 'open_positions', 'category'],
-  queryParams: ['min','max'],
-  min: 0,
-  max: 9,
-  perPage: 9,
   selectedInterestCategories: null,
   resource: 'dashboard.youth.jobs',
 
 
-  @computed('min','max','perPage')
-  page(min,max,perPage) {
-    return Math.round(max/perPage);
-  },
-
 
   @computed('model.positions')
   interestCategories(positions) {
-    return flatten(positions.mapBy('category')).uniq();
+    return flatten(positions.mapBy('category')).uniq().sort();
   },
 
 
   @computed('model', 'selectedInterestCategories.[]')
   filteredModel(model,selectedInterestCategories) {
-    return model.jobs.filter((el) => {
+    return model.positions.filter((el) => {
       return selectedInterestCategories.includes(el.get('category'));
     });
-  },
-
-
-  @computed('filteredModel','min','max','perPage')
-  sortedModel(filteredModel,min,max) {
-    return filteredModel.sortBy('site_name').slice(min,max);
   },
 
 
@@ -104,58 +90,22 @@ export default Ember.Controller.extend({
 
 
   @action
-  linkToApplicant(job) {
-    this.transitionToRoute('dashboard.youth.jobs.job', job.id);
+  linkToApplicant(position) {
+    this.transitionToRoute('dashboard.youth.jobs.job', position.id);
   },
 
-
-  @action 
-  previous() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-    this.set('transition', 'toDown');
-    this.set('min', min - perPage);
-    this.set('max', max - perPage);
-  },
-
-
-  @action
-  next() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-    this.set('transition', 'toUp');
-    this.set('min', min + perPage);
-    this.set('max', max + perPage);
-  },
-
-
-  @action
-  first() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-    this.set('transition', 'toDown');
-    this.set('min', 0);
-    this.set('max', perPage);
-  },
-
-
-  @action
-  last() {
-    let { filteredModel, perPage } = this.getProperties('filteredModel','perPage');
-    let count = filteredModel.get('length');
-    this.set('transition', 'toUp');
-    this.set('min', count - perPage);
-    this.set('max', count);
-  },
 
 
   @action
   addInterest(interest) {
-    this.send('first');
+    this.get('jobsIndexController').send('first');
     this.get('selectedInterestCategories').pushObject(interest);
   },
 
 
   @action
   removeInterest(interest) {
-    this.send('first');
+    this.get('jobsIndexController').send('first');
     this.get('selectedInterestCategories').removeObject(interest);
   },
   

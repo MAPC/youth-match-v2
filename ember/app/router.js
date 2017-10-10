@@ -13,7 +13,7 @@ Router.map(function() {
       this.route('profile');
 
       this.route('jobs', function() {
-        this.route('job');
+        this.route('job', { path: '/:position_id' });
       });
     });
     this.route('partner');

@@ -1,2 +1,75 @@
 .route.jobs-index {
+
+  .no-results {
+    margin-top: 50px;
+    margin-left: 4%;
+
+    color: $color_font-medium; 
+    font-size: 13px;
+    font-weight: 100;
+  }
+
+  .pagination {
+    $size: 20px;
+
+    position: absolute;
+    top: -($size * 2);
+    right: 0;
+
+    button {
+      width: $size;
+      height: $size;
+      padding: 0;
+
+      text-align: center;
+
+      &.previous {
+        &:before, &:after {
+          @extend ._arrow;
+
+          right: $size / 2.5;
+
+          border-right: ($size / 3) solid $color_font-light;
+          border-top: ($size / 4) solid transparent;
+          border-bottom: ($size / 4) solid transparent;
+        } 
+
+        &.to-begin {
+          &:before { right: $size / 2; }
+          &:after { right: $size / 5; } 
+        }
+      }
+
+      &.next {
+        &:before, &:after {
+          @extend ._arrow;
+
+          left: $size / 2.5;
+
+          border-left: ($size / 3) solid $color_font-light;
+          border-top: ($size / 4) solid transparent;
+          border-bottom: ($size / 4) solid transparent;
+        }
+
+        &.to-end {
+          &:before { left: $size / 2; }
+          &:after { left: $size / 5; }
+        }
+      }
+
+      &.disabled {
+        cursor: default; 
+
+        background: $color_bg-medium;
+      }
+
+    }
+
+    span {
+      top: -4px; 
+
+      margin: 0 10px;
+    }
+  }
+
 }

@@ -1,3 +1,25 @@
 <section class="route jobs-index">
 
+    <h3>JOB RESULTS</h3>
+
+    <div class="job-results-list">
+      {{#if filteredModel.length}}
+        {{#if (gt filteredModel.length perPage)}}
+          <div class="pagination">
+            <button class="previous to-begin {{unless min 'disabled'}}" onclick={{if min (action 'first')}}></button>
+            <button class="previous {{unless min 'disabled'}}" onclick={{if min (action 'previous')}}></button>
+            <span>{{page}}</span>
+            <button class="next {{if (gte max filteredModel.length) 'disabled'}}" onclick={{if (lt max filteredModel.length) (action 'next')}}></button>
+            <button class="next to-end {{if (gte max filteredModel.length) 'disabled'}}" onclick={{if (lt max filteredModel.length) (action 'last')}}></button>
+          </div>
+        {{/if}}
+
+        {{jobs-grid model=sortedModel}}
+      {{else}}
+        <div class="no-results">
+          No Results - Select the categories above for more options
+        </div>
+      {{/if}}
+    </div>
+
 </section>

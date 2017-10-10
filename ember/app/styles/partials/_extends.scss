@@ -14,3 +14,16 @@
   left: 0;
   right: 0;
 }
+
+
+._arrow {
+  @extend ._vertical-center;
+
+  content: '';
+  z-index: 5; 
+  display: block;
+
+  margin: 0 auto;
+  height: 0;
+  top: 50%;
+}
