@@ -39,18 +39,18 @@
     "ember-data": "~2.15.0",
     "ember-decorators": "^1.2.2",
     "ember-export-application-global": "^2.0.0",
+    "ember-leaflet": "^3.0.12",
     "ember-load-initializers": "^1.0.0",
     "ember-resolver": "^4.0.0",
     "ember-router-scroll": "^0.3.1",
     "ember-simple-auth": "^1.4.0",
     "ember-source": "~2.15.0",
     "ember-welcome-page": "^3.0.0",
+    "leaflet": "^1.2.0",
     "loader.js": "^4.2.3"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"
   },
-  "dependencies": {
-    "leaflet": "^1.2.0"
-  }
+  "dependencies": {}
 }

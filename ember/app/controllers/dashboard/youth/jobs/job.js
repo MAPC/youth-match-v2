@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import RSVP from 'rsvp';
 import { computed, action } from 'ember-decorators/object';
 
 

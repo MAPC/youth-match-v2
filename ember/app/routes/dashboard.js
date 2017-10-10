@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
-import { action } from 'ember-decorators/object';
 
 
 export default Ember.Route.extend(AuthenticatedRouteMixin, {

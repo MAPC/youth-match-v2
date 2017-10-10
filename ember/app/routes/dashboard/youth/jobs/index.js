@@ -7,7 +7,7 @@ export default Ember.Route.extend(RouterScroll, {
     this._super(controller, model);
 
     const userInterestCategories = model.user.get('applicant_interests');
-    const jobsController = this.controllerFor('dashboard.youth.jobs.index');
+    const jobsController = this.controllerFor('dashboard.youth.jobs');
 
     jobsController.set('selectedInterestCategories', userInterestCategories);
   }

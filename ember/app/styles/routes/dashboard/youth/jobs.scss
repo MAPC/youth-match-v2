@@ -2,4 +2,64 @@
 
   h2 { margin-bottom: -20px; }
 
+  .jobs-overview {
+    display: flex; 
+
+    margin-bottom: 35px;
+
+    .content-column {
+      flex: 1 0 55%;
+
+      &:first-of-type {
+        flex: 1 0 40%;
+
+        padding-top: 30px;
+        margin-right: 5%;
+      }
+    }
+
+    p {
+      margin: 10px auto;
+      padding-bottom: 10px;
+
+      font-size: 14px; 
+
+      border-bottom: 1px solid $color_brand-blue;
+    }
+  }
+
+  .job-categories {
+    margin-top: 45px; 
+
+    li {
+      display: inline-block;
+
+      padding: 6px 10px;
+      margin: 4px;
+
+      font-size: 11px;
+
+      cursor: pointer;
+      background: $color_bg-medium;
+      transition: background .15s;
+
+      &:hover {
+        background: $color_bg-medium--accent;
+        transition: background .15s;
+      }
+
+      &.is-interested {
+        color: $color_font-light;
+
+        background: $color_brand-blue;
+
+        &:hover {
+          background: $color_brand-blue--active;
+        }
+      }
+    }
+  }
+
+
+
 }
