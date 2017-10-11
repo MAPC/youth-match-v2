@@ -317,6 +317,14 @@ namespace :import do
     end
   end
 
+  desc 'Import Seed Data'
+  task development_seed_data: :environment do
+    10.times do |index|
+      FactoryGirl.create(:user_with_applicant)
+      FactoryGirl.create(:position)
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
@@ -420,12 +428,12 @@ namespace :import do
     remote_workflows - local_workflows
   end
 
-  def merged_record_icims_id(applicant_information)
-    if applicant_information.first_name.match?(/Merged with (\d+)/)
-      applicant_information.first_name.match(/Merged with (\d+)/).captures[0]
-    end
-    return nil
-  end
+  # def merged_record_icims_id(applicant_information)
+  #   if applicant_information.first_name.match?(/Merged with (\d+)/)
+  #     applicant_information.first_name.match(/Merged with (\d+)/).captures[0]
+  #   end
+  #   return nil
+  # end
 
   def merge_record(old_record_id, merged_record_icims_id)
     # move the associations from the old record to the new record. Run this after importing latest data.
