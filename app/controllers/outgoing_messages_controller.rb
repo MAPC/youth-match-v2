@@ -4,10 +4,18 @@ class OutgoingMessagesController < ApplicationController
   # GET /outgoing_messages
   def index
     @outgoing_messages = OutgoingMessage.all
+    respond_to do |format|
+      format.jsonapi { render jsonapi: @outgoing_messages }
+      format.html
+    end
   end
 
   # GET /outgoing_messages/1
   def show
+    respond_to do |format|
+      format.jsonapi { render jsonapi: @outgoing_message }
+      format.html
+    end
   end
 
   # GET /outgoing_messages/new
@@ -16,37 +24,21 @@ class OutgoingMessagesController < ApplicationController
     @selected_applicant_mobile_phone_numbers = Applicant.chosen.pluck(:mobile_phone)
   end
 
-  # GET /outgoing_messages/1/edit
-  def edit
-  end
-
   # POST /outgoing_messages
   def create
     @outgoing_message = OutgoingMessage.new(outgoing_message_params)
 
     if @outgoing_message.save
       @outgoing_message.to.each do |phone_number|
-        SendTextWorker.perform_async(phone_number, @outgoing_message.body)
+        SendTextWorker.perform_later(phone_number, @outgoing_message.body)
       end
-      redirect_to @outgoing_message, notice: 'Outgoing message was successfully created.'
+      respond_to do |format|
+        format.jsonapi { render jsonapi: 'Outgoing message was successfully created.' }
+        format.html { redirect_to @outgoing_message, notice: 'Outgoing message was successfully created.' }
+      end
     else
       render :new
     end
-  end
-
-  # PATCH/PUT /outgoing_messages/1
-  def update
-    if @outgoing_message.update(outgoing_message_params)
-      redirect_to @outgoing_message, notice: 'Outgoing message was successfully updated.'
-    else
-      render :edit
-    end
-  end
-
-  # DELETE /outgoing_messages/1
-  def destroy
-    @outgoing_message.destroy
-    redirect_to outgoing_messages_url, notice: 'Outgoing message was successfully destroyed.'
   end
 
   private
@@ -57,6 +49,6 @@ class OutgoingMessagesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def outgoing_message_params
-      params.require(:outgoing_message).permit(:body, to: [])
+      ActiveModelSerializers::Deserialization.jsonapi_parse(params, only: [:to, :body])
     end
 end

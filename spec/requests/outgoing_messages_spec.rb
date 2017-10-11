@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe "OutgoingMessages", type: :request do
   describe "GET /outgoing_messages" do
-    it "works! (now write some real specs)" do
+    it "works!" do
       user = FactoryGirl.create(:user)
-      sign_in user
-      get outgoing_messages_path
+      FactoryGirl.create(:outgoing_message)
+      get outgoing_messages_path, headers: { 'Content-Type' => 'application/vnd.api+json', 'Accept' => 'application/vnd.api+json', 'authorization' => "Token token=#{user.authentication_token}, email=#{user.email}" }
       expect(response).to have_http_status(200)
     end
   end
