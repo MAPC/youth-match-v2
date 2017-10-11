@@ -85,7 +85,7 @@ export default Ember.Controller.extend({
     })
   },
 
-  @computed('model.applicants','min','max','perPage')
+  @computed('model.applicants','min','max')
   paginatedModels(model,min,max) {
     return model.slice(min,max).sortBy('last_name');
   },
@@ -127,13 +127,13 @@ export default Ember.Controller.extend({
   @action
   linkTo(model, event) {
     event.target.bringToFront();
-    this.transitionToRoute('applicants.show', model);
+    this.transitionToRoute('dashboard.partner.applicants', model);
   },
 
 
   @action
   linkToApplicant(applicant) {
-    this.transitionToRoute('applicants.show-applicant', applicant.id);
+    this.transitionToRoute('dashboard.partner.show-applicant', applicant.id);
   },
 
 

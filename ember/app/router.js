@@ -16,8 +16,9 @@ Router.map(function() {
       });
     });
     this.route('partner', function() {
-      this.route('applicant', { path: '/applicant/:applicant_id' }, function() {
-        this.route('new-pick');
+      this.route('applicant', { path: '/applicant/:id' });
+      this.route('show-applicant', { path: '/profile/:applicant_id' }, function() {
+        this.route('new-pick', { path: 'new' });
       });
     });
     this.route('staff');
