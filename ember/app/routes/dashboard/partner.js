@@ -22,6 +22,6 @@ export default Ember.Route.extend(trackPage, {
         return this.store.findAll('applicant');
       })
     })
-  }
+  },
 
 });
