@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170831203337) do
+ActiveRecord::Schema.define(version: 20171011165510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,13 +56,6 @@ ActiveRecord::Schema.define(version: 20170831203337) do
     t.string    "neighborhood"
     t.boolean   "lottery_activated"
     t.index ["user_id"], name: "index_applicants_on_user_id", using: :btree
-  end
-
-  create_table "boxes", force: :cascade do |t|
-    t.geometry "geom",      limit: {:srid=>4326, :type=>"multi_polygon"}
-    t.integer  "g250m_id"
-    t.string   "municipal"
-    t.integer  "muni_id"
   end
 
   create_table "offers", force: :cascade do |t|
@@ -141,23 +134,6 @@ ActiveRecord::Schema.define(version: 20170831203337) do
     t.datetime "updated_at",  null: false
     t.index ["position_id"], name: "index_sites_on_position_id", using: :btree
     t.index ["user_id"], name: "index_sites_on_user_id", using: :btree
-  end
-
-  create_table "travel_times", force: :cascade do |t|
-    t.integer "input_id"
-    t.integer "target_id"
-    t.integer "g250m_id_origin"
-    t.integer "g250m_id_destination"
-    t.decimal "distance"
-    t.decimal "x_origin",             precision: 15, scale: 12
-    t.decimal "y_origin",             precision: 15, scale: 12
-    t.decimal "x_destination",        precision: 15, scale: 12
-    t.decimal "y_destination",        precision: 15, scale: 12
-    t.string  "travel_mode"
-    t.integer "time"
-    t.integer "pair_id"
-    t.index ["input_id"], name: "index_travel_times_on_input_id", using: :btree
-    t.index ["target_id"], name: "index_travel_times_on_target_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
