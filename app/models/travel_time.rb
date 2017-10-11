@@ -1,2 +1,0 @@
-class TravelTime < ApplicationRecord
-end
