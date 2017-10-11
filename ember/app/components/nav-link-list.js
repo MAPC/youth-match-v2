@@ -3,21 +3,21 @@ import { computed } from 'ember-decorators/object';
 
 export default Ember.Component.extend({
 
-  @computed('user')
-  isYouth(user) {
-    return true;//user.get('account_type').toLowerCase() === 'youth';
+  @computed('accountType')
+  isYouth(accountType) {
+    return accountType.toLowerCase() === 'youth';
   },
 
 
-  @computed('user')
-  isStaff(user) {
-    return false;//user.get('account_type').toLowerCase() === 'staff';
+  @computed('accountType')
+  isStaff(accountType) {
+    return accountType.toLowerCase() === 'staff';
   },
 
 
-  @computed('user')
-  isPartner(user) {
-    return false;//user.get('account_type').toLowerCase() === 'partner';
+  @computed('accountType')
+  isPartner(accountType) {
+    return accountType.toLowerCase() === 'partner';
   },
 
 

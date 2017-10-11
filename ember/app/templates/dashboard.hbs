@@ -7,7 +7,7 @@
       <h1>{{link-to 'SUCCESSLINK' 'dashboard'}}</h1>
     </header>
 
-    {{nav-link-list user=model.user}}
+    {{nav-link-list accountType=model.account_type}}
 
     <div class="session-handlers">
       {{#if session.isAuthenticated}}
