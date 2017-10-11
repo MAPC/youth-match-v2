@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :outgoing_message do
-    to ""
+    to "8601231234"
     body "MyString"
   end
 end
