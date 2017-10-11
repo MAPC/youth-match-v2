@@ -1,11 +1,14 @@
 <ul class="component nav-link-list">
 
   {{#if isYouth}}
-    {{#link-to 'dashboard.youth.jobs'}}
-      <span>VIEW AVAILABLE JOBS</span>
+    {{#link-to 'dashboard.youth.index'}}
+      <span>VIEW STATUS</span>
     {{/link-to}}
     {{#link-to 'dashboard.youth.profile'}} 
       <span>EDIT PROFILE</span>
+    {{/link-to}}
+    {{#link-to 'dashboard.youth.jobs'}}
+      <span>FIND JOBS</span>
     {{/link-to}}
   {{/if}}
 
