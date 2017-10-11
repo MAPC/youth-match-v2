@@ -306,6 +306,17 @@ namespace :import do
     end
   end
 
+  desc 'Update and Compare Position Geocode Results'
+  task regeocode_positions: :environment do
+    Position.all.each do |position|
+      new_address = geocode_address(position.address)
+      puts position.title + "|" + position.location.to_s + "|" + new_address
+      position.location = new_address
+      position.save
+      sleep 1
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
@@ -353,6 +364,8 @@ namespace :import do
   end
 
   def geocode_address(street_address)
+    return nil if street_address.blank?
+    street_address.gsub!(/#|\.|(apt|apartment.*\d)/,' ')
     response = Faraday.get('https://search.mapzen.com/v1/search/structured',
                            { api_key: Rails.application.secrets.mapzen_api_key,
                              address: street_address, locality: 'Boston', region: 'MA' })
