@@ -16,10 +16,6 @@ if Rails.env.development? || Rails.env.test?
     { email: 'invalid@seed.org', password: 'password', account_type: 'invalid' },
   ])
 
-  Applicant.create([
-    { email: 'youth@seed.org', first_name: 'Alan', last_name: 'Turing' } 
-  ])
-
 else
   sh "pg_restore -Fc -h #{Rails.configuration.database_configuration[Rails.env]['host']} -U #{Rails.configuration.database_configuration[Rails.env]['username']} -w -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/travel_times.dump" || true
   sh "pg_restore -Fc -h #{Rails.configuration.database_configuration[Rails.env]['host']} -U #{Rails.configuration.database_configuration[Rails.env]['username']} -w -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/boxes.dump" || true

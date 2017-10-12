@@ -15,4 +15,24 @@ button {
     background: $color_brand-blue--active; 
     transition: background .2s;
   }
+
+  &.small {
+    padding: 5px 13px;
+
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  &.destructive {
+    background: $color_brand-red; 
+
+    &:hover { background: $color_brand-red--active; }
+  }
+
+  &.disabled {
+    cursor: default; 
+
+    background: $color_bg-medium;
+  }
+
 }

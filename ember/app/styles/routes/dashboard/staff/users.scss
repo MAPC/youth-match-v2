@@ -1,0 +1,21 @@
+.route.users {
+
+  min-height: 80vh;
+
+  .table {
+    .td {
+      &:first-of-type { flex: 1 0 35%; }  
+      &:nth-of-type(2) { flex: 1 0 20%; }
+    } 
+
+    .tr > .td {
+      font-size: 14px; 
+
+      &:first-of-type { 
+        padding-top: 10px; 
+
+      } 
+    }
+  }
+
+}

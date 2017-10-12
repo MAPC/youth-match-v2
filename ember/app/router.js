@@ -21,7 +21,9 @@ Router.map(function() {
         this.route('new-pick', { path: 'new' });
       });
     });
-    this.route('staff');
+    this.route('staff', function() {
+      this.route('users');
+    });
   });
 
   this.route('sign-up');

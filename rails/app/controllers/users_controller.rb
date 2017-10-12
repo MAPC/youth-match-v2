@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+
   skip_before_action :authenticate_user_from_token!
   skip_before_action :authenticate_from_params!
   skip_before_action :authenticate_user!
@@ -43,7 +44,11 @@ class UsersController < ApplicationController
 
 
   def index
-    @users = User.where(email: params[:email])
+    if params[:email]
+      @users = User.where(email: params[:email])
+    else
+      @users = User.all
+    end
 
     respond_to do |format|
       format.jsonapi { render jsonapi: @users }

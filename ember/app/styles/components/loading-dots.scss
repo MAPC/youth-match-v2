@@ -1,0 +1,51 @@
+@keyframes dotjump {
+  30% {
+    top: 0; 
+    background: $color_bg-medium--accent;
+  }
+  50% {
+    top: -15px; 
+    background: $color_brand-blue;
+  }
+  70% {
+    top: 0; 
+    background: $color_bg-medium--accent;
+  }
+}
+
+.loading-dots {
+  @extend ._vertical-center;
+
+  display: inline-block;
+  z-index: 100;
+
+  color: $color_font-medium;
+  font-weight: 600;
+  font-size: 35px;
+  text-align: center;
+
+  .dots {
+    top: 20px;
+
+    span {
+      $duration: .8s;
+      $segment: $duration/16;
+      $size: 12px;
+
+      display: inline-block;
+
+      width: $size;
+      height: $size;
+      margin: 0 $size / 2;
+
+      animation-name: dotjump;
+      animation-duration: $duration;
+      animation-iteration-count: infinite;
+
+      &:nth-of-type(2) { animation-delay: $segment * 1; } 
+      &:nth-of-type(3) { animation-delay: $segment * 2; } 
+      &:nth-of-type(4) { animation-delay: $segment * 4; } 
+    } 
+  }
+}
+
