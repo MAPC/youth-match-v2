@@ -23,6 +23,9 @@ Router.map(function() {
     });
     this.route('staff');
   });
+
+  this.route('sign-up');
+  this.route('signup');
 });
 
 export default Router;

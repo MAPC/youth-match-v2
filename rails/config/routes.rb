@@ -20,7 +20,7 @@ Rails.application.routes.draw do
       resources :selections
       resources :picks
     end
-    resources :users, only: [:show, :index] do
+    resources :users, only: [:create, :update, :show, :index] do
       resources :positions
     end
     resources :requisitions, only: [:update, :show]

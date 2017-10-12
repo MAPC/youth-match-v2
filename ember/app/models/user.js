@@ -3,7 +3,12 @@ import DS from 'ember-data';
 import RSVP from 'rsvp';
 import { computed } from 'ember-decorators/object';
 
+const { attr } = DS;
+
 export default DS.Model.extend({
+  email: attr('string'),
+  password: attr('string'),
+
   first_name: DS.attr('string'),
   last_name: DS.attr('string'),
   applicant: DS.belongsTo('applicant', { async: true }),

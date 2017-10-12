@@ -1,10 +1,10 @@
-<section class="route login form-page">
+<section class="route sign-up form-page">
 
-  <form {{action 'authenticate' on="submit"}}>
+  <form {{action 'createAccount' on="submit"}}>
     <img src="assets/images/boston-logo.svg" class="boston-logo">
 
     <div class="form-content">
-      <h2>LOGIN</h2>
+      <h2>SIGN UP</h2>
 
       <article class="form-item">
         {{input placeholder="Email" type="email" value=email}}
@@ -14,7 +14,11 @@
         {{input placeholder="Password" type="password" value=password}}
       </article>
 
-      <button type="submit">LOG IN</button>
+      <article class="form-item">
+        {{input placeholder="Confirm Password" type="password" value=passwordConfirm}}
+      </article>
+
+      <button type="submit">SIGN UP</button>
     </div><!--/ .form-content -->
 
     <div class="form-error">
