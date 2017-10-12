@@ -306,6 +306,25 @@ namespace :import do
     end
   end
 
+  desc 'Update and Compare Position Geocode Results'
+  task regeocode_positions: :environment do
+    Position.all.each do |position|
+      new_address = geocode_address(position.address)
+      puts position.title + "|" + position.location.to_s + "|" + new_address
+      position.location = new_address
+      position.save
+      sleep 1
+    end
+  end
+
+  desc 'Import Seed Data'
+  task development_seed_data: :environment do
+    10.times do |index|
+      FactoryGirl.create(:user_with_applicant)
+      FactoryGirl.create(:position)
+    end
+  end
+
   private
 
   def get_address_from_icims(address_url)
@@ -353,6 +372,8 @@ namespace :import do
   end
 
   def geocode_address(street_address)
+    return nil if street_address.blank?
+    street_address.gsub!(/#|\.|(apt|apartment.*\d)/,' ')
     response = Faraday.get('https://search.mapzen.com/v1/search/structured',
                            { api_key: Rails.application.secrets.mapzen_api_key,
                              address: street_address, locality: 'Boston', region: 'MA' })
@@ -407,12 +428,12 @@ namespace :import do
     remote_workflows - local_workflows
   end
 
-  def merged_record_icims_id(applicant_information)
-    if applicant_information.first_name.match?(/Merged with (\d+)/)
-      applicant_information.first_name.match(/Merged with (\d+)/).captures[0]
-    end
-    return nil
-  end
+  # def merged_record_icims_id(applicant_information)
+  #   if applicant_information.first_name.match?(/Merged with (\d+)/)
+  #     applicant_information.first_name.match(/Merged with (\d+)/).captures[0]
+  #   end
+  #   return nil
+  # end
 
   def merge_record(old_record_id, merged_record_icims_id)
     # move the associations from the old record to the new record. Run this after importing latest data.

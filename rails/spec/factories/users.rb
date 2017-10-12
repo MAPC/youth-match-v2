@@ -1,6 +1,11 @@
 FactoryGirl.define do
   factory :user do
-    email 'example1@example.com'
-    password 'devnull123'
+    email { Faker::Internet.email }
+    password 'password'
+
+    trait :with_applicant do
+      applicant
+    end
+    factory :user_with_applicant, traits: [:with_applicant]
   end
 end
