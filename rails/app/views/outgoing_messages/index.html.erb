@@ -17,7 +17,6 @@
         <td><%= outgoing_message.to %></td>
         <td><%= outgoing_message.body %></td>
         <td><%= link_to 'Show', outgoing_message %></td>
-        <td><%= link_to 'Edit', edit_outgoing_message_path(outgoing_message) %></td>
         <td><%= link_to 'Destroy', outgoing_message, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>

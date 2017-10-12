@@ -5,6 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+<<<<<<< HEAD:rails/db/seeds.rb
 if Rails.env.development? || Rails.env.test?
   sh "pg_restore -Fc -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/travel_times.dump" || true
   sh "pg_restore -Fc -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/boxes.dump" || true
@@ -24,3 +25,5 @@ else
   sh "pg_restore -Fc -h #{Rails.configuration.database_configuration[Rails.env]['host']} -U #{Rails.configuration.database_configuration[Rails.env]['username']} -w -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/travel_times.dump" || true
   sh "pg_restore -Fc -h #{Rails.configuration.database_configuration[Rails.env]['host']} -U #{Rails.configuration.database_configuration[Rails.env]['username']} -w -d #{Rails.configuration.database_configuration[Rails.env]['database']} lib/seeds/boxes.dump" || true
 end
+=======
+>>>>>>> develop:db/seeds.rb
