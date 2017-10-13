@@ -26,11 +26,15 @@
       {{#each filteredModel as |applicant|}}
         <div class="tr">
           {{#each-in applicant as |attribute value|}}
-            <input class="td" value={{value}} onchange={{action 'valueChanged' applicant}} onkeyup={{action 'verifyField' attribute}}>
+            <input class="td" value={{value}} onchange={{action 'updateApplicant' applicant attribute}} onkeyup={{action 'verifyField' attribute}}>
           {{/each-in}}
         </div>
       {{/each}}
     </div>
   </div>
    
+  <div class="autosave-message {{if autosaved 'display'}}">
+    {{autosaveMessage}}
+  </div>
+
 </section>
