@@ -1,8 +1,8 @@
-<section class="route table-page staff-users">
+<section class="route table-page staff-applicants">
 
-  <h2>MANAGE USERS</h2>
+  <h2>MANAGE APPLICANTS</h2>
 
-  {{loading-dots model=filteredModel text="LOADING USERS"}}
+  {{loading-dots model=filteredModel text="LOADING APPLICANTS"}}
 
   {{#if (gt sortedModel.length perPage)}}
     <div class="pagination">
@@ -15,7 +15,7 @@
   {{/if}}
 
 
-  <div class="table users-table">
+  <div class="table edit-table">
 
     <div class="th">
       <div class="td">Email</div>
@@ -45,7 +45,5 @@
       {{/each}}
     </div>
   </div>
-
-
+   
 </section>
-

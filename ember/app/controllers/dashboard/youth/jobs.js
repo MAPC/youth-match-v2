@@ -71,7 +71,7 @@ export default Ember.Controller.extend({
   @action
   linkTo(model, event) {
     event.target.bringToFront();
-    this.transitionToRoute('dashboard.youths.jobs.job', model.id);
+    this.transitionToRoute('dashboard.youth.jobs.job', model.id);
   },
 
 

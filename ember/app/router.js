@@ -23,6 +23,8 @@ Router.map(function() {
     });
     this.route('staff', function() {
       this.route('users');
+      this.route('applicants');
+      this.route('positions');
     });
   });
 
