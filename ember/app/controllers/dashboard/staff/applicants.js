@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import Applicant from '../../../models/applicant';
 import { computed, action } from 'ember-decorators/object';
 
 export default Ember.Controller.extend({
@@ -6,6 +7,22 @@ export default Ember.Controller.extend({
   queryParams: ['min', 'max'],
   min: 0,
   max: 50,
+
+  attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
+
+  removedFields: [
+    'participant_essay', 
+    'interests', 
+    'user', 
+    'updated_at', 
+    'created_at'
+  ],
+  
+
+  @computed('attributes', 'removedFields')
+  attributeNames(attributes, fields) {
+    return attributes.filter(x => fields.indexOf(x.name) === -1).map(attr => attr.name.split('_').join(' '));
+  },
 
 
   @computed('min', 'max')
@@ -30,13 +47,18 @@ export default Ember.Controller.extend({
 
   @computed('model.[]')
   sortedModel(model) {
-    return model.sortBy('email');
+    return model.sortBy('last_name');
   },
 
 
-  @computed('sortedModel.[]', 'min', 'max')
-  filteredModel(sortedModel, min, max) {
-    return sortedModel.slice(min, max);
+  @computed('sortedModel.[]', 'min', 'max', 'removedFields')
+  filteredModel(sortedModel, min, max, fields) {
+    return sortedModel.slice(min, max).map(x => {
+      const json = x.toJSON();
+      fields.forEach(field => delete json[field]);
+
+      return json;
+    });
   },
 
 
@@ -78,5 +100,37 @@ export default Ember.Controller.extend({
     this.set('max', count);
   },
 
+
+  @action
+  valueChanged(applicant, value, event) {
+    console.log(applicant, value, event);
+  },
+
+
+  @action
+  verifyField(attribute, event) {
+    const target = event.target;
+    const value = target.value;
+    const type = this.getType(attribute);
+    
+    console.log(type);
+  },
+
+  getType(attribute) {
+    const attributes = this.get('attributes');
+    let type = attributes.filter(attr => attr.name === attribute)[0].type;
+
+    if (type === 'string') {
+      const lower = attribute.toLowerCase();
+
+      ['email', 'phone', 'address'].some(altType => {
+        var isType = lower.indexOf(altType) !== -1;
+        if (isType) type = altType;
+        return isType;
+      });
+    }
+
+    return type;
+  }
 
 });

@@ -1,15 +1,17 @@
 .table {
-  $header-height: 40px;
+  $header-height: 50px;
 
   position: relative;
   display: block;
   width: 100%;
+  overflow-x: scroll;
 
-  padding-top: $header-height;
+  padding-top: $header-height + 10px;
   border: 1px solid $color_bg-medium--accent;
 
   .th, .tr { 
     display: flex; 
+    width: max-content;
 
     padding: 4px 12px;
   }
@@ -20,17 +22,24 @@
     left: 0;
     z-index: 2;
 
-    width: 100%;
-    height: $header-height;
 
     font-weight: 600;
 
     background: $color_bg-medium;
     border-bottom: 1px solid $color_brand-blue;
+
+    .td  {
+      min-height: $header-height;
+
+      span { 
+        @extend ._vertical-center;
+      }
+    }
   }
 
   .rows {
     max-height: 70vh;
+    min-width: fit-content;
     overflow-y: scroll;
   }
 
@@ -39,12 +48,25 @@
   }
 
   .td {
+    height: 100%;
+    width: 180px;
     padding: 5px; 
     margin: 0 15px;
 
     text-align: left;
 
     &:first-of-type { max-width: 35%; }
+  }
+
+  input.td {
+    background: none; 
+    border: none;
+    border-bottom: 2px solid transparent;
+    text-overflow: ellipsis;
+
+    &:focus {
+      border-bottom: 2px solid $color_brand-blue; 
+    }
   }
 
   button.disabled { 

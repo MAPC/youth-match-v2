@@ -45,6 +45,7 @@
     "ember-metrics": "^0.12.1",
     "ember-resolver": "^4.0.0",
     "ember-router-scroll": "^0.3.1",
+    "ember-run-decorators": "0.0.1",
     "ember-simple-auth": "^1.4.0",
     "ember-source": "~2.15.0",
     "ember-truth-helpers": "^1.3.0",
