@@ -8,7 +8,7 @@ export default Ember.Controller.extend({
   min: 0,
   max: 50,
 
-  autosaveMessage: 'Autosaved at 5:53 PM ...',
+  autosaveMessage: '',
   autosaved: false,
 
   attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
@@ -105,12 +105,13 @@ export default Ember.Controller.extend({
 
 
   @action
-  updateApplicant(applicant, attribute, event) {
+  updateApplicant(edited, attribute, event) {
     const target = event.target;
+    const applicant = this.get('model').findBy('icims_id', edited.icims_id);
 
     if (!target.classList.contains('error')) {
-      //applicant.set(attribute, target.value);
-      //applicant.save();
+      applicant.set(attribute, target.value);
+      applicant.save();
 
       this.announceAutosave();
     }
@@ -132,7 +133,7 @@ export default Ember.Controller.extend({
 
     const time = (new Date()).toLocaleString('en-US', { hour: 'numeric',minute:'numeric', hour12: true });
      
-    this.set('autosaveMessage', `Autosaved at ${time} ...`);
+    this.set('autosaveMessage', `Autosaved at ${time}`);
     this.set('autosaved', true);
     const autoTimer = setTimeout(() => {
       this.set('autosaved', false);

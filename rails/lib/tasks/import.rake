@@ -319,8 +319,18 @@ namespace :import do
 
   desc 'Import Seed Data'
   task development_seed_data: :environment do
-    10.times do |index|
+
+    User.create([
+      { email: 'youth@seed.org', password: 'password' },
+      { email: 'partner@seed.org', password: 'password', account_type: 'partner' },
+      { email: 'staff@seed.org', password: 'password', account_type: 'staff' } ,
+    ])
+
+    300.times do |index|
       FactoryGirl.create(:user_with_applicant)
+    end
+
+    100.times do |index|
       FactoryGirl.create(:position)
     end
   end
