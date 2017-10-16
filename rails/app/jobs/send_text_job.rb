@@ -9,7 +9,7 @@ class SendTextJob < ApplicationJob
       client.messages.create from: Rails.application.secrets.twilio_from_number, to: to,
                              body: message
     rescue Twilio::REST::RequestError => e
-      Rails.logger.error 'Twilio Error: ' + e
+      Rails.logger.error 'Twilio Error: ' + e.to_s
     end
   end
 end
