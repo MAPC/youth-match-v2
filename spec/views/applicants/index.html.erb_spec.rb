@@ -10,8 +10,6 @@ RSpec.describe "applicants/index", type: :view do
   it "renders the applicant index form" do
     render
     expect(rendered).to match('Applicant')
-    expect(rendered).to match('FirstName')
-    expect(rendered).to match('LastName')
-    expect(rendered).to match('example.com')
+    expect(rendered).to match('@')
   end
 end
