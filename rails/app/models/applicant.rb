@@ -2,8 +2,6 @@ class Applicant < ApplicationRecord
   has_many :preferences, dependent: :destroy
   has_many :requisitions, dependent: :destroy
   has_many :positions, through: :requisitions
-  has_many :pickers, through: :picks, source: :position
-  has_many :picks, dependent: :destroy
   has_many :offers
   belongs_to :user
  #  validate :positions_count_within_bounds
