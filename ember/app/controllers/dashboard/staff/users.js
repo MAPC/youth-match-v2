@@ -3,7 +3,10 @@ import { computed, action } from 'ember-decorators/object';
 
 export default Ember.Controller.extend({
 
-  session: Ember.inject.service(),
+  ajax: Ember.inject.service(),
+
+  updated: false,
+  updateMessage: '',
 
   queryParams: ['min', 'max'],
   min: 0,
@@ -35,9 +38,10 @@ export default Ember.Controller.extend({
     return model.sortBy('email');
   },
 
-  @computed('sortedModel.[]', 'min', 'max', 'session.session.content.authenticated')
-  filteredModel(sortedModel, min, max, session) {
-    return sortedModel.filter(user => user.get('email') != session.email).slice(min, max);
+
+  @computed('sortedModel', 'min', 'max')
+  filteredModel(sortedModel, min, max) {
+    return sortedModel.slice(min, max);
   },
 
 
@@ -80,37 +84,10 @@ export default Ember.Controller.extend({
   },
 
 
-  @action
-  setUpdateable(target) {
-    const model = this.get('sortedModel');
-    const user = model.filter(user => user.id === target.dataset.userid);
-    
-    if (user) {
-      model.removeObject(user);
-
-      user.set('account_type', target.value);
-      user.set('updated', true);
-
-      model.pushObject(user);
-    }
-  },
-
-
   @action 
-  deleteUser(user) {
-    user.destroyRecord();
+  regeneratePassword(user) {
+    console.log(user.get('id'));
   },
-
-
-  @action
-  updateUser(user) {
-    if (user.updated) {
-      console.log(user.account_type);
-    }
-    else {
-      console.log('this user was not updated');
-    }
-  }
 
 
 

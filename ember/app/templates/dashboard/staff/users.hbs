@@ -2,7 +2,7 @@
 
   <h2>MANAGE USERS</h2>
 
-  {{loading-dots model=filteredModel text="LOADING USERS"}}
+  {{loading-dots model=filteredModel threshold=1 text="LOADING USERS"}}
 
   {{#if (gt sortedModel.length perPage)}}
     <div class="pagination">
@@ -15,13 +15,15 @@
   {{/if}}
 
 
-  <div class="table users-table">
+  <div class="update-message {{if updated 'display'}}">
+    {{updateMessage}}
+  </div>
 
+
+  <div class="table users-table">
     <div class="th">
       <div class="td">Email</div>
-      <div class="td">Account Type</div>
-      <div class="td"></div>
-      <div class="td"></div>
+      <div class="td">Reset</div>
     </div>
 
     <div class="rows">
@@ -29,17 +31,7 @@
         <div class="tr">
           <div class="td">{{user.email}}</div>
           <div class="td">
-            <select onchange={{action 'setUpdateable' value="target"}} data-userid={{user.id}}>
-              <option value='youth' selected={{if (eq user.account_type 'youth') selected}}>Youth</option>
-              <option value='partner' selected={{if (eq user.account_type 'partner') selected}}>Partner</option>
-              <option value='staff' selected={{if (eq user.account_type 'staff') selected}}>Staff</option>
-            </select>
-          </div>
-          <div class="td">
-            <button class="small {{unless user.updated 'disabled'}}" onclick={{action 'updateUser' user}}>Update Account</button>
-          </div>
-          <div class="td">
-            <button class="destructive small" onclick={{action 'deleteUser' user}}>Delete</button>
+            <button class="destructive small" onclick={{action 'regeneratePassword' user}}>Regenerate Password</button>
           </div>
         </div>
       {{/each}}
