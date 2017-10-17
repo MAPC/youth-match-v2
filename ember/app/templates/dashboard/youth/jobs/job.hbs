@@ -1,1 +1,9 @@
-{{outlet}}
+<section class="route youth-jobs-job">
+
+  {{#if isInterested}}
+    <button onclick={{action 'toggleInterest'}}>REMOVE FROM PICKS</button>
+  {{else}}
+    <button onclick={{action 'toggleInterest'}}>PICK JOB</button>
+  {{/if}}
+
+</section>
