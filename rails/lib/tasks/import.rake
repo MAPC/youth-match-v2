@@ -321,7 +321,6 @@ namespace :import do
   task development_seed_data: :environment do
 
     User.create([
-      { email: 'youth@seed.org', password: 'password' },
       { email: 'partner@seed.org', password: 'password', account_type: 'partner' },
       { email: 'staff@seed.org', password: 'password', account_type: 'staff' } ,
     ])
@@ -334,6 +333,16 @@ namespace :import do
       FactoryGirl.create(:position)
     end
   end
+
+  desc 'Import Applicant Seed Data'
+  task development_applicant: :environment do
+    user = FactoryGirl.create(:user_with_applicant)
+    user.update(password: 'password')
+
+    puts 'User Email: ' + user.email
+    puts 'User Password: password'
+  end
+
 
   private
 
