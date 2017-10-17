@@ -8,7 +8,7 @@ export default Ember.Route.extend(/*trackPage, CenterMapOnGeometry.reopen({ hash
   mapState: Ember.inject.service(),
 
   model(param) {
-    const youthJobsModel = this.modelFor('dashboard.youth.jobs');
+    const youthJobsModel = this.modelFor('dashboard.youth.jobs.index');
     const position = youthJobsModel.positions.findBy('id', param.position_id);
     const user = youthJobsModel.user;
 
