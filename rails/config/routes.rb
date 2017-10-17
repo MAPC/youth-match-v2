@@ -6,10 +6,6 @@ Rails.application.routes.draw do
   resources :position_imports, only: [:create]
 
   scope 'api' do
-    resources :rehire_sites, only: [:get_uniq_sites, :index, :update] do
-      get 'get_uniq_sites', to: 'rehire_sites#get_uniq_sites', on: :collection
-    end
-
     resources :offers
     resources :applicants, only: [:index, :show, :update]
 
@@ -22,7 +18,6 @@ Rails.application.routes.draw do
       resources :positions
     end
     resources :requisitions, only: [:update, :show]
-    resources :picks, only: [:index, :update, :show, :create, :destroy]
     resources :outgoing_messages, only: [:create, :new, :index, :show]
   end
 

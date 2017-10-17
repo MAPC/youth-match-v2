@@ -1,6 +1,6 @@
 class Position < ApplicationRecord
   has_many :preferences
-  has_many :requisitions
+  has_many :requisitions, dependent: :destroy
   has_many :applicants, through: :requisitions
   has_many :users, through: :sites
   has_many :sites
