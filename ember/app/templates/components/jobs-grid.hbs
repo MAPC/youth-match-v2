@@ -8,7 +8,7 @@
 
           <div class="job-description">
             <h4>{{position.site_name}}</h4>
-            <h5>{{position.title}}</h5>
+            <h5>{{capitalize (pure-title position.title)}}</h5>
 
             <p>
               {{truncate-text position.duties_responsbilities limit=100}}
