@@ -87,6 +87,10 @@ export default Ember.Controller.extend({
   @action 
   regeneratePassword(user) {
     console.log(user.get('id'));
+
+    const ajax = this.get('ajax');
+
+    //ajax.post();
   },
 
 
