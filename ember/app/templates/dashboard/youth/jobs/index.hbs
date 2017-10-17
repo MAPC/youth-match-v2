@@ -13,22 +13,11 @@
         work for them can go a long way. 
       </p>
 
-      {{youth-job-list model=user.applicant}}
+      {{youth-job-list 
+        model=model.user.applicant
+        removeItem=(action "removePosition")
+      }}
 
-      <div class="job-categories">
-        <h3>JOB CATEGORIES</h3>
-
-        <ul>
-          {{#each interestCategories as |interest|}}
-            {{#if (contains interest selectedInterestCategories)}}
-              <li class="is-interested" onclick={{action 'removeInterest' interest}}>{{interest}}</li>
-            {{else}}
-              <li onclick={{action 'addInterest' interest}}>{{interest}}</li>
-            {{/if}}
-          {{/each}}
-        </ul>
-
-      </div>
     </div>
 
     <div class="content-column">
@@ -58,6 +47,20 @@
           {{/circle-marker-layer}}
         {{/each}}
       {{/leaflet-map}}
+
+      <div class="job-categories">
+        <h3>JOB CATEGORIES</h3>
+
+        <ul>
+          {{#each interestCategories as |interest|}}
+            {{#if (contains interest selectedInterestCategories)}}
+              <li class="is-interested" onclick={{action 'removeInterest' interest}}>{{interest}}</li>
+            {{else}}
+              <li onclick={{action 'addInterest' interest}}>{{interest}}</li>
+            {{/if}}
+          {{/each}}
+        </ul>
+      </div>
     </div>
   </div>
 

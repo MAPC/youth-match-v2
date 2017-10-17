@@ -1,1 +1,26 @@
-{{yield}}
+<h3>YOUR JOB LIST</h3>
+
+{{#if model.hasReachedMaxPositions}}
+  You have selected the maximum number of jobs allowed. To add another job, 
+  you must remove yourself from one job below.
+{{else}}
+  You have an interest in {{model.positions.length}}/10 jobs!
+{{/if}}
+
+<ol>
+  {{#each model.positions as |position|}}
+    <li>
+      {{link-to position.site_name 'dashboard.youth.jobs.job' position.id}}
+      <span onclick={{action 'remove' position.id}}>X</span>
+    </li>
+  {{else}}
+    <div class="no-jobs">
+      You have not picked any available jobs. To get started, search for a job 
+      or select a few job categories to start browsing opportunities.
+    </div>
+  {{/each}}
+</ol>
+
+{{#if model.hasReachedMaxPositions}}
+  <button class="small">SUBMIT</button>
+{{/if}}

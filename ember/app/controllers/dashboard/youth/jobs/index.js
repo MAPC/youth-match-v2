@@ -173,5 +173,15 @@ export default Ember.Controller.extend({
   },
 
 
+  @action
+  removePosition(positionId) {
+    const applicantId = this.get('model.user.applicant.id');
+    const position = this.get('model.positions').findBy('id', positionId);
+    const applicant = position.get('applicants').findBy('id', applicantId);
+
+    position.get('applicants').removeObject(applicant);
+    position.save();
+  }
+
 
 });

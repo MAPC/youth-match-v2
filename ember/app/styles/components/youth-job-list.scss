@@ -1,0 +1,52 @@
+.component.youth-job-list {
+  padding: 15px;
+
+  font-size: 14px;
+  font-weight: 400;
+
+  background: $color_bg-blue;
+
+
+  h3 { margin-top: 0; }
+
+  ol {
+    padding-left: 14px;
+
+    li {
+      width: 100%; 
+
+      span { 
+        float: right; 
+
+        font-weight: 600;
+
+        cursor: pointer;
+        opacity: .6;
+        transition: opacity .15s;
+
+        &:hover {
+          opacity: .9;  
+          transition: opacity .15s;
+        }
+      }
+    }
+
+    .no-jobs {
+      color: $color_font-medium; 
+    }
+  }
+
+  button {
+    width: 100%; 
+    margin-top: 25px;
+
+    background: $color_bg-dark;
+    opacity: 1;
+    transition: opacity .15s;
+
+    &:hover {
+      opacity: .9; 
+      transition: opacity .15s;
+    }
+  }
+}
