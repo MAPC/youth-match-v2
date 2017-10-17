@@ -23,7 +23,8 @@ namespace :email do
       positions = Position.where(site_name: row['Organization Name'])
       user = User.create(email: row['Primary Contact Email'],
                          password: Devise.friendly_token.first(8),
-                         positions: positions)
+                         positions: positions,
+                         account_type: 'partner')
       puts row['Primary Contact Email'] if user.blank?
       next if user.blank?
       CboUserMailer.cbo_user_email(user).deliver_now

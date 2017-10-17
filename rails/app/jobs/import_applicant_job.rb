@@ -47,6 +47,10 @@ class ImportApplicantJob < ApplicationJob
     rescue ActiveRecord::RecordInvalid => exception
       Rails.logger.error 'IMPORT APPLICANT ERROR - Failed Applicant ID: ' + icims_id + ' ' + exception.message
     end
+    user = User.create(email: applicant.email.downcase,
+                       password: Devise.friendly_token.first(8),
+                       applicant: applicant,
+                       account_type: "youth")
   end
 
   private
