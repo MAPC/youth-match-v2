@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :outgoing_messages, only: [:create, :new, :index, :show]
     resources :lottery_numbers, only: [:create]
     resources :travel_time_scores, only: [:create]
+    resources :preference_scores, only: [:create]
   end
 
   resources :applicant_imports, only: [:create]
