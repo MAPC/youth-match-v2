@@ -7,12 +7,12 @@ export default Ember.Controller.extend({
   steps: {
     '1': {
       title: 'Submit Job Application',
-      message: "Welcome to SuccessLink!",
+      message: "Thank you, we've received your application!",
     },
 
     '2': {
       title: 'Find the Right Job',
-      message: "You've shown interest in 10 available jobs.",
+      message: "You've shown interest in $num job$ess.",
     },
 
     '3': {
@@ -22,30 +22,53 @@ export default Ember.Controller.extend({
 
     '4': {
       title: 'Accept or Decline Your Offer',
-      message: "You've accepted your job.",
+      message: "Thank you! You've accepted or declined your job.",
     },
 
     '5': {
       title: 'Complete Onboarding',
-      message: 'Congrats, you have completed your journey!',
+      message: 'You are now in onboarding. Go <a href="">here</a> to complete more steps.',
     },
   },
+
+  animationTriggered: false,
 
 
   @computed('model.applicant', 'model.applicant.positions')
   step(applicant, positions) {
-    if (applicant.hasReachedMaxPositions) {
-      return 2; 
+    if (positions.get('length')) {
+      return '2'; 
     }
 
-    return 1;   
+    return '1';   
   },
 
 
-  @computed('step', 'steps')
-  stepMessage(step, steps) {
-    return steps[step].message;
+  @computed('step', 'steps', 'model.applicant.positions.length')
+  stepMessage(step, steps, positionsLength) {
+    let message = steps[step].message;
+
+    if (step === '2') {
+      message = message.replace('$num', positionsLength)
+                       .replace('$ess', positionsLength === 1 ? '' : 's');
+    }
+    
+    return message;
   },
-  
+
+
+  @computed('step', 'animationTriggered', 'triggerAnimation')
+  stepClass(step, triggered) {
+    if (triggered) {
+      return `step-${step}`;
+    }
+  },
+
+
+  // :face_with_rolling_eyes:
+  @computed
+  triggerAnimation() {
+    setTimeout(() => { this.set('animationTriggered', true); }, 500);
+  },
 
 });
