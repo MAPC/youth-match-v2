@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     end
     resources :requisitions, only: [:update, :show]
     resources :outgoing_messages, only: [:create, :new, :index, :show]
+    resources :lottery_numbers, only: [:create]
   end
 
   resources :applicant_imports, only: [:create]
