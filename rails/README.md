@@ -20,6 +20,29 @@ To test and prove the lottery works:
 6. `rake lottery:match` to match positions to jobs
 7. `rake lottery:print` to print information about the lottery results
 
+## Algorithm Explanation
+
+Our algorithm works in the following manner:
+
+We geolocate the addresses of the young people and positions using Mapzen. Then we run a "travel time" score calculation for the distance between an applicant and a position based on how long it would take the applicant to get to the job site. We store this calculation as a floating point number between 5 and -5. If the applicant cares about travel time we assign the calculation based on the following formula:
+
+`minutes < 30 ? (0.008 * (minutes ** 2)) - (0.5833 * minutes) + 5 : -5`
+
+If they do not care then we use this formula:
+
+`minutes < 40 ? (-0.25 * minutes) + 5 : -5`
+
+This is then used to calculate a preference store that is based on two components:
+
+1. A normalized travel time score
+2. An overlapping interest score
+
+The normalized travel time score involves ranking the travel time scores for an applicant relative to all the job sites. We then calculate a new score by dividing the travel time score rank index number by an interval that gives us a score of -5 to 5.
+
+Finally, we add the interest score. If there is interest score overlap and interest score is important we add 5 points. If interest score is ranked less important than travel time score we add 3. Otherwise if there is no overlap we subtract 3 or 5.
+
+After we've calculated these scores we apply the Gale-Shapely algorithm to place applicants with positions. We implement Gale-Shapely by taking an applicant and iterating over each position until we find either an open position or a position where the applicant ranks more highly as a match than the current applicant. We then repeat this process for each unplaced applicant until all applicants are placed.
+
 ## Contact
 
 [Matt Zagaja](mzagaja@mapc.org), Lead Civic Web Developer, MAPC.
