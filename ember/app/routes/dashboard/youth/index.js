@@ -4,7 +4,6 @@ import RSVP from 'rsvp';
 
 export default Ember.Route.extend({
 
-
   model() {
     const youthModel = this.modelFor('dashboard.youth');
     const applicant = youthModel.get('applicant');
@@ -13,10 +12,6 @@ export default Ember.Route.extend({
       positions: this.store.findAll('position'),
       applicant, 
     });
-  },
-
-  afterModel(model)  {
-    console.log(model.applicant.get('positions'));
   }
 
 });

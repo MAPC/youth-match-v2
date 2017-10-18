@@ -5,6 +5,19 @@
     {{stepMessage}}
   </div>
 
+  {{#if (eq step '2')}}
+    <article class="step-2">
+      <h4>HOW TO FIND THE RIGHT JOB</h4>
+
+      <p>
+        You can visit the {{link-to 'jobs' 'dashboard.youth.jobs'}} page 
+        and select up to a maximum of {{model.applicant.maxPositionsAllowed}} jobs to 
+        add to your job list. Once you have selected a few jobs, all you have to do 
+        is wait for an employer to send you an offer to your email at <em>{{applicantEmail}}</em>.
+      </p>
+    </article>
+  {{/if}}
+
   {{#if (eq step '3')}}
     <article class="step-3">
       <h4>YOUR OFFER</h4>

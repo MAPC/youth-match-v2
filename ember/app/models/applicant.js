@@ -77,7 +77,9 @@ export default DS.Model.extend({
   @computed('interests')
   truncatedInterests(interests) {
     return truncateText(interests, { limit: 10 })
-  }
+  },
+
+  maxPositionsAllowed: MAX_POSITIONS_ALLOWED,
 
 });
 

@@ -43,6 +43,14 @@ export default Ember.Controller.extend({
     return '1';   
   },
 
+  @computed('model.applicant')
+  applicantEmail(applicant) {
+    const emailPieces =  applicant.get('email').split('@');
+    emailPieces[0] = emailPieces[0].split('').map(() => '*').join('');
+
+    return emailPieces.join('@');
+  },
+
 
   @computed('step', 'steps', 'model.applicant.positions.length')
   stepMessage(step, steps, positionsLength) {

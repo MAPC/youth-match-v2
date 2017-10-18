@@ -9,6 +9,20 @@
 
   article {
     margin: 50px auto;  
+
+    p {
+      width: 50%; 
+      font-weight: 300;
+      font-size: 14px;
+
+      a { 
+        font-weight: 600; 
+      }
+
+      em { 
+        font-size: 13px;
+      }
+    }
   }
 
   h4 {
