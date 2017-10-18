@@ -1,5 +1,26 @@
 <section class="route youth-index">
 
-  <h2>YOUR STATUS</h2>
+  <div class="status-message">
+    Hi, {{capitalize model.applicant.first_name}}!<br/>
+    {{stepMessage}}
+  </div>
+
+  {{#if (eq stepNumber 3)}}
+    <article class="step-3">
+      <h4>YOUR OFFER</h4>
+    </article>
+  {{/if}}
+
+  <article class="timeline-wrapper">
+    <h4>YOUR STATUS</h4>
+
+    <div class="timeline">
+
+    </div>
+  </article>
+
+  <article class="questions">
+    <h4>QUESTIONS?</h4>
+  </article>
 
 </section>

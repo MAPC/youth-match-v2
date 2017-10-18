@@ -8,6 +8,7 @@ class ApplicantsController < ApplicationController
     else
       @applicants = Applicant.all
     end
+
     respond_to do |format|
       format.jsonapi { render jsonapi: @applicants }
     end
@@ -15,6 +16,7 @@ class ApplicantsController < ApplicationController
 
   def show
     @applicant = Applicant.find(params[:id])
+
     respond_to do |format|
       format.jsonapi { render jsonapi: @applicant }
     end
