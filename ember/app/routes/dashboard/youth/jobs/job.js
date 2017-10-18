@@ -8,11 +8,12 @@ export default Ember.Route.extend(/*trackPage, CenterMapOnGeometry.reopen({ hash
   mapState: Ember.inject.service(),
 
   model(param) {
-    const youthJobsModel = this.modelFor('dashboard.youth.jobs.index');
-    const position = youthJobsModel.positions.findBy('id', param.position_id);
+    const youthJobsModel = this.modelFor('dashboard.youth.jobs');
+    const positions = youthJobsModel.positions;
+    const position = positions.findBy('id', param.position_id);
     const user = youthJobsModel.user;
 
-    return RSVP.hash({ position, user });
+    return RSVP.hash({ positions, position, user });
   }
 
 });

@@ -35,4 +35,10 @@ button {
     background: $color_bg-medium;
   }
 
+  &.dark {
+    background: $color_bg-dark; 
+
+    &:hover { background: rgba($color_bg-dark, 10); }
+  }
+
 }

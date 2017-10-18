@@ -1,0 +1,44 @@
+.job-box {
+  border: 2px solid $color_brand-blue; 
+
+  h6 {
+    width: 100%;
+    margin: 0;
+    padding: 6px 8px;
+
+    color: $color_font-light;
+    font-weight: 100;
+    font-size: 9px;
+
+    background: $color_brand-blue;
+  }
+
+  .job-description {
+    padding: 10px;
+
+    h4 {
+      margin: 0;
+      margin-bottom: 4px;
+
+      font-weight: 600; 
+      font-size: 14px;
+    }
+
+    h5 {
+      margin: 0;
+
+      color: $color_brand-red;
+      font-weight: 400; 
+      font-size: 11px;
+    }
+
+    p {
+      margin: 5px auto !important;
+
+      color: $color_font-medium;
+      font-size: 10px; 
+    }
+  }
+
+
+}

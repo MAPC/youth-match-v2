@@ -1,8 +1,6 @@
 .component.jobs-grid {
 
   ul {
-    $speed: .12s;
-
     display: grid; 
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 20px;
@@ -11,59 +9,23 @@
     li {
       top: 0;
 
-      border: 2px solid $color_brand-blue; 
-      transition: border-color $speed, top $speed;
+      transition: border-color $job_box-speed, top $job_box-speed;
 
       &:hover {
         top: -3px;
 
         border-color: $color_brand-blue--active;
-        transition: border-color $speed, top $speed;
+        transition: border-color $job_box-speed, top $job_box-speed;
 
         h6 { 
           background: $color_brand-blue--active;
-          transition: background $speed;
+          transition: background $job_box-speed;
         } 
       }
     }
 
     h6 {
-      width: 100%;
-      margin: 0;
-      padding: 6px 8px;
-
-      color: $color_font-light;
-      font-weight: 100;
-      font-size: 9px;
-
-      background: $color_brand-blue;
-      transition: background $speed;
+      transition: background $job_box-speed;
     }
   }
-
-  .job-description {
-    padding: 10px;
-
-    h4 {
-      margin: 0;
-      margin-bottom: 4px;
-
-      font-weight: 600; 
-      font-size: 14px;
-    }
-
-    h5 {
-      margin: 0;
-
-      color: $color_brand-red;
-      font-weight: 400; 
-      font-size: 11px;
-    }
-
-    p {
-      color: $color_font-medium;
-      font-size: 10px; 
-    }
-  }
-
 }

@@ -6,11 +6,11 @@ import RouterScroll from 'ember-router-scroll';
 export default Ember.Route.extend(RouterScroll, {
 
   model() {
-    const user = this.modelFor('dashboard.youth');
+    const youthJobsModel = this.modelFor('dashboard.youth.jobs');
 
     return RSVP.hash({
-      positions: this.store.findAll('position'),
-      user,
+      positions: youthJobsModel.positions,
+      user: youthJobsModel.user,
     });
   },
 
