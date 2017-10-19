@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { nest } from 'd3-collection';
 import { computed, action } from 'ember-decorators/object';
 
 
@@ -33,6 +34,35 @@ export default Ember.Controller.extend({
   },
 
 
+  @action
+  removePosition(positionId) {
+    const applicantId = this.get('model.user.applicant.id');
+    const position = this.get('model.positions').findBy('id', positionId);
+    const applicant = position.get('applicants').findBy('id', applicantId);
+
+    position.get('applicants').removeObject(applicant);
+    position.save();
+  },
+
+
+
+  // this shoud be made into its own model at some point
+  @computed('model.positions.[]', 'model.positions.@each.isSelected')
+  clusters(positions) {
+    let grouped = 
+      nest().key((row) => { return row.get('site_name') })
+            .entries(positions.toArray())
+            .map((row) => {   row.latitude = row.values[0].get('latitude');
+                              row.longitude = row.values[0].get('longitude');
+                              row.hasManyJobs = (row.values.length > 1);
+                              // is a job within the cluster selected?
+                              row.isSelected = row.values.mapBy('isSelected').includes(true);
+                              return row;  });
+    return grouped;
+  },
+
+
+
   @action 
   toggleInterest() {
     this.toggleProperty('isInterested');
@@ -64,17 +94,5 @@ export default Ember.Controller.extend({
   linkToApplicant(position) {
     this.transitionToRoute('dashboard.youth.jobs.job', position.id);
   },
-
-
-  @action
-  removePosition(positionId) {
-    const applicantId = this.get('model.user.applicant.id');
-    const position = this.get('model.positions').findBy('id', positionId);
-    const applicant = position.get('applicants').findBy('id', applicantId);
-
-    position.get('applicants').removeObject(applicant);
-    position.save();
-  },
-
 
 });

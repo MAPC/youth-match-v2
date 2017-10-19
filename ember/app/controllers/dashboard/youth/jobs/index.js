@@ -78,12 +78,17 @@ export default Ember.Controller.extend({
     let grouped = 
       nest().key((row) => { return row.get('site_name') })
             .entries(positions.toArray())
-            .map((row) => {   row.latitude = row.values[0].get('latitude');
-                              row.longitude = row.values[0].get('longitude');
-                              row.hasManyJobs = (row.values.length > 1);
-                              // is a job within the cluster selected?
-                              row.isSelected = row.values.mapBy('isSelected').includes(true);
-                              return row;  });
+            .map((row) => {   
+              row.latitude = row.values[0].get('latitude');
+              row.longitude = row.values[0].get('longitude');
+              row.hasManyJobs = (row.values.length > 1);
+
+              // is a job within the cluster selected?
+              row.isSelected = row.values.mapBy('isSelected').includes(true);
+
+              return row;  
+            });
+
     return grouped;
   },
 

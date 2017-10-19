@@ -9,6 +9,7 @@ export default Ember.Mixin.create({
   positionMap() {
     let mapState = this.get('mapState');
     let model = this.modelFor(this.get('modelForRoute'));
+
     if (this.get('hashProperty')) {
       model = model[this.get('hashProperty')];
     }

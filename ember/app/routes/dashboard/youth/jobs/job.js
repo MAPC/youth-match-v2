@@ -1,9 +1,11 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
-//import CenterMapOnGeometry from '../../../../mixins/center-map-on-geometry';
-//import trackPage from '../../../../mixins/track-page';
+import CenterMapOnGeometry from '../../../../mixins/center-map-on-geometry';
 
-export default Ember.Route.extend(/*trackPage, CenterMapOnGeometry.reopen({ hashProperty: 'job' }), */ {
+const CenterMapMixin = CenterMapOnGeometry.reopen({ hashProperty: 'position' });
+
+
+export default Ember.Route.extend(CenterMapMixin, {
 
   mapState: Ember.inject.service(),
 

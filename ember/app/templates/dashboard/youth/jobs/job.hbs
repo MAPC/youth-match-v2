@@ -54,7 +54,7 @@
     <div class="content-column">
       <h3>JOB LOCATION</h3>
 
-      {{#leaflet-map onLoad=(action 'setMapInstance') onMoveend=(action 'resetMap') lat=mapState.lat lng=mapState.lng zoom=mapState.zoom}}
+      {{#leaflet-map onLoad=(action 'setMapInstance') onMoveend=(action 'resetMap') bounds=mapState.bounds}}
         {{tile-layer url="http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"}}
         {{#each clusters as |site|}}
           {{#circle-marker-layer 

@@ -34,9 +34,10 @@ export default Ember.Mixin.create({
   afterModel() {
     const mapState = this.get('mapState');
     let applicants = this.modelFor(this.get('modelName')) || [];
+
     
     if (this.get('hashProperty')) {
-      applicants = applicants.get('jobs');
+      applicants = applicants[this.get('hashProperty')];
     }
 
     if (applicants !== undefined) {
