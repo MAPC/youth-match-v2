@@ -38,7 +38,14 @@
           {{#if isInterested}}
             <button class="small dark" onclick={{action 'toggleInterest'}}>I'M NO LONGER INTERESTED</button>
           {{else}}
-            <button class="small dark" onclick={{action 'toggleInterest'}}>I'M INTERESTED</button>
+            {{#if model.user.applicant.hasReachedMaxPositions}}
+              <p class="max-reached">
+                You have reached the maximum number of jobs. You may remove a job from your list in 
+                order to add to this job.
+              </p>
+            {{else}}
+              <button class="small dark" onclick={{action 'toggleInterest'}}>I'M INTERESTED</button>
+            {{/if}}
           {{/if}}
         </div>
       </div>

@@ -19,8 +19,10 @@ export default Ember.Controller.extend({
     set(value, user, position) {
       user.get('applicant').then((applicant) => {
         if (value) {
-          position.get('applicants').pushObject(applicant);
-          position.save();
+          if (!applicant.get('hasReachedMaxPositions')) {
+            position.get('applicants').pushObject(applicant);
+            position.save();
+          }
         } 
         else {
           position.get('applicants').removeObject(applicant);

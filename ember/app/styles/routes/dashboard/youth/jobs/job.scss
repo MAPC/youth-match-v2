@@ -25,6 +25,11 @@
 
       border: none;
 
+      &.max-reached {
+        margin-top: 25px !important;
+        font-weight: 400;
+      }
+
       h5 {
         color: $color_font-dark; 
         font-size: 13px;
