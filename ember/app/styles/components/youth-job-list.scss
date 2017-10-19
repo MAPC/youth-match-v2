@@ -44,17 +44,19 @@
     }
   }
 
-  button {
+  .congratulations {
     width: 100%; 
-    margin-top: 25px;
+    margin: 25px auto 10px;
 
-    background: $color_bg-dark;
-    opacity: 1;
-    transition: opacity .15s;
+    text-align: center;
 
-    &:hover {
-      opacity: .9; 
-      transition: opacity .15s;
+    span { 
+      display: inline-block;
+
+      margin-right: 5px;
+
+      color: forestgreen; 
+      font-size: 17px;
     }
   }
 }
