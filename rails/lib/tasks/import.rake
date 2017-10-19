@@ -15,6 +15,7 @@ namespace :import do
       a.prefers_nearby = row['prefers_ne'].to_s == 'TRUE' ? true : false
       a.has_transit_pass = row['has_transi'].to_s == 'TRUE' ? true : false
       a.location = "POINT(" + row['X'] + " " + row['Y'] + ")" # lon lat
+      a.lottery_activated = true
       a.save
     end
   end
