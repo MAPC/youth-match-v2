@@ -15,10 +15,11 @@ To test and prove the lottery works:
 1. `rake import:applicant_test_data`
 2. `rake import:position_test_data`
 3. `rake lottery:assign_lottery_numbers` to pick lottery winners
-4. `rake lottery:build_travel_time_preferences` to build travel time preference lists
-5. `rake lottery:build_preference_scores` to build the final preference scores
-6. `rake lottery:match` to match positions to jobs
-7. `rake lottery:print` to print information about the lottery results
+4. `bundle exec sidekiq` to start sidekiq for background workers
+5. `rake lottery:build_travel_time_preferences` to build travel time preference lists
+6. `rake lottery:build_preference_scores` to build the final preference scores
+8. `rake lottery:match` to match positions to jobs
+9. `rake lottery:print` to print information about the lottery results
 
 ## Algorithm Explanation
 
