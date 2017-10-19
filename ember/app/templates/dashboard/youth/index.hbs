@@ -1,5 +1,50 @@
 <section class="route youth-index">
 
-  <h2>YOUR STATUS</h2>
+  <div class="status-message">
+    Hi, {{capitalize model.applicant.first_name}}!<br/>
+    {{stepMessage}}
+  </div>
+
+  {{#if (eq step '2')}}
+    <article class="step-2">
+      <h4>HOW TO FIND THE RIGHT JOB</h4>
+
+      <p>
+        You can visit the {{link-to 'jobs' 'dashboard.youth.jobs'}} page 
+        and select up to a maximum of {{model.applicant.maxPositionsAllowed}} jobs to 
+        add to your job list. Once you have selected a few jobs, all you have to do 
+        is wait for an employer to send an email to you at <em>{{applicantEmail}}</em> 
+        to notify you of an offer.
+      </p>
+    </article>
+  {{/if}}
+
+  {{#if (eq step '3')}}
+    <article class="step-3">
+      <h4>YOUR OFFER</h4>
+    </article>
+  {{/if}}
+
+  <article class="timeline-wrapper">
+    <h4>YOUR STATUS</h4>
+
+    <div class="timeline {{stepClass}}">
+      {{#each-in steps as |num _step|}}
+        <div class="checkpoint">
+          <div class="checkpoint-number"> 
+            <span class="{{if (eq num step) 'large'}} {{if (gt num step) 'inactive'}}">{{num}}</span>
+          </div>
+          <div class="checkpoint-info">
+            <h5>STEP {{num}}</h5>
+            {{_step.title}}
+          </div>
+        </div>
+      {{/each-in}}
+    </div>
+  </article>
+
+  <article class="questions">
+    <h4>QUESTIONS?</h4>
+  </article>
 
 </section>

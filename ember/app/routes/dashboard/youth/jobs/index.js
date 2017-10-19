@@ -1,8 +1,21 @@
 import Ember from 'ember';
-import RouterScroll from 'ember-router-scroll';
+import RSVP from 'rsvp';
+import updateMapBounds from '../../../../mixins/update-map-bounds';
+
+const MapBoundsMixin = updateMapBounds.reopen({ hashProperty: 'positions', modelName: 'dashboard.youth.jobs' });
 
 
-export default Ember.Route.extend(RouterScroll, {
+export default Ember.Route.extend(MapBoundsMixin, {
+
+  model() {
+    const youthJobsModel = this.modelFor('dashboard.youth.jobs');
+
+    return RSVP.hash({
+      positions: youthJobsModel.positions,
+      user: youthJobsModel.user,
+    });
+  },
+
   setupController(controller, model) {
     this._super(controller, model);
 

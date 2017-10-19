@@ -1,5 +1,71 @@
 <section class="route jobs-index">
 
+  <div class="jobs-overview">
+    <div class="content-column">
+      <p>
+        Here are some jobs that match your interests. Explore jobs below and pick
+        up to 10! We will send this information to the employer to let them know 
+        you're interested.
+      </p>
+      <p>
+        <b>Pro Tip:</b> You can find employer emails and phone numbers if you click 
+        on a job description. Sending a nice note to let them know you want to 
+        work for them can go a long way. 
+      </p>
+
+      {{youth-job-list 
+        model=model.user.applicant
+        removeItem=(action "removePosition")
+      }}
+
+    </div>
+
+    <div class="content-column">
+      <h3>EXPLORE YOUTH JOBS</h3>
+
+      {{#leaflet-map onLoad=(action 'setMapInstance') onMoveend=(action 'resetMap') bounds=mapState.bounds}}
+        {{tile-layer url="http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"}}
+        {{#each clusters as |site|}}
+          {{#circle-marker-layer 
+            fillColor=(if site.isSelected '#FF5722' '#1A5678')
+            stroke=0
+            fillOpacity=0.9
+            radius=(if site.isSelected 8 4)
+            lat=site.latitude
+            lng=site.longitude
+            onClick=(if site.hasManyJobs '' (action 'linkTo' site.values.firstObject))
+          }}
+            {{#popup-layer}}
+              <ul>
+                <h3>{{site.values.length}} at this location:</h3>
+
+                {{#each site.values as |position|}}
+                  <li>{{link-to position.category 'dashboard.youth.jobs.job' position.id}}</li>
+                {{/each}}
+              </ul>
+            {{/popup-layer}}
+          {{/circle-marker-layer}}
+        {{/each}}
+      {{/leaflet-map}}
+
+      <div class="job-categories">
+        <h3>JOB CATEGORIES</h3>
+
+        <ul>
+          {{#each interestCategories as |interest|}}
+            {{#if (contains interest selectedInterestCategories)}}
+              <li class="is-interested" onclick={{action 'removeInterest' interest}}>{{interest}}</li>
+            {{else}}
+              <li onclick={{action 'addInterest' interest}}>{{interest}}</li>
+            {{/if}}
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="job-results">
     <h3>JOB RESULTS</h3>
 
     <div class="job-results-list">
@@ -21,5 +87,6 @@
         </div>
       {{/if}}
     </div>
+  </div>
 
 </section>

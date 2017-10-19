@@ -10,10 +10,10 @@ Router.map(function() {
   this.route('login');
   this.route('dashboard', function() {
     this.route('youth', function() {
-      this.route('profile');
       this.route('jobs', function() {
         this.route('job', { path: '/:position_id' });
       });
+      this.route('about');
     });
     this.route('partner', function() {
       this.route('applicant', { path: '/applicant/:id' });
