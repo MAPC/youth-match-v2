@@ -10,16 +10,17 @@ export default Ember.Route.extend({
 
     return RSVP.hash({
       user,
-      picks: this.store.findAll('pick'),
+      positions: user.get('positions'),
       requisitions: user.get('positions').then(positions => {
         return RSVP.all(positions.mapBy('requisitions')).then(collection => {
           return flatten(collection);
         });
       }),
-      applicants: user.get('positions').then(() => {
-        return this.store.findAll('applicant');
-      })
     });
   },
+
+  afterModel(model) {
+    console.log(model);
+  }
 
 });

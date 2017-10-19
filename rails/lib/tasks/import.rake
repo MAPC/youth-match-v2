@@ -338,7 +338,20 @@ namespace :import do
   desc 'Import Applicant Seed Data'
   task development_applicant: :environment do
     user = FactoryGirl.create(:user_with_applicant)
-    user.update(password: 'password')
+
+    puts 'User Email: ' + user.email
+    puts 'User Password: password'
+  end
+
+  desc 'Associate New User Account With Random Position/Site'
+  task development_partner: :environment do
+    user = User.create({ 
+      email: Faker::Internet.email, 
+      password: 'password', 
+      account_type: 'partner',
+    })
+
+    Site.all.sample.update(user_id: user.id)
 
     puts 'User Email: ' + user.email
     puts 'User Password: password'
