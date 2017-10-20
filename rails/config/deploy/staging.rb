@@ -29,6 +29,7 @@ server "prep.mapc.org", user: "successlink", roles: %w{app db web}
 
 set :branch, 'develop'
 set :passenger_restart_command, 'passenger-config restart-app'
+set :rvm_custom_path, '/usr/share/rvm'
 
 # Custom SSH Options
 # ==================
