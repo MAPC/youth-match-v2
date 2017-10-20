@@ -37,7 +37,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV['host'] = 'http://api.successlink.mapc.org';
   }
 
 

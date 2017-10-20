@@ -20,6 +20,11 @@ Router.map(function() {
       this.route('show-applicant', { path: '/profile/:applicant_id' }, function() {
         this.route('new-pick', { path: 'new' });
       });
+
+      this.route('positions', function() {
+        this.route('position', { path: '/:position_id' });
+      });
+      this.route('applicants');
     });
     this.route('staff', function() {
       this.route('users');
