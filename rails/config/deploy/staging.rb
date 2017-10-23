@@ -3,7 +3,7 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server "174.129.122.98", user: "youth-match-v2", roles: %w{app db web}
+server "prep.mapc.org", user: "successlink", roles: %w{app db web}
 
 # role-based syntax
 # ==================
@@ -29,6 +29,8 @@ server "174.129.122.98", user: "youth-match-v2", roles: %w{app db web}
 
 set :branch, 'develop'
 set :passenger_restart_command, 'passenger-config restart-app'
+set :rvm_custom_path, '/usr/share/rvm'
+set :repo_tree, 'rails'
 
 # Custom SSH Options
 # ==================

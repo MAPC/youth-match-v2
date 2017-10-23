@@ -2,8 +2,6 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   devise_for :users, :controllers => { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'sessions' }
-  get 'travel_time/get'
-  resources :position_imports, only: [:create]
 
   scope 'api' do
     resources :offers
@@ -22,10 +20,12 @@ Rails.application.routes.draw do
     resources :lottery_numbers, only: [:create]
     resources :travel_time_scores, only: [:create]
     resources :preference_scores, only: [:create]
+    resources :matches, only: [:create]
+    resources :lottery_activated_statuses, only: [:create]
+    resources :applicant_imports, only: [:create]
+    resources :update_icims, only: [:create]
+    resources :position_imports, only: [:create]
   end
-
-  resources :applicant_imports, only: [:create]
-  resources :update_icims, only: [:create]
 
   root to: 'offers#index'
 

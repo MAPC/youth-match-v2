@@ -6,9 +6,10 @@ class ApplicantsController < ApplicationController
     if params[:interests]
       @applicants = Applicant.where("interests && ARRAY[?]::varchar[]", params[:interests])
     else
-      @applicants = Applicant.all
+      ids = Applicant.left_joins(:offers).where.not("offers.accepted = ? OR offers.accepted = ?", 1, 2).distinct.pluck(:id)
+      previously_offered_ids = Applicant.left_joins(:offers).where("offers.accepted = ? OR offers.accepted = ?", 1, 2).distinct.pluck(:id)
+      @applicants = Applicant.find(ids - previously_offered_ids)
     end
-
     respond_to do |format|
       format.jsonapi { render jsonapi: @applicants }
     end

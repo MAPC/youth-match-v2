@@ -41,6 +41,7 @@ class ImportApplicantJob < ApplicationJob
                               participant_essay_attached_file: get_attached_essay(applicant_information),
                               location: geocode_applicant_address(applicant_information),
                               address: get_address_string(applicant_information),
+                              lottery_activated: true,
                               neighborhood: neighborhood(applicant_information))
     begin
       applicant.save!
