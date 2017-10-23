@@ -18,4 +18,8 @@ export default Ember.Route.extend({
     });
   },
 
+  afterModel(model) {
+    console.log(model.requisitions);
+  }
+
 });
