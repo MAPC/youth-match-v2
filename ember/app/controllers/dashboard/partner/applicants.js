@@ -6,7 +6,8 @@ export default Ember.Controller.extend({
 
   @computed('model.requisitions.[]')
   interestedApplicants(requisitions)  {
-    return requisitions.map(requisition => requisition.get('applicant'));
+    return requisitions.filter(requisition => requisition.get('applicant_status') === 'interested')
+                       .map(requisition => requisition.get('applicant'));
   },
 
   @computed('model.applicants.[]', 'interestedApplicants')
