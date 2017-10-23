@@ -8,6 +8,62 @@ You will need to setup a .env file with some API keys. We use MapZen for geocodi
 
 To calculate the travel time preferences you will need to setup instances of Graphhopper or another routing engine that can calculate travel times between two latitude and longitude points. MAPC has developed a system that has two Graphhopper instances deployed to AWS. One instance is a public transit instance that is c4.4xlarge instance, the other is a c4.large instance that does the calculations for walking transit directions. These two instances sit behind an AWS application load balancer that directs the requests to the appropriate Graphhopper instance [based on the "vehicle" parameter in the URL](http://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-listeners.html#listener-rules). The endpoint and parameters for calculating travel times can be changed by modifying build_travel_time_preference_job.rb.
 
+You will need to setup Sidekiq on your server for running background jobs. To do this on an Ubuntu server you should first install redis with `sudo apt-get install redis-server`.
+
+Put the following file into `/lib/systemd/system/sidekiq-youth-match-v2.service`:
+
+```
+#
+# systemd unit file for CentOS 7, Ubuntu 15.04
+#
+# Customize this file based on your bundler location, app directory, etc.
+# Put this in /usr/lib/systemd/system (CentOS) or /lib/systemd/system (Ubuntu).
+# Run:
+#   - systemctl enable sidekiq
+#   - systemctl {start,stop,restart} sidekiq
+#
+# This file corresponds to a single Sidekiq process.  Add multiple copies
+# to run multiple processes (sidekiq-1, sidekiq-2, etc).
+#
+# See Inspeqtor's Systemd wiki page for more detail about Systemd:
+# https://github.com/mperham/inspeqtor/wiki/Systemd
+#
+[Unit]
+Description=sidekiq
+# start us only once the network and logging subsystems are available,
+# consider adding redis-server.service if Redis is local and systemd-managed.
+After=syslog.target network.target
+
+# See these pages for lots of options:
+# http://0pointer.de/public/systemd-man/systemd.service.html
+# http://0pointer.de/public/systemd-man/systemd.exec.html
+[Service]
+Type=simple
+WorkingDirectory=/var/www/youth-match-v2/current
+# If you use rbenv:
+# ExecStart=/bin/bash -lc 'bundle exec sidekiq -e production'
+# If you use the system's ruby:
+ExecStart=/home/youth-match-v2/.rvm/wrappers/default/bundle exec sidekiq -e staging
+User=youth-match-v2
+Group=youth-match-v2
+UMask=0002
+
+# if we crash, restart
+RestartSec=1
+Restart=on-failure
+
+# output goes to /var/log/syslog
+StandardOutput=syslog
+StandardError=syslog
+
+# This will default to "bundler" if we don't specify it
+SyslogIdentifier=sidekiq-youth-match-v2
+
+[Install]
+WantedBy=multi-user.target
+```
+Then to enable this run: `sudo systemctl enable sidekiq-youth-match-v2`
+
 In order to create partner accounts, someone needs to run the rake task rake email:create_cbo_accounts. This will then import the partner emails from a file called partner-emails-6-fixed.csv which contains the following columns: Organization Name, Primary Contact Person, Primary Contact Email. A new CSV file can be substituted that has data for this year. It just needs to match the "Organization Name" in the CSV with the correct "site_name" that is imported in the Positions table. The positions should be imported before importing partner accounts.
 
 To test and prove the lottery works:
