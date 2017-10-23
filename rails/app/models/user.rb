@@ -12,7 +12,6 @@ class User < ApplicationRecord
 
   validates_inclusion_of :account_type, in: ['youth', 'partner', 'staff']
 
-
   def ensure_authentication_token
     if authentication_token.blank?
       self.authentication_token = generate_authentication_token

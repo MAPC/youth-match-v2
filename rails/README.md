@@ -77,6 +77,8 @@ To test and prove the lottery works:
 8. `rake lottery:match` to match positions to jobs
 9. `rake lottery:print` to print information about the lottery results
 
+*Note*: When running the lottery for real, you need to make sure the applicants that are going to be matched for the round have their lottery_activated status set to true. By default imported applicants will have this set. But you can also run the UpdateLotteryActivatedCandidatesJob in order to pull the latest status from ICIMS.
+
 ## Algorithm Explanation
 
 Our algorithm works in the following manner:
