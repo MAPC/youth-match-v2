@@ -21,9 +21,7 @@ Router.map(function() {
         this.route('new-pick', { path: 'new' });
       });
 
-      this.route('positions', function() {
-        this.route('position', { path: '/:position_id' });
-      });
+      this.route('positions', function() {});
       this.route('applicants');
     });
     this.route('staff', function() {

@@ -18,12 +18,4 @@ export default Ember.Route.extend({
     });
   },
 
-  afterModel(model) {
-    if (model.positions.get('length') === 1) {
-      const position = model.positions.get('firstObject');
-
-      this.transitionTo('dashboard.partner.positions.position', position.get('id'));
-    }
-  }
-
 });
