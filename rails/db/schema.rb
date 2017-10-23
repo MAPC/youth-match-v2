@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171016153910) do
+ActiveRecord::Schema.define(version: 20171023171136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,16 @@ ActiveRecord::Schema.define(version: 20171016153910) do
     t.string   "body"
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+  end
+
+  create_table "picks", force: :cascade do |t|
+    t.integer  "applicant_id"
+    t.integer  "position_id"
+    t.integer  "status"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["applicant_id"], name: "index_picks_on_applicant_id", using: :btree
+    t.index ["position_id"], name: "index_picks_on_position_id", using: :btree
   end
 
   create_table "positions", force: :cascade do |t|
@@ -149,6 +159,8 @@ ActiveRecord::Schema.define(version: 20171016153910) do
   end
 
   add_foreign_key "applicants", "users"
+  add_foreign_key "picks", "applicants"
+  add_foreign_key "picks", "positions"
   add_foreign_key "positions", "applicants"
   add_foreign_key "preferences", "applicants"
   add_foreign_key "preferences", "positions"
