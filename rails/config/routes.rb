@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     resources :applicant_imports, only: [:create]
     resources :update_icims, only: [:create]
     resources :position_imports, only: [:create]
+    resources :password_resets, only: [:create]
   end
 
   root to: 'offers#index'
