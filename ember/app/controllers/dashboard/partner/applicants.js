@@ -8,6 +8,8 @@ export default Ember.Controller.extend({
    * Members
    */
 
+  queryParams: ['min', 'max'],
+
   searchQuery: '',
   min: 0,
   max: 25,

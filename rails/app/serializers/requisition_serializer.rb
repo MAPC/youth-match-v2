@@ -1,5 +1,5 @@
 class RequisitionSerializer < ActiveModel::Serializer
-  attributes :id, :status
+  attributes :id, :applicant_status, :partner_status
 
   has_one :applicant, serializer: ApplicantSerializer do
     # link(:relationships) { applicant_path(id: object.applicant.id) }

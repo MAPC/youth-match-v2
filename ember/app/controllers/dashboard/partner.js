@@ -5,8 +5,6 @@ import { math, divide } from 'ember-awesome-macros';
 
 export default Ember.Controller.extend({
 
-  queryParams: ['min', 'max'],
-
   fields: [ 
     'applicant.first_name',
     'applicant.last_name',
