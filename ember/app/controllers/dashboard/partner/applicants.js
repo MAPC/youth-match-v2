@@ -1,8 +1,22 @@
 import Ember from 'ember';
-import { computed } from 'ember-decorators/object';
+import { computed, action } from 'ember-decorators/object';
 
 
 export default Ember.Controller.extend({
+
+  /**
+   * Members
+   */
+
+  searchQuery: '',
+  min: 0,
+  max: 25,
+
+  @computed('min', 'max') 
+  pageSize(min, max) {
+    return Math.abs(max - min);
+  },
+
 
   @computed('model.requisitions.[]')
   interestedApplicants(requisitions)  {
@@ -10,9 +24,42 @@ export default Ember.Controller.extend({
                        .map(requisition => requisition.get('applicant'));
   },
 
+
   @computed('model.applicants.[]', 'interestedApplicants')
   disinterestedApplicants(applicants, interestedApplicants) {
-    return applicants.filter(applicant => interestedApplicants.indexOf(applicant) === -1);
+    return applicants.filter(applicant => interestedApplicants.indexOf(applicant) === -1)
+                     .sortBy('last_name', 'first_name');
+  },
+
+
+  @computed('interestedApplicants', 'disinterestedApplicants', 'searchQuery')
+  filteredApplicants(interested, disinterested, query) {
+    const { min, max } = this.getProperties('min', 'max');
+    let applicants  = interested.concat(disinterested);
+    query = query.toLowerCase();
+
+    if (query.length >= 2) {
+      applicants = applicants.filter(x => { 
+        var firstName = (x.get('first_name') || '').toLowerCase(),
+            lastName = (x.get('last_name') || '').toLowerCase();
+
+        return firstName.startsWith(query) || lastName.startsWith(query); 
+      });
+    }
+
+    return applicants.slice(min, max);
+  },
+
+
+
+  /**
+   * Methods
+   */
+  
+
+  @action
+  pickApplicant(applicant) {
+     
   }
 
 });
