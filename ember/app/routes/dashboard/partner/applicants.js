@@ -1,9 +1,20 @@
 import Ember from 'ember';
+import RSVP from 'rsvp';
+
 
 export default Ember.Route.extend({
 
   model() {
-    return this.store.findAll('applicant');
+    const requisitions = this.modelFor('dashboard.partner');
+
+    return RSVP.hash({
+      applicants: this.store.findAll('applicant'),
+      requisitions: requisitions,
+    });
+  },
+
+  afterModel(model) {
+    console.log(model) ;
   }
 
 });
