@@ -1,0 +1,22 @@
+.route.partner-applicants {
+  font-size: 14px;
+
+  .partner-columns {
+    display: flex; 
+
+    .partner-column {
+      &:first-of-type { flex: 1 1 70%; } 
+      &:last-of-type { flex: 1 1 30%; }
+    }
+  }
+
+  .search-table {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    .row {
+      display: grid; 
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+}

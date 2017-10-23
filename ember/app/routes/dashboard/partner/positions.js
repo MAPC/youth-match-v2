@@ -12,9 +12,8 @@ export default Ember.Route.extend({
     return RSVP.hash({
       user,
       positions,
-      picks: RSVP.all(positions.mapBy('picks')).then(collection => {
-        return flatten(collection);
-      }),
+      picks: RSVP.all(positions.mapBy('picks'))
+                 .then(collection => flatten(collection)),
     });
   },
 
