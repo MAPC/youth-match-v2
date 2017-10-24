@@ -1,0 +1,36 @@
+.route.partner-applicants-show {
+  margin-left: 20px;
+  margin-top: 44px;
+  padding: 15px;
+
+  border: 1px solid $color_bg-dark;
+
+  .back-link {
+    position: absolute;     
+    top: 10px;
+    right: 10px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 0; 
+  }
+
+  .applicant-info { font-size: 11px; }
+
+  h5 {
+    margin-bottom: 3px;
+
+    font-size: 11px;
+    font-weight: 600; 
+  }
+
+  ul { margin-top: 0; }
+  li { margin: 2px auto; }
+
+  button {
+    width: 100%; 
+    margin-top: 40px;
+  }
+}

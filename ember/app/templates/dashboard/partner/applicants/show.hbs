@@ -45,6 +45,8 @@
     {{/if}}
   </div>
 
-  <button class="small dark" onclick={{action 'pickApplicant'}}>PICK THIS APPLICANT</button>
+  {{#unless parentController.hasHitLimit}}
+    <button class="small dark" onclick={{action 'pickApplicant'}}>PICK THIS APPLICANT</button>
+  {{/unless}}
 
 </section>

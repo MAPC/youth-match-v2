@@ -7,8 +7,11 @@ export default Ember.Route.extend({
 
   model() {
     const positions = this.modelFor('dashboard.partner');
+    const user = this.modelFor('dashboard');
 
     return RSVP.hash({
+      user,
+      positions,
       applicants: this.store.findAll('applicant'),
       picks: this.store.findAll('pick'),
       requisitions: RSVP.all(positions.mapBy('requisitions'))
