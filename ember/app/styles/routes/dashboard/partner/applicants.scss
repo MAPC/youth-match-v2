@@ -56,6 +56,14 @@
 
         &:last-of-type { overflow: initial; }
       }
+
+      .star {
+        display: inline-block;
+
+        margin-right: 5px;
+
+        color: $color_brand-red; 
+      }
     }
   }
 }
