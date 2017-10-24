@@ -8,7 +8,6 @@ export default Ember.Controller.extend({
 
   @computed('model')
   user(model) {
-    console.log(model);
     return model;
   },
 
