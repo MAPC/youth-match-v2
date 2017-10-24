@@ -28,7 +28,7 @@ class Applicant < ApplicationRecord
   end
 
   def self.chosen
-    open_positions = Position.sum(:open_positions)
+    open_positions = Position.sum(:open_positions) - (Offer.where(accepted: 'yes').count + Offer.where(accepted: 'waiting').count)
     # pull count of records of database equal to open positions that are in the lottery
     where(lottery_activated: true).order(:lottery_number).first(open_positions)
   end
