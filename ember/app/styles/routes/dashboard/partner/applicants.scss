@@ -4,19 +4,59 @@
   .partner-columns {
     display: flex; 
 
+    margin-top: 60px;
+
     .partner-column {
       &:first-of-type { flex: 1 1 70%; } 
       &:last-of-type { flex: 1 1 30%; }
     }
   }
 
+  .search-tag {
+    width: 100%;
+    margin-bottom: 8px; 
+    padding-bottom: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    border-bottom: 3px solid $color_brand-red;  
+  }
+
+  input {
+    width: 100%;
+    padding: 9px 12px;
+
+    font-size: 13px; 
+  }
+
   .search-table {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
+
+    padding-top: 8px;
+
+    font-size: 11px;
+
+    .header-row {
+      font-weight: 600; 
+    }
 
     .row {
       display: grid; 
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: 3fr 3fr 5fr 2fr 2fr 3fr 60px;
+
+      margin: 5px 0;
+
+      .column { 
+        padding: 0 5px;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:nth-of-type(5) { text-align: center; }
+        &:last-of-type { overflow: initial; }
+      }
     }
   }
 }
