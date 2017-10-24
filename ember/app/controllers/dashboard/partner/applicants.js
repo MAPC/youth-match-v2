@@ -12,7 +12,7 @@ export default Ember.Controller.extend({
 
   searchQuery: '',
   min: 0,
-  max: 25,
+  max: 20,
 
   @computed('min', 'max') 
   pageSize(min, max) {

@@ -32,18 +32,20 @@
           <div class="column">Last Name</div>
           <div class="column">Email</div>
           <div class="column">Mobile</div>
-          <div class="column">Interested?</div>
-          <div class="column">Position</div>
+          <div class="column">Requested Position</div>
           <div class="column"></div>
         </div>
 
         {{#each filteredApplicants as |applicant|}}
           <div class="row">
-            <div class="column">{{applicant.first_name}}</div>
-            <div class="column">{{applicant.last_name}}</div>
+            <div class="column">
+              {{link-to applicant.first_name 'dashboard.partner.applicants.show' applicant.id}}
+            </div>
+            <div class="column">
+              {{link-to applicant.last_name 'dashboard.partner.applicants.show' applicant.id}}
+            </div>
             <div class="column">{{applicant.email}}</div>
             <div class="column">{{applicant.mobile_phone}}</div>
-            <div class="column">{{applicant.interested}}</div>
             <div class="column">{{applicant.position}}</div>
             <div class="column">
               <button class="small" onclick={{action 'pickApplicant' applicant}}>PICK</button>

@@ -17,7 +17,9 @@ Router.map(function() {
     });
     this.route('partner', function() {
       this.route('positions', function() {});
-      this.route('applicants');
+      this.route('applicants', function() {
+        this.route('show', { path: '/:applicant_id' });
+      });
     });
     this.route('staff', function() {
       this.route('users');
