@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     resources :users, only: [:create, :update, :show, :index] do
       resources :positions
     end
+
+    resources :picks, only: [:show, :index, :update, :create]
     resources :requisitions, only: [:update, :show]
     resources :outgoing_messages, only: [:create, :new, :index, :show]
     resources :lottery_numbers, only: [:create]

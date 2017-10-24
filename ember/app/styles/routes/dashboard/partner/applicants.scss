@@ -7,8 +7,8 @@
     margin-top: 60px;
 
     .partner-column {
-      &:first-of-type { flex: 1 1 70%; } 
-      &:last-of-type { flex: 1 1 30%; }
+      &:first-of-type { flex: 1 0 70%; } 
+      &:last-of-type { flex: 1 0 30%; }
     }
   }
 
@@ -38,13 +38,11 @@
 
     font-size: 11px;
 
-    .header-row {
-      font-weight: 600; 
-    }
+    .header-row { font-weight: 600; }
 
     .row {
       display: grid; 
-      grid-template-columns: 2fr 3fr 4fr 2fr 4fr 60px;
+      grid-template-columns: 2fr 3fr 4fr 2fr 4fr 70px;
 
       margin: 5px 0;
 
@@ -63,6 +61,7 @@
         margin-right: 5px;
 
         color: $color_brand-red; 
+        font-size: 10px;
       }
     }
   }

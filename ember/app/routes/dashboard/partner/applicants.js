@@ -10,6 +10,7 @@ export default Ember.Route.extend({
 
     return RSVP.hash({
       applicants: this.store.findAll('applicant'),
+      picks: this.store.findAll('pick'),
       requisitions: RSVP.all(positions.mapBy('requisitions'))
                         .then(collection => flatten(collection)),
     });
