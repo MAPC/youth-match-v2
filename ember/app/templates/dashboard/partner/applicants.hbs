@@ -20,27 +20,37 @@
   <div class="partner-columns">
     <div class="partner-column">
 
-      <div class="search-table">
-        {{input value=searchQuery placeholder="Enter first and last name to search"}}
+      <div class="search-tag">
+        Search applicants who you may be interested in:
+      </div>
 
+      {{input value=searchQuery placeholder="Enter first or last name to search"}}
+
+      <div class="search-table">
         <div class="row header-row">    
           <div class="column">First Name</div>
           <div class="column">Last Name</div>
           <div class="column">Email</div>
           <div class="column">Mobile</div>
-          <div class="column">Interested?</div>
-          <div class="column">Position</div>
+          <div class="column"><span class="star">&#x2605;</span> Requested Position</div>
           <div class="column"></div>
         </div>
 
         {{#each filteredApplicants as |applicant|}}
           <div class="row">
-            <div class="column">{{applicant.first_name}}</div>
-            <div class="column">{{applicant.last_name}}</div>
+            <div class="column">
+              {{link-to applicant.first_name 'dashboard.partner.applicants.show' applicant.id}}
+            </div>
+            <div class="column">
+              {{link-to applicant.last_name 'dashboard.partner.applicants.show' applicant.id}}
+            </div>
             <div class="column">{{applicant.email}}</div>
             <div class="column">{{applicant.mobile_phone}}</div>
-            <div class="column">{{applicant.interested}}</div>
-            <div class="column">{{applicant.position}}</div>
+            <div class="column">
+              {{#if applicant.currentRequisition}}
+                {{truncate-text applicant.currentRequisition.position.title limit=24}}
+              {{/if}}
+            </div>
             <div class="column">
               <button class="small" onclick={{action 'pickApplicant' applicant}}>PICK</button>
             </div>

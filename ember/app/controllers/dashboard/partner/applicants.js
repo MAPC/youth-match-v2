@@ -4,6 +4,8 @@ import { computed, action } from 'ember-decorators/object';
 
 export default Ember.Controller.extend({
 
+  parent: Ember.inject.controller('dashboard.partner'),
+
   /**
    * Members
    */
@@ -12,7 +14,7 @@ export default Ember.Controller.extend({
 
   searchQuery: '',
   min: 0,
-  max: 25,
+  max: 20,
 
   @computed('min', 'max') 
   pageSize(min, max) {
@@ -22,8 +24,13 @@ export default Ember.Controller.extend({
 
   @computed('model.requisitions.[]')
   interestedApplicants(requisitions)  {
-    return requisitions.filter(requisition => requisition.get('applicant_status') === 'interested')
-                       .map(requisition => requisition.get('applicant'));
+    return requisitions.map(requisition => {
+                          let applicant = requisition.get('applicant');
+                          applicant.set('currentRequisition', requisition);
+
+                          return applicant;
+                        })
+                        .sortBy('last_name', 'first_name');
   },
 
 
@@ -61,7 +68,30 @@ export default Ember.Controller.extend({
 
   @action
   pickApplicant(applicant) {
-     
+    if (!this.get('parent.hasHitLimit')) {
+      let position = null;
+
+      if (applicant.get('currentRequisition')) {
+        position = applicant.get('currentRequisition.position').content;
+      }
+      else {
+        const positions = this.get('model.positions').filter(position => position.get('open_positions') > 0);
+        position = positions[Math.floor(Math.random() * positions.length)];
+
+        const requisitions = this.get('requisitions');
+        requisitions.forEach(requisition => {
+          if (requisition.get('applicant') === applicant) {
+            position = requisition.get('position');
+          }
+        });
+      }
+
+      console.log(position);
+      return;
+
+
+      this.store.createRecord('pick', { applicant, position }).save();
+    }
   }
 
 });
