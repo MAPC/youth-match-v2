@@ -64,7 +64,11 @@ WantedBy=multi-user.target
 ```
 Then to enable this run: `sudo systemctl enable sidekiq-youth-match-v2`
 
-In order to create partner accounts, someone needs to run the rake task rake email:create_cbo_accounts. This will then import the partner emails from a file called partner-emails-6-fixed.csv which contains the following columns: Organization Name, Primary Contact Person, Primary Contact Email. A new CSV file can be substituted that has data for this year. It just needs to match the "Organization Name" in the CSV with the correct "site_name" that is imported in the Positions table. The positions should be imported before importing partner accounts.
+In order to create partner accounts, someone needs to run the rake task `rake email:create_cbo_accounts`. This will then import the partner emails from a file called partner-emails-6-fixed.csv which contains the following columns: Organization Name, Primary Contact Person, Primary Contact Email. A new CSV file can be substituted that has data for this year. It just needs to match the "Organization Name" in the CSV with the correct "site_name" that is imported in the Positions table. The positions should be imported before importing partner accounts.
+
+User accounts are automatically created for youth when they are imported from ICIMS as seen in `/app/jobs/import_applicant_job.rb`
+
+In order to create staff accounts a CSV file needs to be created in `lib/import/staff-accounts.csv` with a column called "Primary Contact Email" that has the staff person's email address. Then a developer can run `rake import:staff_accounts` to create the staff accounts and email the staff their passwords.
 
 You will need to set the ActionMailer Default URL in `config/production.rb` to correctly generate URLs in the email templates.
 

@@ -345,9 +345,9 @@ namespace :import do
 
   desc 'Associate New User Account With Random Position/Site'
   task development_partner: :environment do
-    user = User.create({ 
-      email: Faker::Internet.email, 
-      password: 'password', 
+    user = User.create({
+      email: Faker::Internet.email,
+      password: 'password',
       account_type: 'partner',
     })
 
@@ -357,6 +357,20 @@ namespace :import do
     puts 'User Password: password'
   end
 
+  desc 'Create user accounts for staff'
+  task staff_accounts: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'staff-accounts.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row|
+      password = Devise.friendly_token.first(8)
+      user = User.create(email: row['Primary Contact Email'],
+                         password: password,
+                         account_type: 'staff')
+      puts row['Primary Contact Email'] if user.blank?
+      next if user.blank?
+      StaffMailer.staff_login_email(user, password).deliver_now
+    end
+  end
 
   private
 
