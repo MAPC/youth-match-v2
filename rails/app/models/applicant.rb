@@ -12,7 +12,7 @@ class Applicant < ApplicationRecord
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|
-      unless self.offers.where(accepted: 'waiting').present?
+      unless offers.where(accepted: 'waiting').present?
         next if offers.pluck(:position_id).include?(preference.position_id)
         if preference.position.open? || preference.position.prefers?(self)
           # if preference.position.open?
@@ -30,7 +30,7 @@ class Applicant < ApplicationRecord
   def self.chosen
     open_positions = Position.sum(:open_positions) - (Offer.where(accepted: 'yes').count + Offer.where(accepted: 'waiting').count)
     # pull count of records of database equal to open positions that are in the lottery
-    where(lottery_activated: true).order(:lottery_number).first(open_positions)
+    left_outer_joins(:offers).where(offers: { id: nil } ).order(:lottery_number).first(open_positions)
   end
 
   def prefers_interest

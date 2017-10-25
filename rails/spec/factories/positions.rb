@@ -8,7 +8,7 @@ FactoryGirl.define do
     location ''
     duties_responsbilities 'Some duties and responsibilites.'
     ideal_candidate 'The ideal candidate.'
-    open_positions Faker::Number.between(1, 10)
+    open_positions { Faker::Number.between(1, 2) }
     site_name { Faker::Company.unique.name }
     external_application_url 'http://www.nytimes.com'
     primary_contact_person { Faker::Name.unique.name }

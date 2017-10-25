@@ -76,10 +76,14 @@ To test and prove the lottery works:
 4. `bundle exec sidekiq` to start sidekiq for background workers
 5. `rake lottery:build_travel_time_preferences` to build travel time preference lists
 6. `rake lottery:build_preference_scores` to build the final preference scores
-8. `rake lottery:match` to match positions to jobs
-9. `rake lottery:print` to print information about the lottery results
+7. `rake lottery:match` to match applicants to positions
+8. `rake lottery:print` to print information about the lottery results
 
-*Note*: When running the lottery for real, you need to make sure the applicants that are going to be matched for the round have their lottery_activated status set to true. By default imported applicants will have this set. But you can also run the UpdateLotteryActivatedCandidatesJob in order to pull the latest status from ICIMS.
+Alternative quick way to test matching:
+1. `rake import:development_seed_data` to create applicant and position fake data
+2. `rake lottery:assign_lottery_numbers` to pick lottery winners
+3. `rake lottery:fake_preference_scores` to generate fake preference scores between each applicant and position
+4. `rake lottery:match` to match applicants to positions
 
 ## Algorithm Explanation
 

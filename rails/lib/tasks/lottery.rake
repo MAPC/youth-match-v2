@@ -17,6 +17,15 @@ namespace :lottery do
     BuildPreferenceListsJob.perform_later
   end
 
+  desc 'Build fake preference scores'
+  task fake_preference_scores: :environment do
+    Applicant.all.each do |applicant|
+      Position.all.each do |position|
+        FactoryGirl.create(:preference, applicant: applicant, position: position)
+      end
+    end
+  end
+
   desc 'Assign lottery numbers'
   task assign_lottery_numbers: :environment do
     Applicant.order("RANDOM()").each_with_index do |applicant, index|
