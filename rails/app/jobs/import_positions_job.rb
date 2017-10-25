@@ -12,7 +12,8 @@ class ImportPositionsJob < ApplicationJob
                             duties_responsbilities: job['responsibilities'],
                             address: job_address['addressstreet1'],
                             site_name: job['joblocation']['value'],
-                            location: geocode_address(job_address['addressstreet1']))
+                            location: geocode_address(job_address['addressstreet1']),
+                            open_positions: row['numberofpositions'])
     position.save!
   end
 
