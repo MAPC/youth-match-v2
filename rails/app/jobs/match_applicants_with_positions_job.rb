@@ -20,7 +20,7 @@ class MatchApplicantsWithPositionsJob < ApplicationJob
     # How to know if open_positions?
     # Take the sum of open_positions and then subtract the number of waiting offers
     # set open positions to open_positions from icims minus workflows from icims so we're always sync'd
-    if Position.all.sum(:open_positions) > Offer.where(accepted: 'waiting').count # or Offer.where(accepted: 'waiting').count == Applicant.chosen.count
+    if Position.all.sum(:open_positions) > (Offer.where(accepted: 'waiting').count + Offer.where(accepted: 'yes').count) # or Offer.where(accepted: 'waiting').count == Applicant.chosen.count
       match_applicants_to_positions
     end
 

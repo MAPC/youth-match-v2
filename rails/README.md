@@ -66,6 +66,8 @@ Then to enable this run: `sudo systemctl enable sidekiq-youth-match-v2`
 
 In order to create partner accounts, someone needs to run the rake task rake email:create_cbo_accounts. This will then import the partner emails from a file called partner-emails-6-fixed.csv which contains the following columns: Organization Name, Primary Contact Person, Primary Contact Email. A new CSV file can be substituted that has data for this year. It just needs to match the "Organization Name" in the CSV with the correct "site_name" that is imported in the Positions table. The positions should be imported before importing partner accounts.
 
+You will need to set the ActionMailer Default URL in `config/production.rb` to correctly generate URLs in the email templates.
+
 To test and prove the lottery works:
 
 1. `rake import:applicant_test_data`
@@ -74,10 +76,14 @@ To test and prove the lottery works:
 4. `bundle exec sidekiq` to start sidekiq for background workers
 5. `rake lottery:build_travel_time_preferences` to build travel time preference lists
 6. `rake lottery:build_preference_scores` to build the final preference scores
-8. `rake lottery:match` to match positions to jobs
-9. `rake lottery:print` to print information about the lottery results
+7. `rake lottery:match` to match applicants to positions
+8. `rake lottery:print` to print information about the lottery results
 
-*Note*: When running the lottery for real, you need to make sure the applicants that are going to be matched for the round have their lottery_activated status set to true. By default imported applicants will have this set. But you can also run the UpdateLotteryActivatedCandidatesJob in order to pull the latest status from ICIMS.
+Alternative quick way to test matching:
+1. `rake import:development_seed_data` to create applicant and position fake data
+2. `rake lottery:assign_lottery_numbers` to pick lottery winners
+3. `rake lottery:fake_preference_scores` to generate fake preference scores between each applicant and position
+4. `rake lottery:match` to match applicants to positions
 
 ## Algorithm Explanation
 
