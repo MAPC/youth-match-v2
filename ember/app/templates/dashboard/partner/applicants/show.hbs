@@ -2,9 +2,22 @@
 
   {{link-to 'X' 'dashboard.partner.applicants.index' class="back-link"}}
 
-  <h3>{{model.applicant.full_name}}</h3>
+  <h3>
+    {{#if requisition}}
+      <span class="star">&#x2605;</span>
+    {{/if}}
+
+    {{model.applicant.first_name}} {{model.applicant.last_name}}
+  </h3>
 
   <div class="applicant-info">
+
+    {{#if requisition}}
+      <p>
+        <h5 class="inline">Requested Position:</h5> {{requisition.position.title}}
+      </p>
+    {{/if}}
+
     <p>
       <h5 class="inline">Email:</h5> {{model.applicant.email}}
     </p>
@@ -45,8 +58,8 @@
     {{/if}}
   </div>
 
-  {{#unless parent.parent.hasHitLimit}}
-    <button class="small dark" onclick={{action 'pickApplicant'}}>PICK THIS APPLICANT</button>
+  {{#unless hasHitLimit}}
+    <button class="small dark" onclick={{action 'pickApplicant' model.applicant}}>PICK THIS APPLICANT</button>
   {{/unless}}
 
 </section>

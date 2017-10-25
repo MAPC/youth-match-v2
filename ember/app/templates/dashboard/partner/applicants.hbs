@@ -46,7 +46,11 @@
             </div>
             <div class="column">{{applicant.email}}</div>
             <div class="column">{{applicant.mobile_phone}}</div>
-            <div class="column">{{applicant.position}}</div>
+            <div class="column">
+              {{#if applicant.currentRequisition}}
+                {{truncate-text applicant.currentRequisition.position.title limit=24}}
+              {{/if}}
+            </div>
             <div class="column">
               <button class="small" onclick={{action 'pickApplicant' applicant}}>PICK</button>
             </div>

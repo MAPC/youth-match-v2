@@ -9,6 +9,7 @@ export default Ember.Controller.extend({
     return picks.get('length');
   },
 
+
   @computed('model.positions')
   totalAllotments(positions) {
     return positions.get('firstObject.open_positions');
