@@ -45,7 +45,7 @@
     {{/if}}
   </div>
 
-  {{#unless parentController.hasHitLimit}}
+  {{#unless parent.parent.hasHitLimit}}
     <button class="small dark" onclick={{action 'pickApplicant'}}>PICK THIS APPLICANT</button>
   {{/unless}}
 

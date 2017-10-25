@@ -21,9 +21,21 @@ export default Ember.Controller.extend({
   },
 
 
+  @computed('totalAllotments', 'model.user.allocation_rule')
+  lotteryAllotments(totalAllotments, allocationRule) {
+    return Math.ceil(totalAllotments / allocationRule);
+  },
+
+
   @computed('numberChosen', 'directSelectAllotments')
   hasHitLimit(numberChosen, directSelectAllotments) {
     return numberChosen >= directSelectAllotments;
   },
+
+
+  @computed('model.user.allocation_rule')
+  selectionTotal(allocationRule) {
+    return 100 / allocationRule;
+  }
 
 });

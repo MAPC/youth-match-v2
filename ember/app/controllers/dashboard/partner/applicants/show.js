@@ -4,7 +4,7 @@ import { action } from 'ember-decorators/object';
 
 export default Ember.Controller.extend({
 
-  parentController: Ember.inject.controller('dashboard.partner.applicants'),
+  parent: Ember.inject.controller('dashboard.partner.applicants'),
   
 
   @action
