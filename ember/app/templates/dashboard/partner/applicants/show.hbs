@@ -1,0 +1,65 @@
+<section class="route partner-applicants-show">
+
+  {{link-to 'X' 'dashboard.partner.applicants.index' class="back-link"}}
+
+  <h3>
+    {{#if requisition}}
+      <span class="star">&#x2605;</span>
+    {{/if}}
+
+    {{model.applicant.first_name}} {{model.applicant.last_name}}
+  </h3>
+
+  <div class="applicant-info">
+
+    {{#if requisition}}
+      <p>
+        <h5 class="inline">Requested Position:</h5> {{requisition.position.title}}
+      </p>
+    {{/if}}
+
+    <p>
+      <h5 class="inline">Email:</h5> {{model.applicant.email}}
+    </p>
+
+    <p>
+      <h5>Summary:</h5>
+      <ul>
+        <li>- {{if model.applicant.has_transit_pass 'Has transit pass' 'Does not have transit pass'}}</li>
+        <li>- {{if model.applicant.in_school 'Is in school' 'Not in school'}}</li>
+        <li>- {{if model.applicant.bps_student 'Is a BPS student' 'Is not a BPS student'}}</li>
+        <li>- {{if model.applicant.english_first_language 'English is first language' 'English is not first language'}}</li>
+        {{#if model.applicant.fluent_other_language}}<li>- Bi-lingual </li>{{/if}}
+        {{#if model.applicant.held_successlink_job_before}}<li>- Has had a SuccessLink job before</li>{{/if}}
+        {{#if model.applicant.wants_to_return_to_previous_job}}<li>- Wants to be rehired</li>{{/if}}
+        {{#if model.applicant.superteen_participant}}<li>- Superteen</li>{{/if}}
+        {{#if model.applicant.receive_text_messages}}<li>- Receives Text Messages</li>{{/if}}
+      </ul>
+    </p>
+
+    <p>
+      <h5>Interests:</h5>
+      {{#if model.applicant.interests}}
+        <ul>
+          {{#each model.applicant.interests as |interest|}}
+            <li>- {{interest}}</li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <div class="non-list">No Interests Specified</div>
+      {{/if}}
+    </p>
+
+    {{#if model.applicant.participant_essay}}
+      <p>
+        <h5>Essay:</h5>
+        <div class="non-list">{{model.applicant.participant_essay}}</div>
+      </p>
+    {{/if}}
+  </div>
+
+  {{#unless hasHitLimit}}
+    <button class="small dark" onclick={{action 'pickApplicant' model.applicant}}>PICK THIS APPLICANT</button>
+  {{/unless}}
+
+</section>
