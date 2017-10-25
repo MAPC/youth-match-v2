@@ -1,9 +1,17 @@
 import Ember from 'ember';
+import RSVP from 'rsvp';
+
 
 export default Ember.Route.extend({
  
   model() {
-    return this.modelFor('dashboard').get('positions');
+    const user = this.modelFor('dashboard');
+
+    return RSVP.hash({
+      user, 
+      positions: user.get('positions'),
+      picks: this.store.findAll('pick'),
+    });
   }
 
 });

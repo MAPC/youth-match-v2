@@ -16,7 +16,7 @@ Router.map(function() {
       this.route('about');
     });
     this.route('partner', function() {
-      this.route('positions', function() {});
+      this.route('positions');
       this.route('applicants', function() {
         this.route('show', { path: '/:applicant_id' });
       });
