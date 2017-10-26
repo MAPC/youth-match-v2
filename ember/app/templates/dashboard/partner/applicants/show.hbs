@@ -58,8 +58,12 @@
     {{/if}}
   </div>
 
-  {{#unless hasHitLimit}}
-    <button class="small dark" onclick={{action 'pickApplicant' model.applicant}}>PICK THIS APPLICANT</button>
+  {{#unless picked}}
+    {{#unless parent.parent.hasHitLimit}}
+      <button class="small dark" onclick={{action 'pickApplicant' model.applicant}}>PICK THIS APPLICANT</button>
+    {{/unless}}
+  {{else}}
+    <button class="small dark" onclick={{action 'unpickApplicant' model.applicant}}>UNPICK THIS APPLICANT</button>
   {{/unless}}
 
 </section>

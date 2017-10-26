@@ -52,7 +52,7 @@
               {{/if}}
             </div>
             <div class="column">
-              <button class="small" onclick={{action 'pickApplicant' applicant}}>PICK</button>
+              <button class="small {{if parent.hasHitLimit 'disabled'}}" onclick={{action 'pickApplicant' applicant}}>PICK</button>
             </div>
           </div>
         {{/each}}
