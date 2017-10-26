@@ -1,33 +1,34 @@
 <section class="route partner-positions">
 
   <h2>MANAGE POSITIONS</h2>
-  
+
+   <p>
+    The BCYF Youth Engagement and Employment Summer Jobs Program has allocated you a total 
+    of {{parent.totalAllotments}} positions. You may select {{parent.selectionTotal}}% of your positions 
+    ({{parent.directSelectAllotments}} youth) to work for you this summer. 
+    {{#if (eq model.user.allocation_rule 2)}}
+      In May 2017, the BCYF will select the remaining half of your positions ({{parent.lotteryAllotments}} youth) through a jobs lottery.
+    {{/if}}
+  </p>
+
+  <p>
+    In the list below, browse through applicants who have an interest in the position or 
+    area of work you offer. Starting April 5th, you may review candidates and mark "Intend 
+    to Hire" or "I do not want to hire." Any remaining youth applicants enter into the jobs 
+    lottery.
+  </p>
+
+  <p>
+    Please add your choices beginning April 5th and no later than April 28th. Your selections 
+    create an official record of who you want to hire. <b>It is mandatory to select applicants 
+    by April 28th to complete legal and HR requirements for employing youth.</b>
+  </p>
+
+ 
   <div class="partner-columns">
     <div class="partner-column">  
-      <p>
-        The BCYF Youth Engagement and Employment Summer Jobs Program has allocated you a total 
-        of {{parent.totalAllotments}} positions. You may select {{parent.selectionTotal}}% of your positions 
-        ({{parent.directSelectAllotments}} youth) to work for you this summer. 
-        {{#if (eq model.user.allocation_rule 2)}}
-          In May 2017, the BCYF will select the remaining half of your positions ({{parent.lotteryAllotments}} youth) through a jobs lottery.
-        {{/if}}
-      </p>
-
-      <p>
-        In the list below, browse through applicants who have an interest in the position or 
-        area of work you offer. Starting April 5th, you may review candidates and mark "Intend 
-        to Hire" or "I do not want to hire." Any remaining youth applicants enter into the jobs 
-        lottery.
-      </p>
-
-      <p>
-        Please add your choices beginning April 5th and no later than April 28th. Your selections 
-        create an official record of who you want to hire. <b>It is mandatory to select applicants 
-        by April 28th to complete legal and HR requirements for employing youth.</b>
-      </p>
-
       <div class="selection-counter">
-        Our records show you intend to hire these applicants. <strong>You have {{model.picks.length}} 
+        Our records show you intend to hire these applicants. <strong>You have {{directAllotmentsLeft}} 
         of {{parent.directSelectAllotments}} left</strong>:
       </div>
 
@@ -40,7 +41,7 @@
 
         {{#each model.picks as |pick|}}
           <div class="row">   
-            <div class="colum">
+            <div class="column">
               {{link-to pick.applicant.full_name 'dashboard.partner.applicants.show' pick.applicant.id}}
             </div>
             <div class="column">
@@ -52,12 +53,14 @@
             </div>
             <div class="column">{{pick.status}}</div>
             <div class="column">
-              <button class="small" onclick={{action 'removePick' pick}}>REMOVE</button>
+              {{#unless (eq pick.status 'hire')}}
+                <button class="small" onclick={{action 'removePick' pick}}>REMOVE</button>
+              {{/unless}}
             </div>
           </div>
         {{/each}}
 
-        <button class="small dark" onclick={{action 'submitForm'}}>SUBMIT</button>
+        <button class="small dark" onclick={{action 'submitForm'}}>{{if submitted 'SUBMITTED' 'SUBMIT'}}</button>
       </div>
     </div>
 
