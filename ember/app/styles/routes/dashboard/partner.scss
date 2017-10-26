@@ -1,0 +1,21 @@
+.route.partner {
+  font-size: 14px;
+  
+  .partner-columns {
+    display: flex; 
+
+    margin-top: 60px;
+
+    .partner-column {
+      &:first-of-type { flex: 1 0 70%; } 
+      &:last-of-type { flex: 1 0 30%; }
+    }
+  }
+
+  .row .column a {
+    &:hover {
+      color: $color_brand-blue; 
+    } 
+  }
+
+}

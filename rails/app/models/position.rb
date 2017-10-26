@@ -1,6 +1,6 @@
 class Position < ApplicationRecord
   has_many :preferences
-  has_many :requisitions
+  has_many :requisitions, dependent: :destroy
   has_many :applicants, through: :requisitions
   has_many :selections, through: :picks, source: :applicant
   has_many :picks
@@ -11,6 +11,7 @@ class Position < ApplicationRecord
   def open?
     lottery_slots = open_positions
     lottery_slots -= offers.where(accepted: 'waiting').count
+    lottery_slots -= offers.where(accepted: 'yes').count
     return true if lottery_slots > 0
     return false
   end
@@ -35,7 +36,5 @@ class Position < ApplicationRecord
       return true
     end
     return false
-    # preferences.find_by(applicant: new_applicant).score >
-    # preferences.find_by(applicant: self.offer.applicant).score
   end
 end

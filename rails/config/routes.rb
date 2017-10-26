@@ -2,14 +2,8 @@ require 'sidekiq/web'
 
 Rails.application.routes.draw do
   devise_for :users, :controllers => { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'sessions' }
-  get 'travel_time/get'
-  resources :position_imports, only: [:create]
 
   scope 'api' do
-    resources :rehire_sites, only: [:get_uniq_sites, :index, :update] do
-      get 'get_uniq_sites', to: 'rehire_sites#get_uniq_sites', on: :collection
-    end
-
     resources :offers
     resources :applicants, only: [:index, :show, :update]
 
@@ -23,22 +17,24 @@ Rails.application.routes.draw do
     resources :users, only: [:create, :update, :show, :index] do
       resources :positions
     end
-    resources :requisitions, only: [:update, :show]
-    resources :picks, only: [:index, :update, :show, :create, :destroy]
-    resources :outgoing_messages, only: [:create, :new, :index, :show]
-  end
 
-  resources :applicant_imports, only: [:create]
-  resources :update_icims, only: [:create]
+    resources :picks, only: [:show, :index, :update, :create, :destroy]
+    resources :requisitions, only: [:update, :show]
+    resources :outgoing_messages, only: [:create, :new, :index, :show]
+    resources :lottery_numbers, only: [:create]
+    resources :travel_time_scores, only: [:create]
+    resources :preference_scores, only: [:create]
+    resources :matches, only: [:create]
+    resources :lottery_activated_statuses, only: [:create]
+    resources :applicant_imports, only: [:create]
+    resources :update_icims, only: [:create]
+    resources :position_imports, only: [:create]
+    resources :password_resets, only: [:create]
+  end
 
   root to: 'offers#index'
 
   get 'offers/accept'
   get 'offers/decline'
-
-  authenticate :user do
-    mount Sidekiq::Web => '/sidekiq'
-  end
-
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

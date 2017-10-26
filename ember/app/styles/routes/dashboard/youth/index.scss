@@ -1,3 +1,138 @@
 .route.youth-index {
 
+  .status-message {
+    color: $color_brand-blue;
+    font-size: 38px;
+    font-weight: 100;
+    line-height: 55px;
+  }
+
+  article {
+    margin: 50px auto;  
+
+    p {
+      width: 50%; 
+      font-weight: 300;
+      font-size: 14px;
+
+      a { 
+        font-weight: 600; 
+
+        &:hover { opacity: .85; }
+      }
+
+      em { font-size: 13px; }
+    }
+  }
+
+  h4 {
+    color: $color_brand-red; 
+    font-weight: 600;
+  }
+
+  .timeline-wrapper h4 { margin-bottom: 50px; }
+
+  .timeline {
+    $checkpoint_size: 70px;
+
+    left: -4%;
+    display: flex;     
+
+    width: 80%;
+
+    text-align: center;
+
+    &:before, &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 13px;
+      left: 0;
+
+      height: 10px;
+      margin: 0 auto;
+
+      background: darken($color_bg-medium, 10);
+    }
+
+    &:before {
+      right: 0; 
+
+      width: 80%;
+    }
+
+    &:after {
+      left: 10%;
+
+      width: 0;
+
+      background: $color_brand-red;
+      transition: width .5s;
+    }
+
+    &.step-1:after { width: 5%; }
+    &.step-2:after { width: 25%; }
+    &.step-3:after { width: 45%; }
+    &.step-4:after { width: 65%; }
+    &.step-5:after { width: 80%; }
+
+    .checkpoint {
+      flex: 1 1;  
+    }
+
+    .checkpoint-number {
+      z-index: 10;
+
+      width: $checkpoint_size;
+      height: $checkpoint_size;
+      margin: 0 auto; 
+
+      span {
+        $number_size: $checkpoint_size / 2;
+        display: inline-block;
+
+        width: $number_size;
+        height: $number_size;
+        padding: ($number_size / 4) 0;
+
+        color: $color_font-light;
+
+        background: $color_brand-red;
+        border-radius: 50%;
+
+        &.large {
+          top: -$checkpoint_size / 14;
+
+          width: $checkpoint_size / 1.5;
+          height: $checkpoint_size / 1.5;
+          padding: $checkpoint_size / 18;
+
+          font-size: 26px;
+          font-weight: 600;
+
+          border: 3px solid $color_brand-yellow; 
+        }
+
+        &.inactive { background: darken($color_bg-medium, 10); }
+      }
+    }
+
+    .checkpoint-info {
+      width: 60%;
+      margin: 0 auto;
+
+      font-size: 14px;
+
+      h5 {
+        width: max-content;
+        padding-bottom: 4px;
+        margin: 0 auto 10px;
+
+        font-size: 15px;
+
+        border-bottom: 4px solid $color_brand-red; 
+      }
+    }
+  }
+
 }

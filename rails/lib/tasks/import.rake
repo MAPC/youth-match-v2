@@ -15,6 +15,7 @@ namespace :import do
       a.prefers_nearby = row['prefers_ne'].to_s == 'TRUE' ? true : false
       a.has_transit_pass = row['has_transi'].to_s == 'TRUE' ? true : false
       a.location = "POINT(" + row['X'] + " " + row['Y'] + ")" # lon lat
+      a.lottery_activated = true
       a.save
     end
   end
@@ -321,7 +322,6 @@ namespace :import do
   task development_seed_data: :environment do
 
     User.create([
-      { email: 'youth@seed.org', password: 'password' },
       { email: 'partner@seed.org', password: 'password', account_type: 'partner' },
       { email: 'staff@seed.org', password: 'password', account_type: 'staff' } ,
     ])
@@ -332,6 +332,43 @@ namespace :import do
 
     100.times do |index|
       FactoryGirl.create(:position)
+    end
+  end
+
+  desc 'Import Applicant Seed Data'
+  task development_applicant: :environment do
+    user = FactoryGirl.create(:user_with_applicant)
+
+    puts 'User Email: ' + user.email
+    puts 'User Password: password'
+  end
+
+  desc 'Associate New User Account With Random Position/Site'
+  task development_partner: :environment do
+    user = User.create({
+      email: Faker::Internet.email,
+      password: 'password',
+      account_type: 'partner',
+    })
+
+    Site.all.sample.update(user_id: user.id)
+
+    puts 'User Email: ' + user.email
+    puts 'User Password: password'
+  end
+
+  desc 'Create user accounts for staff'
+  task staff_accounts: :environment do
+    csv_text = File.read(Rails.root.join('lib', 'import', 'staff-accounts.csv'))
+    csv = CSV.parse(csv_text, headers: true, encoding: 'ISO-8859-1')
+    csv.each_with_index do |row|
+      password = Devise.friendly_token.first(8)
+      user = User.create(email: row['Primary Contact Email'],
+                         password: password,
+                         account_type: 'staff')
+      puts row['Primary Contact Email'] if user.blank?
+      next if user.blank?
+      StaffMailer.staff_login_email(user, password).deliver_now
     end
   end
 

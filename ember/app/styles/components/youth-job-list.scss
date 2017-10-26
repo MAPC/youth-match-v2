@@ -1,0 +1,62 @@
+.component.youth-job-list {
+  padding: 15px;
+
+  font-size: 13px;
+  font-weight: 400;
+
+  background: $color_bg-blue;
+
+
+  h3 { margin-top: 0; }
+
+  ol {
+    padding-left: 14px;
+
+    li {
+      width: 100%; 
+      margin: 18px auto;
+      padding: 0 35px 0 14px;
+
+      font-weight: 600;
+
+      a:hover { text-decoration: underline; }
+
+      span { 
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        font-weight: 600;
+
+        cursor: pointer;
+        opacity: .6;
+        transition: opacity .15s;
+
+        &:hover {
+          opacity: .9;  
+          transition: opacity .15s;
+        }
+      }
+    }
+
+    .no-jobs {
+      color: $color_font-medium; 
+    }
+  }
+
+  .congratulations {
+    width: 100%; 
+    margin: 25px auto 10px;
+
+    text-align: center;
+
+    span { 
+      display: inline-block;
+
+      margin-right: 5px;
+
+      color: forestgreen; 
+      font-size: 17px;
+    }
+  }
+}

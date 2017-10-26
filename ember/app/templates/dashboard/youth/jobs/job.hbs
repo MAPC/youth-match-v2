@@ -1,1 +1,89 @@
-{{outlet}}
+<section class="route youth-jobs-job">
+
+  <div class="jobs-overview">
+    <div class="content-column">
+      {{link-to '< GO BACK' 'dashboard.youth.jobs' class='back-link'}}
+     
+      <div class="job-box">
+        <h6>{{model.position.category}}</h6>
+
+        <div class="job-description">
+          <h4>{{model.position.site_name}}</h4>
+          <h5>{{capitalize (pure-title model.position.title)}}</h5>
+
+          <p>
+            {{model.position.duties_responsbilities}}
+          </p>
+
+          {{#if model.position.ideal_candidate}}
+            <p>
+              <h5>Ideal Candidate:</h5>
+              {{model.position.ideal_candidate}}
+            </p>
+          {{/if}}
+        </div>
+      </div> 
+
+      <div class="job-box">
+        <div class="job-description">
+          <p>
+            <h5>Contact:</h5>
+            
+            Primary Contact Person: {{model.position.primary_contact_person}} ({{model.position.primary_contact_person_title}})<br/>
+            Contact Phone: {{model.position.primary_contact_person_phone}}<br/>
+            Contact Email: {{model.position.primary_contact_person_email}}<br/>
+            Address: {{model.position.address}}<br/>
+          </p>
+
+          {{#if isInterested}}
+            <button class="small dark" onclick={{action 'toggleInterest'}}>I'M NO LONGER INTERESTED</button>
+          {{else}}
+            {{#if model.user.applicant.hasReachedMaxPositions}}
+              <p class="max-reached">
+                You have reached the maximum number of jobs. You may remove a job from your list in 
+                order to add to this job.
+              </p>
+            {{else}}
+              <button class="small dark" onclick={{action 'toggleInterest'}}>I'M INTERESTED</button>
+            {{/if}}
+          {{/if}}
+        </div>
+      </div>
+    </div>
+
+    <div class="content-column">
+      <h3>JOB LOCATION</h3>
+
+      {{#leaflet-map onLoad=(action 'setMapInstance') onMoveend=(action 'resetMap') bounds=mapState.bounds}}
+        {{tile-layer url="http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"}}
+        {{#each clusters as |site|}}
+          {{#circle-marker-layer 
+            fillColor=(if site.isSelected '#FF5722' '#1A5678')
+            stroke=0
+            fillOpacity=0.9
+            radius=(if site.isSelected 8 4)
+            lat=site.latitude
+            lng=site.longitude
+            onClick=(if site.hasManyJobs '' (action 'linkTo' site.values.firstObject))
+          }}
+            {{#popup-layer}}
+              <ul>
+                <h3>{{site.values.length}} at this location:</h3>
+
+                {{#each site.values as |position|}}
+                  <li>{{link-to position.category 'dashboard.youth.jobs.job' position.id}}</li>
+                {{/each}}
+              </ul>
+            {{/popup-layer}}
+          {{/circle-marker-layer}}
+        {{/each}}
+      {{/leaflet-map}}
+
+      {{youth-job-list 
+        model=model.user.applicant
+        removeItem=(action "removePosition")
+      }}
+    </div>
+  </div>
+
+</section>

@@ -1,7 +1,9 @@
 import DS from 'ember-data';
 
+const { belongsTo, attr } = DS;
+
 export default DS.Model.extend({
-  applicant: DS.belongsTo('applicant'),
-  position: DS.belongsTo('position'),
-  status: DS.attr('string')
+  applicant: belongsTo('applicant'),
+  position: belongsTo('position'),
+  status: attr('string'),
 });

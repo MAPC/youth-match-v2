@@ -9,4 +9,22 @@ RSpec.describe "OutgoingMessages", type: :request do
       expect(response).to have_http_status(200)
     end
   end
+
+  describe "POST /outgoing_messages" do
+    it "texts a message to the chosen applicants" do
+      user = FactoryGirl.create(:user)
+      headers = { 'Content-Type' => 'application/vnd.api+json', 'Accept' => 'application/vnd.api+json', 'authorization' => "Token token=#{user.authentication_token}, email=#{user.email}" }
+      post outgoing_messages_path, params: %Q(
+        {
+          "data": {
+            "type": "outgoing_message",
+            "attributes": {
+              "body": "You got a job!"
+            }
+          }
+        }
+      ), headers: headers
+      expect(response).to have_http_status(200)
+    end
+  end
 end

@@ -1,0 +1,45 @@
+.route.partner-positions {
+
+  .selected-table {
+    display: grid; 
+    grid-template-columns: 100%;
+
+    padding-top: 25px;
+
+    .header-row { 
+      padding-bottom: 15px;
+
+      font-weight: 600;
+
+      border-bottom: 3px solid $color_brand-red;
+    }
+
+    .row {
+      display: grid; 
+      grid-template-columns: 2fr 3fr 1fr 1fr;
+
+      margin: 10px 0;
+
+      .column {
+        padding: 0 5px; 
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    select {
+      padding: 15px;
+
+      outline: none;
+      background: none;
+      border: 1px solid $color_bg-dark; 
+      border-radius: 0%;
+    }
+    
+    & > button {
+      margin-top: 25px; 
+    }
+  }
+
+}

@@ -10,15 +10,15 @@ Router.map(function() {
   this.route('login');
   this.route('dashboard', function() {
     this.route('youth', function() {
-      this.route('profile');
       this.route('jobs', function() {
         this.route('job', { path: '/:position_id' });
       });
+      this.route('about');
     });
     this.route('partner', function() {
-      this.route('applicant', { path: '/applicant/:id' });
-      this.route('show-applicant', { path: '/profile/:applicant_id' }, function() {
-        this.route('new-pick', { path: 'new' });
+      this.route('positions');
+      this.route('applicants', function() {
+        this.route('show', { path: '/:applicant_id' });
       });
     });
     this.route('staff', function() {

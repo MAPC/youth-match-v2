@@ -54,7 +54,17 @@
 
       button { margin: 20px auto 35px; }
     }
-    
+ 
+
+    .explanation {
+      top: 40px;
+
+      width: 450px; 
+      margin: 0 auto;
+
+      color: $color_font-medium;
+      font-size: 12px;
+    }
   }
 
 

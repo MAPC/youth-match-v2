@@ -21,7 +21,7 @@ class OutgoingMessagesController < ApplicationController
   # GET /outgoing_messages/new
   def new
     @outgoing_message = OutgoingMessage.new
-    @selected_applicant_mobile_phone_numbers = Applicant.chosen.pluck(:mobile_phone)
+    @selected_applicant_mobile_phone_numbers = Offer.where(accepted: 'waiting').joins(:applicant).pluck(:mobile_phone).compact
   end
 
   # POST /outgoing_messages
@@ -30,7 +30,7 @@ class OutgoingMessagesController < ApplicationController
 
     if @outgoing_message.save
       @outgoing_message.to.each do |phone_number|
-        SendTextWorker.perform_later(phone_number, @outgoing_message.body)
+        SendTextJob.perform_later(phone_number, @outgoing_message.body)
       end
       respond_to do |format|
         format.jsonapi { render jsonapi: 'Outgoing message was successfully created.' }
@@ -50,5 +50,6 @@ class OutgoingMessagesController < ApplicationController
     # Only allow a trusted parameter "white list" through.
     def outgoing_message_params
       ActiveModelSerializers::Deserialization.jsonapi_parse(params, only: [:to, :body])
+      .merge(to: Applicant.chosen.pluck(:mobile_phone))
     end
 end

@@ -23,20 +23,11 @@ namespace :email do
       positions = Position.where(site_name: row['Organization Name'])
       user = User.create(email: row['Primary Contact Email'],
                          password: Devise.friendly_token.first(8),
-                         positions: positions)
+                         positions: positions,
+                         account_type: 'partner')
       puts row['Primary Contact Email'] if user.blank?
       next if user.blank?
       CboUserMailer.cbo_user_email(user).deliver_now
-    end
-  end
-
-  desc 'Create User Accounts for Applicants'
-  task create_applicant_accounts: :environment do
-    Applicant.where(user: nil).each do |applicant|
-      next if applicant.email.blank?
-      user = User.create(email: applicant.email.downcase,
-                         password: Devise.friendly_token.first(8),
-                         applicant: applicant)
     end
   end
 
@@ -51,27 +42,6 @@ namespace :email do
   task update_user_emails: :environment do
     Applicant.all.each do |applicant|
       applicant.user.update(email: applicant.email)
-    end
-  end
-
-  desc 'Update user accounts'
-  task user_test_emails: :environment do
-    Applicant.chosen.first(7).each_with_index do |applicant, index|
-      if index == 0
-        applicant.user.update(email: 'princewill.dimgba@boston.gov')
-      elsif index == 1
-        applicant.user.update(email: 'linda.monteiro@boston.gov')
-      elsif index == 2
-        applicant.user.update(email: 'tierra.lyons@boston.gov')
-      elsif index == 3
-        applicant.user.update(email: 'ann.braga@boston.gov')
-      elsif index == 4
-        applicant.user.update(email: 'rashad.cope@boston.gov')
-      elsif index == 5
-        applicant.user.update(email: 'deron.jackson@boston.gov')
-      elsif index == 6
-        applicant.user.update(email: 'pcdimgba@yahoo.com')
-      end
     end
   end
 

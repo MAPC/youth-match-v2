@@ -1,20 +1,22 @@
 .route.jobs {
+  min-height: inherit;
 
   h2 { margin-bottom: -20px; }
 
   .jobs-overview {
     display: flex; 
 
-    margin-bottom: 35px;
+    margin-bottom: 65px;
 
     .content-column {
       flex: 1 0 55%;
+      padding-top: 27px;
 
       &:first-of-type {
-        flex: 1 0 40%;
+        flex: 1 0 43%;
 
         padding-top: 40px;
-        margin-right: 5%;
+        margin-right: 2%;
       }
     }
 
@@ -29,8 +31,8 @@
   }
 
   .job-categories {
-    margin-top: 45px; 
-
+    margin-top: 25px;
+  
     li {
       display: inline-block;
 

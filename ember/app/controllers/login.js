@@ -8,9 +8,9 @@ export default Ember.Controller.extend({
 
   @action
   authenticate()  {
-    const { email, password, session } = this.getProperties('email', 'password', 'session');
+    const { username, password, session } = this.getProperties('username', 'password', 'session');
     
-    session.authenticate('authenticator:devise', email, password)
+    session.authenticate('authenticator:devise', username, password)
     .catch(reason => {
       this.set('errorMessage', reason.error || reason);
     });
