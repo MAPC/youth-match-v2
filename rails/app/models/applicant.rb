@@ -12,23 +12,23 @@ class Applicant < ApplicationRecord
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|
-      unless offers.where(accepted: 'waiting').present?
+      unless offers.where(accepted: nil).present?
         next if offers.pluck(:position_id).include?(preference.position_id)
         if preference.position.open? || preference.position.prefers?(self)
-          # if preference.position.open?
-          #   puts 'Giving applicant ' + self.id.to_s + ' open position: ' + preference.position.id.to_s
-          # else
-          #   puts 'Giving applicant ' + self.id.to_s + ' preferred position: ' + preference.position.id.to_s
-          # end
-          Offer.new(applicant: self, position: preference.position, accepted: 'waiting').save!
-          puts "Offer Generated for #{first_name}"
+          if preference.position.open?
+            Rails.logger.debug 'Giving applicant ' + self.id.to_s + ' open position: ' + preference.position.id.to_s
+          else
+            Rails.logger.debug 'Giving applicant ' + self.id.to_s + ' preferred position: ' + preference.position.id.to_s
+          end
+          Offer.new(applicant: self, position: preference.position).save!
+          Rails.logger.debug "Offer Generated for #{first_name}"
         end
       end
     end
   end
 
   def self.chosen
-    open_positions = Position.sum(:open_positions) - (Offer.where(accepted: 'yes').count + Offer.where(accepted: 'waiting').count)
+    open_positions = Position.sum(:open_positions) - (Offer.where(accepted: 'yes').count + Offer.where(accepted: 'offer_sent').count + Offer.where(accepted: nil).count)
     # pull count of records of database equal to open positions that are in the lottery
     left_outer_joins(:offers).where(offers: { id: nil } ).order(:lottery_number).first(open_positions)
   end
