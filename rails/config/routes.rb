@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     resources :update_icims, only: [:create]
     resources :position_imports, only: [:create]
     resources :password_resets, only: [:create]
+    resources :offer_emails, only: [:create]
   end
 
   root to: 'offers#index'

@@ -5,7 +5,6 @@ RSpec.describe BuildPreferenceListsJob, type: :job do
   subject(:job) { BuildPreferenceListsJob.perform_later }
 
   it 'queues the job' do
-    ActiveJob::Base.queue_adapter = :test
     expect { job }.to have_enqueued_job(BuildPreferenceListsJob)
       .on_queue("default")
   end
