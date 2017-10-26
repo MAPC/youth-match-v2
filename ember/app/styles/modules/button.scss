@@ -41,4 +41,16 @@ button {
     &:hover { background: rgba($color_bg-dark, 10); }
   }
 
+  &.hollow {
+    color: $color_brand-blue;
+
+    background: none;
+    border: 1px solid $color_brand-blue;
+
+    &:hover {
+      color: $color_brand-blue--active; 
+      border-color: $color_brand-blue--active;
+    }
+  }
+
 }

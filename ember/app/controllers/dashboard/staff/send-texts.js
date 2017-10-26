@@ -27,7 +27,7 @@ export default Ember.Controller.extend({
 
   @computed('textCount', 'textLength')
   characterThreshold(textCount, textLength) {
-    return textCount * textLength;
+    return (textCount * textLength) || textLength;
   },
 
 
@@ -40,11 +40,13 @@ export default Ember.Controller.extend({
   @action
   sendText() {
     const body = this.get('messageBody');
-    console.log(this.store.createRecord('outgoingMessage', { body }));
-    return;
 
-    this.store.createRecord('outgoingMessage', { body }).save();
+    if (body.get('length') > 0) {
+      console.log(this.store.createRecord('outgoingMessage', { body })); 
+      return;
 
+      this.store.createRecord('outgoingMessage', { body }).save();
+    }
   },
 
 });

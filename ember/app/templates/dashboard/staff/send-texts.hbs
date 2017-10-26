@@ -19,7 +19,11 @@
           <button class="hollow small" onclick={{action 'loadPremadeMessage' 'next'}}>NEXT STEPS TEXT</button>
         </div>
       </div>
+    </div>
+  </div>
 
+  <div class="text-columns">
+    <div class='text-column'>
       {{textarea value=messageBody placeholder="Congrats, you have a job."}}
 
       <div class="text-counter">
@@ -28,10 +32,12 @@
       </div>
     </div>
 
-    <div class="text-column">
-      <p>
-        {{textStatus}}
-      </p>
+    <div class='text-column'>
+      {{#if textStatus}}
+        <p>
+          {{textStatus}}
+        </p>
+      {{/if}}
 
       <button class="{{if (eq messageBody.length 0) 'disabled'}}" onclick={{action 'sendText'}}>SEND TEXT</button>
     </div>
