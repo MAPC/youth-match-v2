@@ -6,24 +6,43 @@ export default Ember.Controller.extend({
 
   parent: Ember.inject.controller('dashboard.partner'),
 
+  submitted: false,
+
+
+  @computed('parent.directSelectAllotments', 'model.picks.length')
+  directAllotmentsLeft(allotments, picksLength) {
+    return allotments - picksLength;
+  },
+
 
   @action
   removePick(pick) {
-  
+    pick.destroyRecord();
   },
 
 
   @action
   changePosition(pick, event) {
+    const title = event.target.value;
+    const positions = this.get('model.positions');
 
+    const position = positions.filter(pos => pos.get('title') === title)[0];
+
+    pick.setProperties({ position });
+    pick.save();
   },
 
 
   @action
   submitForm() {
-    const picks = this.get('model.picks');
+    if (!this.get('submitted')) {
+      const willHire = this.get('model.picks').filter(pick => pick.get('status') !== 'hire');
 
-    console.log(picks);
+      willHire.invoke('set', 'status', 'hire');
+      willHire.invoke('save');
+
+      this.set('submitted', true);
+    }
   }
 
 });

@@ -1,16 +1,4 @@
 .route.partner-applicants {
-  font-size: 14px;
-
-  .partner-columns {
-    display: flex; 
-
-    margin-top: 60px;
-
-    .partner-column {
-      &:first-of-type { flex: 1 0 70%; } 
-      &:last-of-type { flex: 1 0 30%; }
-    }
-  }
 
   .search-tag {
     width: 100%;

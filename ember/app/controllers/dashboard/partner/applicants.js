@@ -22,32 +22,43 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.requisitions.[]')
+  @computed('model.picks.[]')
+  pickedApplicants(picks, applicants) {
+    return picks.mapBy('applicant');
+  },
+
+
+  @computed('model.requisitions.[]') 
   interestedApplicants(requisitions)  {
-    return requisitions.map(requisition => {
-                          let applicant = requisition.get('applicant');
-                          applicant.set('currentRequisition', requisition);
+    return requisitions.map(req => {
+                          let applicant = req.get('applicant');
+                          applicant.set('currentRequisition', req);
 
                           return applicant;
                         })
                         .sortBy('last_name', 'first_name');
+                       
   },
 
 
   @computed('model.applicants.[]', 'interestedApplicants')
   disinterestedApplicants(applicants, interestedApplicants) {
-    return applicants.filter(applicant => interestedApplicants.indexOf(applicant) === -1)
+    const applicantIds = interestedApplicants.map(applicant => applicant.get('id'));
+    return applicants.filter(applicant => applicantIds.indexOf(applicant.get('id')) === -1)
                      .sortBy('last_name', 'first_name');
   },
 
 
-  @computed('interestedApplicants', 'disinterestedApplicants', 'searchQuery')
-  filteredApplicants(interested, disinterested, query) {
-    const { min, max } = this.getProperties('min', 'max');
-    let applicants  = interested.concat(disinterested);
-    query = query.toLowerCase();
+  @computed('pickedApplicants.[]', 'interestedApplicants', 'disinterestedApplicants', 'searchQuery', 'min', 'max')
+  filteredApplicants(picked, interested, disinterested, query, min, max) {
+    const pickedIds = picked.map(applicant => applicant.get('id'));
+
+    let applicants  = interested.concat(disinterested)
+                                .filter(applicant => pickedIds.indexOf(applicant.get('id')) === -1);
 
     if (query.length >= 2) {
+      query = query.toLowerCase();
+
       applicants = applicants.filter(x => { 
         var firstName = (x.get('first_name') || '').toLowerCase(),
             lastName = (x.get('last_name') || '').toLowerCase();
@@ -77,21 +88,11 @@ export default Ember.Controller.extend({
       else {
         const positions = this.get('model.positions').filter(position => position.get('open_positions') > 0);
         position = positions[Math.floor(Math.random() * positions.length)];
-
-        const requisitions = this.get('requisitions');
-        requisitions.forEach(requisition => {
-          if (requisition.get('applicant') === applicant) {
-            position = requisition.get('position');
-          }
-        });
       }
-
-      console.log(position);
-      return;
-
 
       this.store.createRecord('pick', { applicant, position }).save();
     }
   }
+
 
 });
