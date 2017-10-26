@@ -40,7 +40,9 @@
 
         {{#each model.picks as |pick|}}
           <div class="row">   
-            <div class="colum">{{pick.applicant.full_name}}</div>
+            <div class="colum">
+              {{link-to pick.applicant.full_name 'dashboard.partner.applicants.show' pick.applicant.id}}
+            </div>
             <div class="column">
               <select selected=pick.position.title onchange={{action 'changePosition' pick}}>
                 {{#each model.positions as |position|}}
@@ -48,7 +50,7 @@
                 {{/each}}
               </select>
             </div>
-            <div class="column">Offer Sent</div>
+            <div class="column">{{pick.status}}</div>
             <div class="column">
               <button class="small" onclick={{action 'removePick' pick}}>REMOVE</button>
             </div>

@@ -9,13 +9,17 @@ export default Ember.Controller.extend({
 
   @action
   removePick(pick) {
-  
+    pick.destroyRecord();
   },
 
 
   @action
   changePosition(pick, event) {
+    console.log(event.target.value);
+    return;
 
+    pick.setProperties({ position });
+    pick.save();
   },
 
 
