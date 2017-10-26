@@ -12,9 +12,21 @@
     {{/link-to}}
   {{/if}}
 
+  {{#if isPartner}}
+    {{#link-to 'dashboard.partner.positions'}}
+      <span>MANAGE POSITIONS</span>
+    {{/link-to}}
+    {{#link-to 'dashboard.partner.applicants'}}
+      <span>SEARCH APPLICANTS</span>
+    {{/link-to}}
+  {{/if}}
+
   {{#if isStaff}}
     {{#link-to 'dashboard.staff.index'}}
       <span>SUMMARY</span>
+    {{/link-to}}
+    {{#link-to 'dashboard.staff.send-texts'}}
+      <span>SEND TEXTS</span>
     {{/link-to}}
     {{#link-to 'dashboard.staff.positions'}}
       <span>MANAGE POSITIONS</span>
@@ -24,15 +36,6 @@
     {{/link-to}}
     {{#link-to 'dashboard.staff.users'}}
       <span>MANAGE USERS</span>
-    {{/link-to}}
-  {{/if}}
-
-  {{#if isPartner}}
-    {{#link-to 'dashboard.partner.positions'}}
-      <span>MANAGE POSITIONS</span>
-    {{/link-to}}
-    {{#link-to 'dashboard.partner.applicants'}}
-      <span>SEARCH APPLICANTS</span>
     {{/link-to}}
   {{/if}}
 

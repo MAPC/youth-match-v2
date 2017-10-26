@@ -25,6 +25,7 @@ Router.map(function() {
       this.route('users');
       this.route('applicants');
       this.route('positions');
+      this.route('send-texts');
     });
   });
 

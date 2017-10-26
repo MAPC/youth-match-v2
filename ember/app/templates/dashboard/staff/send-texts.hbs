@@ -1,0 +1,40 @@
+<section class='route send-texts'>
+  
+  <h2>SEND TEXT MESSAGES</h2>
+
+  <div class="text-columns">
+    <div class="text-column">
+      <p> 
+        Select a premade text message or customize to make your own.
+        Each text is made up of {{textLength}} characters.
+      </p>
+
+      <div class="premade-buttons-wrapper">
+        <h3>Premade Texts:</h3>
+
+        <div class="premade-buttons">
+          <button class="hollow small" onclick={{action 'loadPremadeMessage' 'offer'}}>JOB OFFER TEXT</button>
+          <button class="hollow small" onclick={{action 'loadPremadeMessage' 'reminder'}}>REMINDER TEXT</button>
+          <button class="hollow small" onclick={{action 'loadPremadeMessage' 'thanks'}}>THANK YOU TEXT</button>
+          <button class="hollow small" onclick={{action 'loadPremadeMessage' 'next'}}>NEXT STEPS TEXT</button>
+        </div>
+      </div>
+
+      {{textarea value=messageBody placeholder="Congrats, you have a job."}}
+
+      <div class="text-counter">
+        Character count: {{messageBody.length}}/{{characterThreshold}}.
+        You are sending {{textCount}} text{{unless (eq textCount 1) 's'}}.
+      </div>
+    </div>
+
+    <div class="text-column">
+      <p>
+        {{textStatus}}
+      </p>
+
+      <button class="{{if (eq messageBody.length 0) 'disabled'}}" onclick={{action 'sendText'}}>SEND TEXT</button>
+    </div>
+  </div>
+
+</section>
