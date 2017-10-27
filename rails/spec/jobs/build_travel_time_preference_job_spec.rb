@@ -7,7 +7,6 @@ RSpec.describe BuildTravelTimePreferenceJob, type: :job do
   subject(:job) { BuildTravelTimePreferenceJob.perform_later(applicant.id, position.id) }
 
   it 'queues the job' do
-    ActiveJob::Base.queue_adapter = :test
     expect { job }.to have_enqueued_job(BuildTravelTimePreferenceJob)
       .with(applicant.id, position.id)
       .on_queue("default")

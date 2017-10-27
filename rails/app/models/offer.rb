@@ -1,5 +1,5 @@
 class Offer < ApplicationRecord
-  enum accepted: [:waiting, :yes, :withdraw, :no_top_waitlist, :no_bottom_waitlist, :expired]
+  enum accepted: [:offer_sent, :yes, :withdraw, :no_top_waitlist, :no_bottom_waitlist, :expired]
   belongs_to :applicant
   belongs_to :position
   after_save :email_decliner, if: :declined?

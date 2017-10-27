@@ -5,7 +5,6 @@ RSpec.describe MatchApplicantsWithPositionsJob, type: :job do
   subject(:job) { MatchApplicantsWithPositionsJob.perform_later }
 
   it 'queues the job' do
-    ActiveJob::Base.queue_adapter = :test
     expect { job }.to have_enqueued_job(MatchApplicantsWithPositionsJob)
       .on_queue("default")
   end
@@ -39,6 +38,6 @@ RSpec.describe MatchApplicantsWithPositionsJob, type: :job do
     Offer.last.update(accepted: 'no_bottom_waitlist')
 
     MatchApplicantsWithPositionsJob.perform_now
-    expect(Offer.where(accepted: 'waiting').count).to eq(Position.sum(:open_positions) - 1)
+    expect(Offer.where(accepted: nil).count).to eq(Position.sum(:open_positions) - 1)
   end
 end

@@ -21,7 +21,7 @@ class OutgoingMessagesController < ApplicationController
   # GET /outgoing_messages/new
   def new
     @outgoing_message = OutgoingMessage.new
-    @selected_applicant_mobile_phone_numbers = Offer.where(accepted: 'waiting').joins(:applicant).pluck(:mobile_phone).compact
+    @selected_applicant_mobile_phone_numbers = Offer.where(accepted: 'offer_sent').joins(:applicant).pluck(:mobile_phone).compact
   end
 
   # POST /outgoing_messages

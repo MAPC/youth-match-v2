@@ -39,5 +39,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  #Setup ActiveMailer for queue testing
+  config.active_job.queue_adapter = :test
+  config.action_mailer.raise_delivery_errors = true
 end
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
