@@ -26,12 +26,11 @@
       {{#each filteredModel as |item|}}
         <div class="tr">
           {{#each-in item as |item value|}}
-            <div class="td">{{value}}</div>
+            <div class="td" data-item="{{item}}">{{value}}</div>
           {{/each-in}}
         </div>
       {{/each}}
     </div>
   </div>
-
 
 </section>

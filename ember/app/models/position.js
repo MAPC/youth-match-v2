@@ -4,11 +4,11 @@ import { computed } from 'ember-decorators/object';
 import { collectionAction } from 'ember-api-actions';
 
 export default DS.Model.extend({
-  latitude: DS.attr('number'),
-  longitude: DS.attr('number'),
-  category: DS.attr('string'),
   site_name: DS.attr('string'),
   title: DS.attr('string'),
+  category: DS.attr('string'),
+  latitude: DS.attr('number'),
+  longitude: DS.attr('number'),
   external_application_url: DS.attr('string'),
   primary_contact_person: DS.attr('string'),
   primary_contact_person_title: DS.attr('string'),

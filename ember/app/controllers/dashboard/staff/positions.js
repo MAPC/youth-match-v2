@@ -12,11 +12,13 @@ export default Ember.Controller.extend({
   attributes: Object.values(Ember.get(Position, 'attributes')._values),
 
   removedFields: [
+    'applicants',
   ],
   
 
   @computed('attributes', 'removedFields')
   attributeNames(attributes, fields) {
+    console.log(attributes);
     return attributes.filter(x => fields.indexOf(x.name) === -1).map(attr => attr.name.split('_').join(' '));
   },
 
