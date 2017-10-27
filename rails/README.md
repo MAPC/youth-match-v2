@@ -89,6 +89,13 @@ Alternative quick way to test matching:
 3. `rake lottery:fake_preference_scores` to generate fake preference scores between each applicant and position
 4. `rake lottery:match` to match applicants to positions
 
+For the actual lottery the developer will have to run the following tasks on import on the production machine:
+1. `RAILS_ENV='production' bundle exec rake import:applicants_from_prod` to import applicants from production ICIMS
+2. `RAILS_ENV='production' bundle exec rake lottery:assign_lottery_numbers` to pick lottery winners
+3. `RAILS_ENV='production' bundle exec rake lottery:build_travel_time_preferences` to build travel time preference lists
+4. `RAILS_ENV='production' bundle exec rake rake lottery:build_preference_scores` to build the final preference scores
+5. Then the YEE staff person can run the match process in the user interface.
+
 ## Algorithm Explanation
 
 Our algorithm works in the following manner:
