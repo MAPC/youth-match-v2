@@ -322,7 +322,6 @@ namespace :import do
   task development_seed_data: :environment do
 
     User.create([
-      { email: 'partner@seed.org', password: 'password', account_type: 'partner' },
       { email: 'staff@seed.org', password: 'password', account_type: 'staff' } ,
     ])
 

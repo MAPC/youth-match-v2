@@ -26,6 +26,7 @@ Router.map(function() {
       this.route('applicants');
       this.route('positions');
       this.route('send-texts');
+      this.route('lottery');
     });
   });
 
