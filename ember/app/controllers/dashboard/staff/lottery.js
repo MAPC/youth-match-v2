@@ -1,5 +1,7 @@
 import Ember from 'ember';
-import Position from '../../../models/position';
+import Applicant from '../../../models/applicant';
+import config from '../../../config/environment';
+import { default as _url } from 'npm:url';
 import { computed, action } from 'ember-decorators/object';
 
 
@@ -9,10 +11,14 @@ export default Ember.Controller.extend({
   min: 0,
   max: 50,
 
-  attributes: Object.values(Ember.get(Position, 'attributes')._values),
+  attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
 
   removedFields: [
-    'applicants',
+    'participant_essay', 
+    'interests', 
+    'user', 
+    'updated_at', 
+    'created_at'
   ],
   
 
@@ -97,5 +103,20 @@ export default Ember.Controller.extend({
     this.set('max', count);
   },
 
+
+  @action
+  runLottery() {
+    const ajax = this.get('ajax');
+    const url = _url.resolve(config.host, 'api/matches');
+
+    ajax
+    .post({ url })
+    .then(result => {
+      console.log(result);
+    })
+    .catch(() => {
+      this.set('errorMessage', 'Could not run the current lottery');
+    });
+  }
 
 });

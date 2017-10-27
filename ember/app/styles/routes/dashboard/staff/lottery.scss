@@ -1,0 +1,16 @@
+.route.lottery {
+
+  .applicants-table-wrapper {
+    @extend ._clear;
+
+    .pagination { top: 0; } 
+    .edit-table { max-height: 45vh; }
+
+    .lottery-button {
+      float: right; 
+
+      margin-top: 25px;
+    } 
+  }
+
+}
