@@ -4,7 +4,12 @@ class OffersController < ApplicationController
   # GET /offers
   # GET /offers.json
   def index
-    @offers = Offer.all
+    if params[:for_applicant]
+      @offers = current_user.applicant.offers
+    else
+      @offers = Offer.all
+    end
+
     respond_to do |format|
       format.jsonapi { render jsonapi: @offers }
       format.html { @offers }
