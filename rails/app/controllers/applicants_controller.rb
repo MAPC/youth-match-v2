@@ -5,6 +5,8 @@ class ApplicantsController < ApplicationController
     # this logic is necessary. see #51
     if params[:interests]
       @applicants = Applicant.where("interests && ARRAY[?]::varchar[]", params[:interests])
+    elsif params[:chosen]
+      @applicants = Applicant.chosen
     else
       ids = Applicant.left_joins(:offers).where.not("offers.accepted = ? OR offers.accepted = ?", 1, 2).distinct.pluck(:id)
       previously_offered_ids = Applicant.left_joins(:offers).where("offers.accepted = ? OR offers.accepted = ?", 1, 2).distinct.pluck(:id)
