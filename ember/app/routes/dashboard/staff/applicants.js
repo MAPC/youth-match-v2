@@ -4,10 +4,6 @@ export default Ember.Route.extend({
 
   model() {
     return this.store.findAll('applicant');
-  },
-
-  afterModel(model) {
-    console.log(model) ;
   }
 
 });

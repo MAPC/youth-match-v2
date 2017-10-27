@@ -23,18 +23,14 @@
     </div>
 
     <div class="rows">
-      {{#each filteredModel as |applicant|}}
+      {{#each filteredModel as |item|}}
         <div class="tr">
-          {{#each-in applicant as |attribute value|}}
-            <input class="td" value={{value}} onchange={{action 'updateApplicant' applicant attribute}} onkeyup={{action 'verifyField' attribute}}>
+          {{#each-in item as |item value|}}
+            <div class="td">{{value}}</div>
           {{/each-in}}
         </div>
       {{/each}}
     </div>
-  </div>
-   
-  <div class="update-message autosave-message {{if autosaved 'display'}}">
-    {{autosaveMessage}}
   </div>
 
 </section>

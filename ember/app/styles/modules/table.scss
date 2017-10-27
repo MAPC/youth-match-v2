@@ -54,6 +54,9 @@
     margin: 0 15px;
 
     text-align: left;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 
     &:first-of-type { max-width: 35%; }
   }

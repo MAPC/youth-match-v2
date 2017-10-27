@@ -3,11 +3,8 @@ import config from '../config/environment';
 import ApplicationAdapter from './application';
 
 export default ApplicationAdapter.extend({
-  namespace: '/api',
   host: Ember.computed(() => { return config.host || '/'; }),
-  pathForType(type) {
-    return Ember.String.underscore(type) + 's';
-  },
+  namespace: '/api',
   keyForAttribute(key) {
     return key;
   }
