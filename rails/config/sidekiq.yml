@@ -2,4 +2,5 @@
 :queues:
   - default
   - mailers
+  - match_lottery
   - expire_offers

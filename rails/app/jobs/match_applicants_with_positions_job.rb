@@ -1,5 +1,5 @@
 class MatchApplicantsWithPositionsJob < ApplicationJob
-  queue_as :default
+  queue_as :match_lottery
 
   def perform(*args)
     match_applicants_to_positions
