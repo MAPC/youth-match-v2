@@ -6,6 +6,9 @@ class OffersController < ApplicationController
   def index
     if params[:for_applicant]
       @offers = current_user.applicant.offers
+    elsif params[:for_positions]
+      @offers = []
+      current_user.positions.each { |offer| @offers << offer }
     else
       @offers = Offer.all
     end
