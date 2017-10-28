@@ -4,13 +4,21 @@
     @extend ._clear;
 
     .pagination { top: 0; } 
-    .edit-table { max-height: 45vh; }
+    .rows { max-height: 40vh; }
 
     .lottery-button {
       float: right; 
 
       margin-top: 25px;
     } 
+
+    .lottery-counter {
+      float: left; 
+
+      margin-top: 25px;
+
+      font-size: 14px;
+    }
   }
 
 }
