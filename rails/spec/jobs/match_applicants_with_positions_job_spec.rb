@@ -40,4 +40,9 @@ RSpec.describe MatchApplicantsWithPositionsJob, type: :job do
     MatchApplicantsWithPositionsJob.perform_now
     expect(Offer.where(accepted: nil).count).to eq(Position.sum(:open_positions) - 1)
   end
+
+  it 'queues expires the lottery in three days' do
+    expect { job }.to have_enqueued_job(ExpireLotteryJob)
+      .on_queue("expire_lottery")
+  end
 end

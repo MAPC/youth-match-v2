@@ -3,6 +3,7 @@ class MatchApplicantsWithPositionsJob < ApplicationJob
 
   def perform(*args)
     match_applicants_to_positions
+    ExpireLotteryJob.set(wait: 3.days).perform_later
   end
 
   private
