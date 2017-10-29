@@ -12,8 +12,9 @@
     </div>
   {{/if}}
 
-  <div class="table edit-table">
+  {{input class="search-box" value=searchQuery placeholder="Search here by Site Name or Primary Contact Email"}}
 
+  <div class="table edit-table">
     <div class="th">
       {{#each attributeNames as |attribute|}}
         <div class="td">
@@ -33,6 +34,6 @@
     </div>
   </div>
 
-  {{download-button data=model fileName="successlink-positions"}}
+  {{download-button data=sortedModel fileName="successlink-positions"}}
 
 </section>

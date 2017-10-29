@@ -97,6 +97,8 @@ export default Ember.Controller.extend({
       this.set('min', defaults.min);
       this.set('max', defaults.max);
 
+      query = query.toLowerCase();
+
       results = results.filter(x => {
         return x.first_name.toLowerCase().startsWith(query)
                || x.last_name.toLowerCase().startsWith(query);

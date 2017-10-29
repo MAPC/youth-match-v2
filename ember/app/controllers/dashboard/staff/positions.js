@@ -2,14 +2,20 @@ import Ember from 'ember';
 import Position from '../../../models/position';
 import { computed, action } from 'ember-decorators/object';
 
+const defaults = {
+  min: 0,
+  max: 50,
+};
 
 export default Ember.Controller.extend({
 
   queryParams: ['min', 'max'],
-  min: 0,
-  max: 50,
+  min: defaults.min,
+  max: defaults.max,
 
   attributes: Object.values(Ember.get(Position, 'attributes')._values),
+
+  searchQuery: '',
 
   removedFields: [
     'applicants',
@@ -29,7 +35,7 @@ export default Ember.Controller.extend({
       this.set('min', max);
     }
     else if (min === max) {
-      this.set('min', 0);
+      this.set('min', defaults.min);
     }
 
     return this.get('max') - this.get('min');
@@ -42,16 +48,30 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.[]')
-  sortedModel(model) {
-    return model.sortBy('last_name');
+  @computed('model.[]', 'searchQuery')
+  sortedModel(model, query) {
+    let results = model.map(x => x.toJSON());
+
+    if (query.length > 1) {
+      this.set('min', defaults.min);
+      this.set('max', defaults.max);
+
+      query = query.toLowerCase();
+
+      results = results.filter(x => {
+        return (x.primary_contact_person_email && x.primary_contact_person_email.toLowerCase().startsWith(query))
+               || (x.site_name && x.site_name.toLowerCase().startsWith(query));
+      });
+    }
+
+    return results.sortBy('last_name');
   },
 
 
   @computed('sortedModel.[]', 'min', 'max', 'removedFields')
   filteredModel(sortedModel, min, max, fields) {
     return sortedModel.slice(min, max).map(x => {
-      const json = x.toJSON();
+      const json = Ember.copy(x);
       fields.forEach(field => delete json[field]);
 
       return json;
