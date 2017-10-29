@@ -5,8 +5,12 @@
 
     min-height: 75vh;
 
-    .pagination {
-      top: 15px;  
+    .pagination { top: 15px; }
+
+    .search-box {
+      width: 100%; 
+      font-size: 13px;
+      padding: 5px 15px;
     }
 
     .autosave-message {

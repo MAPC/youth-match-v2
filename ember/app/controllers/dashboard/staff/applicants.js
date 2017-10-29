@@ -4,15 +4,24 @@ import { computed, action } from 'ember-decorators/object';
 
 const additionalAttributes = ['offer_status', 'position_title', 'offer_site', 'position_id']
 
+const defaults = {
+  min: 0,
+  max: 50,
+};
 
 export default Ember.Controller.extend({
 
+
   queryParams: ['min', 'max'],
-  min: 0,
-  max: 50,
+  min: defaults.min,
+  max: defaults.max,
+
 
   attributes: Object.values(Ember.get(Applicant, 'attributes')._values)
                     .concat(additionalAttributes.map(x => {return {name: x};})),
+
+  searchQuery: '',
+
 
   removedFields: [
     'participant_essay', 
@@ -36,7 +45,7 @@ export default Ember.Controller.extend({
       this.set('min', max);
     }
     else if (min === max) {
-      this.set('min', 0);
+      this.set('min', defaults.min);
     }
 
     return this.get('max') - this.get('min');
@@ -80,9 +89,21 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('combinedModel.[]')
-  sortedModel(model) {
-    return model.sortBy('last_name');
+  @computed('combinedModel.[]', 'searchQuery')
+  sortedModel(model, query) {
+    let results = model;
+    
+    if (query.length > 1) {
+      this.set('min', defaults.min);
+      this.set('max', defaults.max);
+
+      results = results.filter(x => {
+        return x.first_name.toLowerCase().startsWith(query)
+               || x.last_name.toLowerCase().startsWith(query);
+      });
+    }
+
+    return results.sortBy('last_name');
   },
 
 
