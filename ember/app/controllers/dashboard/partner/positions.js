@@ -15,7 +15,7 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.picks')
+  @computed('model.picks.[]')
   queuedPicks(picks) {
     return picks.filter(pick => !pick.get('status')).length > 0; 
   },
@@ -48,6 +48,13 @@ export default Ember.Controller.extend({
       willHire.invoke('save');
 
       this.set('submitted', true);
+
+      willHire.forEach(pick => {
+        this.store.createRecord('offer', {
+          position: pick.get('position'),
+          applicant: pick.get('applicant'),
+        }).save();
+      });
     }
   }
 

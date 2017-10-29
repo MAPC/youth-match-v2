@@ -42,4 +42,15 @@
     }
   }
 
+  .no-picks {
+    padding: 25px 10px;
+
+    color: $color_font-medium;
+    text-align: center; 
+
+    a {
+      color: $color_brand-blue; 
+    }
+  }
+
 }

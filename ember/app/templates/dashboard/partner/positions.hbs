@@ -62,6 +62,12 @@
 
         {{#if queuedPicks}}
           <button class="small dark {{if submitted 'disabled'}}" onclick={{action 'submitForm'}}>{{if submitted 'OFFERS SENT' 'SEND OFFERS TO QUEUED'}}</button>
+        {{else}}
+          {{#unless parent.hasHitLimit}}
+            <div class="no-picks">
+              You have not picked any applicants from the {{link-to 'applicant list' 'dashboard.partner.applicants'}}.
+            </div>
+          {{/unless}}
         {{/if}}
       </div>
     </div>
