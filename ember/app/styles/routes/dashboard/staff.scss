@@ -1,7 +1,9 @@
 .route.staff {
 
   .table-page {
-    min-height: 80vh;
+    @extend ._clear;
+
+    min-height: 75vh;
 
     .pagination {
       top: 15px;  
@@ -23,6 +25,12 @@
 
         transition: opacity .3s;
       }
+    }
+
+    .download-button {
+      float: right;
+
+      margin-top: 25px;
     }
   }
 

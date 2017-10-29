@@ -2,6 +2,8 @@ import Ember from 'ember';
 import Applicant from '../../../models/applicant';
 import { computed, action } from 'ember-decorators/object';
 
+const additionalAttributes = ['offer_status', 'position_title', 'offer_site', 'position_id']
+
 
 export default Ember.Controller.extend({
 
@@ -9,7 +11,8 @@ export default Ember.Controller.extend({
   min: 0,
   max: 50,
 
-  attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
+  attributes: Object.values(Ember.get(Applicant, 'attributes')._values)
+                    .concat(additionalAttributes.map(x => {return {name: x};})),
 
   removedFields: [
     'participant_essay', 
@@ -45,8 +48,39 @@ export default Ember.Controller.extend({
     return Math.round(max / perPage);
   },
 
+  @computed('model.applicants.[]', 'model.offers.[]')
+  combinedModel(applicants, offers) {
+    const activeApplicants = offers.map(offer => {
+      let applicant = offer.get('applicant').toJSON();
+      let position = offer.get('position').toJSON();
 
-  @computed('model.[]')
+      applicant.offer_status = offer.get('status');
+      applicant.offer_site = position.site_name;
+      applicant.position_id = position.id;
+      applicant.position_title = position.title;
+
+      return applicant;
+    });
+
+    const augmentedApplicants = applicants.map(applicant => {
+      applicant = applicant.toJSON();
+
+      applicant.offer_status = 'No Offer';
+      applicant.offer_site = null;
+      applicant.position_id = null;
+      applicant.position_title = null;
+
+      return applicant;
+    });
+
+    const activeIds = activeApplicants.map(applicant => applicant.id);
+    const filtered = augmentedApplicants.filter(applicant => activeIds.indexOf(applicant.id) === -1);
+
+    return filtered.concat(activeApplicants);
+  },
+
+
+  @computed('combinedModel.[]')
   sortedModel(model) {
     return model.sortBy('last_name');
   },
@@ -55,7 +89,7 @@ export default Ember.Controller.extend({
   @computed('sortedModel.[]', 'min', 'max', 'removedFields')
   filteredModel(sortedModel, min, max, fields) {
     return sortedModel.slice(min, max).map(x => {
-      const json = x.toJSON();
+      let json = Ember.copy(x);
       fields.forEach(field => delete json[field]);
 
       return json;
@@ -100,5 +134,6 @@ export default Ember.Controller.extend({
     this.set('min', count - perPage);
     this.set('max', count);
   },
+
 
 });

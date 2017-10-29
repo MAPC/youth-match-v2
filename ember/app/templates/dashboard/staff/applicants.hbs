@@ -13,7 +13,6 @@
   {{/if}}
 
   <div class="table edit-table">
-
     <div class="th">
       {{#each attributeNames as |attribute|}}
         <div class="td">
@@ -26,11 +25,13 @@
       {{#each filteredModel as |item|}}
         <div class="tr">
           {{#each-in item as |item value|}}
-            <div class="td">{{value}}</div>
+            <div class="td" data-item="{{item}}">{{value}}</div>
           {{/each-in}}
         </div>
       {{/each}}
     </div>
   </div>
+
+  {{download-button data=sortedModel fileName='successlink-applicants'}}
 
 </section>
