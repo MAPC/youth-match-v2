@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export function capitalize(params) {
-  const words = params[0];
+  const words = params[0] || '';
   const blacklist = ['and', 'than'];
 
   const capitalized = words.split(' ')

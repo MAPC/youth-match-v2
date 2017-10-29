@@ -350,7 +350,9 @@ namespace :import do
       account_type: 'partner',
     })
 
-    Site.all.sample.update(user_id: user.id)
+    position = Position.all.sample
+
+    Site.create(position_id: position.id, user_id: user.id)
 
     puts 'User Email: ' + user.email
     puts 'User Password: password'

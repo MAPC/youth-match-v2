@@ -26,6 +26,7 @@ export default Ember.Controller.extend({
   removedFields: [
     'participant_essay', 
     'interests', 
+    'positions',
     'user', 
     'updated_at', 
     'created_at'

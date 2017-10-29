@@ -15,6 +15,12 @@ export default Ember.Controller.extend({
   },
 
 
+  @computed('model.picks')
+  queuedPicks(picks) {
+    return picks.filter(pick => !pick.get('status')).length > 0; 
+  },
+
+
   @action
   removePick(pick) {
     pick.destroyRecord();
@@ -36,7 +42,7 @@ export default Ember.Controller.extend({
   @action
   submitForm() {
     if (!this.get('submitted')) {
-      const willHire = this.get('model.picks').filter(pick => pick.get('status') !== 'hire');
+      const willHire = this.get('model.picks').filter(pick => !pick.get('status'));
 
       willHire.invoke('set', 'status', 'hire');
       willHire.invoke('save');
