@@ -2,16 +2,26 @@ import Ember from 'ember';
 import Applicant from '../../../models/applicant';
 import { computed, action } from 'ember-decorators/object';
 
-export default Ember.Controller.extend({
+const additionalAttributes = ['offer_status', 'position_title', 'offer_site', 'position_id']
 
-  queryParams: ['min', 'max'],
+const defaults = {
   min: 0,
   max: 50,
+};
 
-  autosaveMessage: '',
-  autosaved: false,
+export default Ember.Controller.extend({
 
-  attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
+
+  queryParams: ['min', 'max'],
+  min: defaults.min,
+  max: defaults.max,
+
+
+  attributes: Object.values(Ember.get(Applicant, 'attributes')._values)
+                    .concat(additionalAttributes.map(x => {return {name: x};})),
+
+  searchQuery: '',
+
 
   removedFields: [
     'participant_essay', 
@@ -35,7 +45,7 @@ export default Ember.Controller.extend({
       this.set('min', max);
     }
     else if (min === max) {
-      this.set('min', 0);
+      this.set('min', defaults.min);
     }
 
     return this.get('max') - this.get('min');
@@ -47,17 +57,62 @@ export default Ember.Controller.extend({
     return Math.round(max / perPage);
   },
 
+  @computed('model.applicants.[]', 'model.offers.[]')
+  combinedModel(applicants, offers) {
+    const activeApplicants = offers.map(offer => {
+      let applicant = offer.get('applicant').toJSON();
+      let position = offer.get('position').toJSON();
 
-  @computed('model.[]')
-  sortedModel(model) {
-    return model.sortBy('last_name');
+      applicant.offer_status = offer.get('status');
+      applicant.offer_site = position.site_name;
+      applicant.position_id = position.id;
+      applicant.position_title = position.title;
+
+      return applicant;
+    });
+
+    const augmentedApplicants = applicants.map(applicant => {
+      applicant = applicant.toJSON();
+
+      applicant.offer_status = 'No Offer';
+      applicant.offer_site = null;
+      applicant.position_id = null;
+      applicant.position_title = null;
+
+      return applicant;
+    });
+
+    const activeIds = activeApplicants.map(applicant => applicant.id);
+    const filtered = augmentedApplicants.filter(applicant => activeIds.indexOf(applicant.id) === -1);
+
+    return filtered.concat(activeApplicants);
+  },
+
+
+  @computed('combinedModel.[]', 'searchQuery')
+  sortedModel(model, query) {
+    let results = model;
+    
+    if (query.length > 1) {
+      this.set('min', defaults.min);
+      this.set('max', defaults.max);
+
+      query = query.toLowerCase();
+
+      results = results.filter(x => {
+        return x.first_name.toLowerCase().startsWith(query)
+               || x.last_name.toLowerCase().startsWith(query);
+      });
+    }
+
+    return results.sortBy('last_name');
   },
 
 
   @computed('sortedModel.[]', 'min', 'max', 'removedFields')
   filteredModel(sortedModel, min, max, fields) {
     return sortedModel.slice(min, max).map(x => {
-      const json = x.toJSON();
+      let json = Ember.copy(x);
       fields.forEach(field => delete json[field]);
 
       return json;
@@ -103,61 +158,5 @@ export default Ember.Controller.extend({
     this.set('max', count);
   },
 
-
-  @action
-  updateApplicant(edited, attribute, event) {
-    const target = event.target;
-    const applicant = this.get('model').findBy('icims_id', edited.icims_id);
-
-    if (!target.classList.contains('error')) {
-      applicant.set(attribute, target.value);
-      applicant.save();
-
-      this.announceAutosave();
-    }
-  },
-
-
-  @action
-  verifyField(attribute, event) {
-    const target = event.target;
-    const value = target.value;
-    const type = this.getType(attribute);
-    
-    console.log(type);
-  },
-
-
-  announceAutosave() {
-    clearTimeout(this.get('autoTimer'));
-
-    const time = (new Date()).toLocaleString('en-US', { hour: 'numeric',minute:'numeric', hour12: true });
-     
-    this.set('autosaveMessage', `Autosaved at ${time}`);
-    this.set('autosaved', true);
-    const autoTimer = setTimeout(() => {
-      this.set('autosaved', false);
-    }, 3000);
-
-    this.set('autoTimer', autoTimer);
-  },
-
-
-  getType(attribute) {
-    const attributes = this.get('attributes');
-    let type = attributes.filter(attr => attr.name === attribute)[0].type;
-
-    if (type === 'string') {
-      const lower = attribute.toLowerCase();
-
-      ['email', 'phone', 'address'].some(altType => {
-        var isType = lower.indexOf(altType) !== -1;
-        if (isType) type = altType;
-        return isType;
-      });
-    }
-
-    return type;
-  }
 
 });

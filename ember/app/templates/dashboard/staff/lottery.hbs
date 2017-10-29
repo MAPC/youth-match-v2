@@ -1,5 +1,46 @@
-<section class="route lottery">
+<section class="route table-page lottery">
 
   <h2>RUN LOTTERY</h2>
+
+  <div class="applicants-table-wrapper">
+    <h3>APPLICANTS FOR CURRENT LOTTERY</h3>
+
+    {{#if (gt sortedModel.length perPage)}}
+      <div class="pagination">
+        <button class="previous to-begin {{unless min 'disabled'}}" onclick={{if min (action 'first')}}></button>
+        <button class="previous {{unless min 'disabled'}}" onclick={{if min (action 'previous')}}></button>
+        <span>{{page}}</span>
+        <button class="next {{if (gte max sortedModel.length) 'disabled'}}" onclick={{if (lt max sortedModel.length) (action 'next')}}></button>
+        <button class="next to-end {{if (gte max sortedModel.length) 'disabled'}}" onclick={{if (lt max sortedModel.length) (action 'last')}}></button>
+      </div>
+    {{/if}}
+
+    {{input class="search-box" value=searchQuery placeholder="Search for Applicants by First Name or Last Name"}}
+
+    <div class="table edit-table">
+      <div class="th">
+        {{#each attributeNames as |attribute|}}
+          <div class="td">
+            <span>{{capitalize attribute}}</span>
+          </div>
+        {{/each}}
+      </div>
+
+      <div class="rows">
+        {{#each filteredModel as |item|}}
+          <div class="tr">
+            {{#each-in item as |item value|}}
+              <div class="td">{{value}}</div>
+            {{/each-in}}
+          </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <div class="lottery-counter">
+      This lottery will match {{model.length}} youth.
+    </div>
+    <button class="lottery-button" onclick={{action 'runLottery'}}>RUN LOTTERY</button>
+  </div>
 
 </section>

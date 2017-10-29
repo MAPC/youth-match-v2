@@ -1,5 +1,9 @@
 import Ember from 'ember';
+import Applicant from '../../../models/applicant';
+import config from '../../../config/environment';
+import { default as _url } from 'npm:url';
 import { computed, action } from 'ember-decorators/object';
+
 
 const defaults = {
   min: 0,
@@ -8,19 +12,27 @@ const defaults = {
 
 export default Ember.Controller.extend({
 
-  ajax: Ember.inject.service(),
-
-  loading: true,
-  threshold: 1,
-
-  updated: false,
-  updateMessage: '',
-
-  searchQuery: '',
-
   queryParams: ['min', 'max'],
   min: defaults.min,
   max: defaults.max,
+
+  attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
+
+  searchQuery: '',
+
+  removedFields: [
+    'participant_essay', 
+    'interests', 
+    'user', 
+    'updated_at', 
+    'created_at'
+  ],
+  
+
+  @computed('attributes', 'removedFields')
+  attributeNames(attributes, fields) {
+    return attributes.filter(x => fields.indexOf(x.name) === -1).map(attr => attr.name.split('_').join(' '));
+  },
 
 
   @computed('min', 'max')
@@ -45,10 +57,6 @@ export default Ember.Controller.extend({
 
   @computed('model.[]', 'searchQuery')
   sortedModel(model, query) {
-    if (model.get('length') > this.get('threshold')) {
-      this.set('loading', false);
-    }
-
     let results = model;
 
     if (query.length > 1) {
@@ -57,16 +65,24 @@ export default Ember.Controller.extend({
 
       query = query.toLowerCase();
 
-      results = results.filter(x => x.get('email').toLowerCase().startsWith(query));
+      results = results.filter(x => {
+        return x.get('first_name').toLowerCase().startsWith(query) 
+               || x.get('last_name').toLowerCase().startsWith(query);
+      });
     }
 
-    return results.sortBy('email');
+    return results.sortBy('last_name');
   },
 
 
-  @computed('sortedModel', 'min', 'max')
-  filteredModel(sortedModel, min, max) {
-    return sortedModel.slice(min, max);
+  @computed('sortedModel.[]', 'min', 'max', 'removedFields')
+  filteredModel(sortedModel, min, max, fields) {
+    return sortedModel.slice(min, max).map(x => {
+      const json = x.toJSON();
+      fields.forEach(field => delete json[field]);
+
+      return json;
+    });
   },
 
 
@@ -109,15 +125,19 @@ export default Ember.Controller.extend({
   },
 
 
-  @action 
-  regeneratePassword(user) {
-    console.log(user.get('id'));
-
+  @action
+  runLottery() {
     const ajax = this.get('ajax');
+    const url = _url.resolve(config.host, 'api/matches');
 
-    //ajax.post();
-  },
-
-
+    ajax
+    .post({ url })
+    .then(result => {
+      console.log(result);
+    })
+    .catch(() => {
+      this.set('errorMessage', 'Could not run the current lottery');
+    });
+  }
 
 });

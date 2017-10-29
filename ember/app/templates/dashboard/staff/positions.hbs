@@ -1,1 +1,39 @@
-{{outlet}}
+<section class="route table-page staff-positions">
+
+  <h2>VIEW POSITIONS</h2>
+
+  {{#if (gt sortedModel.length perPage)}}
+    <div class="pagination">
+      <button class="previous to-begin {{unless min 'disabled'}}" onclick={{if min (action 'first')}}></button>
+      <button class="previous {{unless min 'disabled'}}" onclick={{if min (action 'previous')}}></button>
+      <span>{{page}}</span>
+      <button class="next {{if (gte max sortedModel.length) 'disabled'}}" onclick={{if (lt max sortedModel.length) (action 'next')}}></button>
+      <button class="next to-end {{if (gte max sortedModel.length) 'disabled'}}" onclick={{if (lt max sortedModel.length) (action 'last')}}></button>
+    </div>
+  {{/if}}
+
+  {{input class="search-box" value=searchQuery placeholder="Search for Positions by Site Name or Primary Contact Email"}}
+
+  <div class="table edit-table">
+    <div class="th">
+      {{#each attributeNames as |attribute|}}
+        <div class="td">
+          <span>{{capitalize attribute}}</span>
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="rows">
+      {{#each filteredModel as |item|}}
+        <div class="tr">
+          {{#each-in item as |item value|}}
+            <div class="td" data-item="{{item}}">{{value}}</div>
+          {{/each-in}}
+        </div>
+      {{/each}}
+    </div>
+  </div>
+
+  {{download-button data=sortedModel fileName="successlink-positions"}}
+
+</section>

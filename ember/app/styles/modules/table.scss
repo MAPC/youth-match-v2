@@ -22,7 +22,6 @@
     left: 0;
     z-index: 2;
 
-
     font-weight: 600;
 
     background: $color_bg-medium;
@@ -33,12 +32,16 @@
 
       span { 
         @extend ._vertical-center;
+
+        white-space: nowrap;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
 
   .rows {
-    max-height: 70vh;
+    max-height: 58vh;
     min-width: fit-content;
     overflow-y: scroll;
   }
@@ -54,6 +57,9 @@
     margin: 0 15px;
 
     text-align: left;
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 
     &:first-of-type { max-width: 35%; }
   }

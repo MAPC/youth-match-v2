@@ -1,10 +1,16 @@
 .route.staff {
 
   .table-page {
-    min-height: 80vh;
+    @extend ._clear;
 
-    .pagination {
-      top: 15px;  
+    min-height: 75vh;
+
+    .pagination { top: 15px; }
+
+    .search-box {
+      width: 100%; 
+      font-size: 13px;
+      padding: 5px 15px;
     }
 
     .autosave-message {
@@ -23,6 +29,12 @@
 
         transition: opacity .3s;
       }
+    }
+
+    .download-button {
+      float: right;
+
+      margin-top: 25px;
     }
   }
 

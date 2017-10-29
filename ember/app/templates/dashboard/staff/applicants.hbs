@@ -12,8 +12,9 @@
     </div>
   {{/if}}
 
-  <div class="table edit-table">
+  {{input class="search-box" value=searchQuery placeholder="Search for Applicants by Last Name or First Name"}}
 
+  <div class="table edit-table">
     <div class="th">
       {{#each attributeNames as |attribute|}}
         <div class="td">
@@ -23,18 +24,16 @@
     </div>
 
     <div class="rows">
-      {{#each filteredModel as |applicant|}}
+      {{#each filteredModel as |item|}}
         <div class="tr">
-          {{#each-in applicant as |attribute value|}}
-            <input class="td" value={{value}} onchange={{action 'updateApplicant' applicant attribute}} onkeyup={{action 'verifyField' attribute}}>
+          {{#each-in item as |item value|}}
+            <div class="td" data-item="{{item}}">{{value}}</div>
           {{/each-in}}
         </div>
       {{/each}}
     </div>
   </div>
-   
-  <div class="update-message autosave-message {{if autosaved 'display'}}">
-    {{autosaveMessage}}
-  </div>
+
+  {{download-button data=sortedModel fileName='successlink-applicants'}}
 
 </section>
