@@ -2,7 +2,9 @@
 
   <h2>MANAGE USERS</h2>
 
-  {{loading-dots model=filteredModel threshold=1 text="LOADING USERS"}}
+  {{#if loading}}
+    {{loading-dots model=filteredModel threshold=threshold text="LOADING USERS"}}
+  {{/if}}
 
   {{#if (gt sortedModel.length perPage)}}
     <div class="pagination">
@@ -19,6 +21,7 @@
     {{updateMessage}}
   </div>
 
+  {{input class="search-box" value=searchQuery placeholder="Search for Users by Email"}}
 
   <div class="table users-table">
     <div class="th">

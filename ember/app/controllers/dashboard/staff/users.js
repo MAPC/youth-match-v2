@@ -1,16 +1,26 @@
 import Ember from 'ember';
 import { computed, action } from 'ember-decorators/object';
 
+const defaults = {
+  min: 0,
+  max: 50,
+};
+
 export default Ember.Controller.extend({
 
   ajax: Ember.inject.service(),
 
+  loading: true,
+  threshold: 1,
+
   updated: false,
   updateMessage: '',
 
+  searchQuery: '',
+
   queryParams: ['min', 'max'],
-  min: 0,
-  max: 50,
+  min: defaults.min,
+  max: defaults.max,
 
 
   @computed('min', 'max')
@@ -20,7 +30,7 @@ export default Ember.Controller.extend({
       this.set('min', max);
     }
     else if (min === max) {
-      this.set('min', 0);
+      this.set('min', defaults.min);
     }
 
     return this.get('max') - this.get('min');
@@ -33,9 +43,24 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.[]')
-  sortedModel(model) {
-    return model.sortBy('email');
+  @computed('model.[]', 'searchQuery')
+  sortedModel(model, query) {
+    if (model.get('length') > this.get('threshold')) {
+      this.set('loading', false);
+    }
+
+    let results = model;
+
+    if (query.length > 1) {
+      this.set('min', defaults.min);
+      this.set('max', defaults.max);
+
+      query = query.toLowerCase();
+
+      results = results.filter(x => x.get('email').toLowerCase().startsWith(query));
+    }
+
+    return results.sortBy('email');
   },
 
 
