@@ -12,7 +12,7 @@ export default Ember.Route.extend({
       user,
       positions,
       picks, 
-      applicants: this.store.findAll('applicant'),
+      applicants: this.store.query('applicant', { without_offers: true }),
       requisitions: RSVP.all(positions.mapBy('requisitions'))
                         .then(collection => flatten(collection)),
     });
