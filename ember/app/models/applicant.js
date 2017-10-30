@@ -67,6 +67,8 @@ export default DS.Model.extend({
     return this.get('positions.length') >= MAX_POSITIONS_ALLOWED;
   }),
 
+  offers: DS.hasMany('offer'),
+
   positions: DS.hasMany('position'),
   picks: DS.hasMany('pick'),
 

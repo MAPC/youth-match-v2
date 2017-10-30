@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import Applicant from '../../../models/applicant';
+import { offerStatusMap } from '../../../helpers/offer-status-map';
 import { computed, action } from 'ember-decorators/object';
 
 const additionalAttributes = ['offer_status', 'position_title', 'offer_site', 'position_id']
@@ -24,6 +25,7 @@ export default Ember.Controller.extend({
 
 
   removedFields: [
+    'id',
     'participant_essay', 
     'interests', 
     'positions',
@@ -58,22 +60,29 @@ export default Ember.Controller.extend({
     return Math.round(max / perPage);
   },
 
-  @computed('model.applicants.[]', 'model.offers.[]')
-  combinedModel(applicants, offers) {
-    const activeApplicants = offers.map(offer => {
-      let applicant = offer.get('applicant').toJSON();
-      let position = offer.get('position').toJSON();
+  @computed('model.offers.[]') 
+  offerPositions(offers) {
+    return offers.mapBy('position');
+  },
 
-      applicant.offer_status = offer.get('status');
-      applicant.offer_site = position.site_name;
-      applicant.position_id = position.id;
-      applicant.position_title = position.title;
+
+  @computed('model.applicants.[]', 'model.offers.@each.position', 'model.positions')
+  combinedModel(applicants, offers, positions) {
+
+    const activeApplicants = offers.map(offer => {
+      let applicant = offer.get('applicant').toJSON({ includeId: true });
+      let position = positions.filter(pos => pos.get('id') === offer.get('position.id'))[0];
+
+      applicant.offer_status = offerStatusMap([offer.get('status')]);
+      applicant.offer_site = position.get('site_name');
+      applicant.position_id = position.get('id');
+      applicant.position_title = position.get('title');
 
       return applicant;
     });
 
     const augmentedApplicants = applicants.map(applicant => {
-      applicant = applicant.toJSON();
+      applicant = applicant.toJSON({ includeId: true });
 
       applicant.offer_status = 'No Offer';
       applicant.offer_site = null;

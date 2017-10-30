@@ -28,6 +28,7 @@ export default DS.Model.extend({
   applicants: DS.hasMany('applicant'),
   requisitions: DS.hasMany('requisition'),
   picks: DS.hasMany('pick'),
+  offers: DS.hasMany('offer'),
 
   isSelected: false,
 
