@@ -74,10 +74,17 @@ namespace :lottery do
 
   desc 'Update status of candidates that failed to respond to job offers'
   task update_expired_candidates: :environment do
-    Offer.where(accepted: 'waiting', created_at: LOTTERY_DATE.midnight..LOTTERY_DATE.end_of_day).each do |offer|
+    Offer.where(accepted: 'offer_sent', created_at: LOTTERY_DATE.midnight..LOTTERY_DATE.end_of_day).each do |offer|
       offer.update(accepted: 'expired')
       offer.applicant.update(lottery_activated: false)
       UpdateExpiredApplicantsJob.perform_later(offer.id)
+    end
+  end
+
+  desc 'Expire all applicants that have not responded to offers'
+  task expire_non_responses: :environment do
+    Offer.where(accepted: 'offer_sent').each do |offer|
+      offer.update(accepted: 'expired')
     end
   end
 
