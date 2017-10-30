@@ -34,7 +34,6 @@ Rails.application.routes.draw do
     match "expire-lottery-status" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::Queue.new('expire_lottery').size < 1 ? "Empty" : "Active" ]] }, via: :get
     match "match-lottery-status" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::Queue.new('match_lottery').size < 1 ? "Empty" : "Active" ]] }, via: :get
     match "workers-status" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::Workers.new.size < 1 ? "Empty" : "Active" ]] }, via: :get
-    Sidekiq::Workers.new
   end
 
   root to: 'offers#index'
