@@ -12,6 +12,10 @@ const defaults = {
 
 export default Ember.Controller.extend({
 
+  lotteryStatus: Ember.inject.service(),
+  ajax: Ember.inject.service(),
+
+
   queryParams: ['min', 'max'],
   min: defaults.min,
   max: defaults.max,
@@ -27,11 +31,73 @@ export default Ember.Controller.extend({
     'updated_at', 
     'created_at'
   ],
+
+  updateStatus: false, 
   
 
   @computed('attributes', 'removedFields')
   attributeNames(attributes, fields) {
     return attributes.filter(x => fields.indexOf(x.name) === -1).map(attr => attr.name.split('_').join(' '));
+  },
+
+
+  @computed('model.expire', 'updateStatus', 'tick')
+  expireStat(expire, update) {
+    if (update) {
+      this.setUpdateTimer();
+      return this.get('lotteryStatus').getExpire();
+    }
+    else {
+      return expire;
+    }
+  },
+
+
+  @computed('model.lottery', 'updateStatus', 'tick')
+  lotteryStat(lottery, update) {
+    if (update) {
+      this.setUpdateTimer();
+      return this.get('lotteryStatus').getLottery();
+    }
+    else {
+      return lottery;
+    }
+  },
+
+
+  @computed('lotteryStat') 
+  lotteryActive(status) {
+    return status.toLowerCase() === 'active';
+  },
+
+
+  @computed('workerStat') 
+  workerActive(status) {
+    return status.toLowerCase() === 'active';
+  },
+
+
+  @computed('expireStat') 
+  expireActive(status) {
+    return status.toLowerCase() === 'active';
+  },
+
+
+  @computed('model.worker', 'updateStatus', 'tick')
+  workerStat(worker, update) {
+    if (update) {
+      this.setUpdateTimer();
+      return this.get('lotteryStatus').getWorker();
+    }
+    else {
+      return worker;
+    }
+  },
+
+
+  @computed('expireStat', 'lotteryStat', 'workerStat')
+  canRunLottery(expire, lottery, worker) {
+    return ![expire, lottery, worker].any(status => status.toLowerCase() === 'active'); 
   },
 
 
@@ -55,7 +121,7 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.[]', 'searchQuery')
+  @computed('model.applicants.[]', 'searchQuery')
   sortedModel(model, query) {
     let results = model;
 
@@ -127,17 +193,34 @@ export default Ember.Controller.extend({
 
   @action
   runLottery() {
-    const ajax = this.get('ajax');
-    const url = _url.resolve(config.host, 'api/matches');
+    const canRunLottery = this.get('canRunLottery');
 
-    ajax
-    .post({ url })
-    .then(result => {
-      console.log(result);
-    })
-    .catch(() => {
-      this.set('errorMessage', 'Could not run the current lottery');
-    });
-  }
+    if (canRunLottery) {
+      const ajax = this.get('ajax');
+      const url = _url.resolve(config.host, 'api/matches');
+
+      ajax
+      .post({ url })
+      .then(result => {
+        this.set('updateStatus', true);
+      })
+      .catch(() => {
+        this.set('errorMessage', 'Could not run the current lottery');
+      });
+    }
+  },
+
+
+  setUpdateTimer() {
+    if (this.get('updateTimer'))  {
+      clearTimeout(this.get('updateTimer'));
+    }
+
+    const timer = setTimeout(() => {
+      this.set('tick', this.get('tick') + 1)
+    }, 5000);
+
+    this.set('updateTimer', timer);
+  },
 
 });
