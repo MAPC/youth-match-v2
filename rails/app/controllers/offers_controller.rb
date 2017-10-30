@@ -15,7 +15,6 @@ class OffersController < ApplicationController
 
     respond_to do |format|
       format.jsonapi { render jsonapi: @offers }
-      format.html { @offers }
     end
   end
 
@@ -56,11 +55,11 @@ class OffersController < ApplicationController
   # POST /offers
   # POST /offers.json
   def create
-    @offer = Offer.new(offer_params)
+    @offer = Offer.new(offers_params)
 
     respond_to do |format|
       if @offer.save
-        format.jsonapi { render :show, status: :created, location: @offer }
+        format.jsonapi { render jsonapi: @offer, status: :created }
       else
         format.jsonapi { render jsonapi: @offer.errors, status: :unprocessable_entity }
       end
@@ -71,7 +70,7 @@ class OffersController < ApplicationController
   # PATCH/PUT /offers/1.json
   def update
     respond_to do |format|
-      if @offer.update(filter_params)
+      if @offer.update(offers_params)
         format.jsonapi { render :show, status: :ok, location: @offer }
       else
         format.jsonapi { render jsonapi: @offer.errors, status: :unprocessable_entity }
@@ -94,11 +93,8 @@ class OffersController < ApplicationController
       @offer = Offer.find(params[:id])
     end
 
-    def filter_params
-      params.require(:offer).permit(:applicant, :position, :accepted)
+    def offers_params
+      ActiveModelSerializers::Deserialization.jsonapi_parse(params, only: [:applicant, :position, :accepted])
     end
 
-    def safe_params
-      ActiveModelSerializers::Deserialization.jsonapi_parse(params)
-    end
 end

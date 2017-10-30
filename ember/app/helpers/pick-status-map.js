@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export function statusMap(params/*, hash*/) {
+export function pickStatusMap(params/*, hash*/) {
   const status = params[0] || 'no-status';
   
   const map = {
@@ -11,4 +11,4 @@ export function statusMap(params/*, hash*/) {
   return map[status];
 }
 
-export default Ember.Helper.helper(statusMap);
+export default Ember.Helper.helper(pickStatusMap);
