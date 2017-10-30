@@ -39,9 +39,13 @@
       </div>
 
       <div class="lottery-counter">
-        This lottery will match {{model.length}} youth.
+        This lottery will match {{model.applicants.length}} youth.
       </div>
       <button class="lottery-button" onclick={{action 'runLottery'}}>RUN LOTTERY</button>
+
+      <div class="error-message">
+        {{errorMessage}}
+      </div>
     </div>
   {{else}}
     {{#if lotteryActive}}

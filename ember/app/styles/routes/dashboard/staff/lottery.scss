@@ -21,4 +21,14 @@
     }
   }
 
+  .error-message {
+    float: right;
+
+    width: 100%;
+    margin-top: 25px;
+
+    color: $color_brand-red;
+    text-align: right; 
+  }
+
 }

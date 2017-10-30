@@ -200,7 +200,7 @@ export default Ember.Controller.extend({
       const url = _url.resolve(config.host, 'api/matches');
 
       ajax
-      .post({ url })
+      .post(url)
       .then(result => {
         this.set('updateStatus', true);
       })
