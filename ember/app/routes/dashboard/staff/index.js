@@ -1,7 +1,9 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  beforeModel() {
-    this.transitionTo('sign-up');
+
+  redirect() {
+    this.transitionTo('dashboard.staff.applicants');
   }
+
 });

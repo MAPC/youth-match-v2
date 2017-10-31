@@ -29,9 +29,6 @@ Router.map(function() {
       this.route('lottery');
     });
   });
-
-  this.route('sign-up');
-  this.route('signup');
 });
 
 export default Router;
