@@ -1,8 +1,8 @@
 <section class="route table-page lottery">
 
-  <h2>RUN LOTTERY</h2>
-
   {{#if canRunLottery}}
+    <h2>RUN LOTTERY</h2>
+
     <div class="applicants-table-wrapper">
       <h3>APPLICANTS FOR CURRENT LOTTERY</h3>
 
@@ -49,17 +49,20 @@
     </div>
   {{else}}
     {{#if lotteryActive}}
-      <div class="lottery-active status-box"> 
-        <h3 class="active-status">The current lottery is being setup by the server</h3>
+      {{loading-dots text="SETTING UP LOTTERY"}}
+      <div class="status-box">
+        The server is preparing the current lottery to be run
       </div>
     {{else if workerActive}}
-      <div class="worker-active status-box"> 
-        <h3 class="active-status">The lottery is matching youth to jobs</h3>
+      {{loading-dots text="MATCHING YOUTH TO JOBS"}}
+      <div class="status-box">
+        The algorithm is currently matching valid youth 
+        to open lottery positions
       </div>
     {{else if expireActive}}
       <div class="expire-active status-box"> 
         <h3 class="active-status">
-          The current lottery has completed. You may not run a lottery 
+          The most recent lottery has completed. You may not run a lottery 
           until 72 hours have passed.
         </h3>
       </div>

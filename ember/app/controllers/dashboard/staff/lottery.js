@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import Applicant from '../../../models/applicant';
 import config from '../../../config/environment';
-import { default as _url } from 'npm:url';
+import url from 'npm:url';
 import { computed, action } from 'ember-decorators/object';
 
 
@@ -13,6 +13,7 @@ const defaults = {
 export default Ember.Controller.extend({
 
   lotteryStatus: Ember.inject.service(),
+  session: Ember.inject.service(),
   ajax: Ember.inject.service(),
 
 
@@ -97,7 +98,16 @@ export default Ember.Controller.extend({
 
   @computed('expireStat', 'lotteryStat', 'workerStat')
   canRunLottery(expire, lottery, worker) {
-    return ![expire, lottery, worker].any(status => status.toLowerCase() === 'active'); 
+    console.log("Lottery: ", lottery);
+    console.log("Worker: ", worker);
+    console.log("Expire: ", expire);
+    const canRun = ![expire, lottery, worker].any(status => status && status.toLowerCase() === 'active'); 
+
+    if (!canRun) {
+      this.setUpdateTimer();
+    }
+
+    return canRun;
   },
 
 
@@ -197,17 +207,27 @@ export default Ember.Controller.extend({
 
     if (canRunLottery) {
       const ajax = this.get('ajax');
-      const url = _url.resolve(config.host, 'api/matches');
+      const session = this.get('session');
+      const endpoint = url.resolve(config.host, 'api/matches');
 
-      ajax
-      .post(url)
-      .then(result => {
-        this.set('updateStatus', true);
-      })
-      .catch(() => {
-        this.set('errorMessage', 'Could not run the current lottery');
+      const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
+
+      session.authorize(authorizer, (headerName, header) => {
+        const headers = {};
+        headers[headerName] = header;
+  
+        ajax 
+        .post(endpoint, { headers })
+        .then(result => {
+          this.set('updateStatus', true);
+        })
+        .catch(() => {
+          this.set('errorMessage', 'Could not run the current lottery');
+        });
+
       });
-    }
+
+     }
   },
 
 

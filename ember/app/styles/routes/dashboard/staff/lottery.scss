@@ -31,4 +31,16 @@
     text-align: right; 
   }
 
+  .status-box {
+    @extend ._vertical-center; 
+    top: 70%;
+
+    color: $color_font-medium;
+    font-size: 13px;
+    font-weight: 300;
+    text-align: center;
+
+    &.expire-active { top: 45%; }
+  }
+
 }
