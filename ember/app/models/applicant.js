@@ -16,6 +16,10 @@ export default DS.Model.extend({
 
   email: DS.attr('string'),
   icims_id: DS.attr('number'),
+  offer_status: DS.attr('string'),
+  offer_site: DS.attr('string'),
+  position_title: DS.attr('string'),
+  position_id: DS.attr('number'),
   prefers_nearby: DS.attr('boolean'),
   has_transit_pass: DS.attr('boolean'),
   latitude: DS.attr('number'),

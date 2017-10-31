@@ -3,8 +3,6 @@ import Applicant from '../../../models/applicant';
 import { offerStatusMap } from '../../../helpers/offer-status-map';
 import { computed, action } from 'ember-decorators/object';
 
-const additionalAttributes = ['offer_status', 'position_title', 'offer_site', 'position_id']
-
 const defaults = {
   min: 0,
   max: 50,
@@ -17,9 +15,7 @@ export default Ember.Controller.extend({
   min: defaults.min,
   max: defaults.max,
 
-
-  attributes: Object.values(Ember.get(Applicant, 'attributes')._values)
-                    .concat(additionalAttributes.map(x => {return {name: x};})),
+  attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
 
   searchQuery: '',
 
@@ -27,6 +23,7 @@ export default Ember.Controller.extend({
   removedFields: [
     'id',
     'participant_essay', 
+    'grid_id',
     'interests', 
     'positions',
     'user', 
@@ -75,8 +72,8 @@ export default Ember.Controller.extend({
 
       applicant.offer_status = offerStatusMap([offer.get('status')]);
       applicant.offer_site = position.get('site_name');
-      applicant.position_id = position.get('id');
       applicant.position_title = position.get('title');
+      applicant.position_id = position.get('id');
 
       return applicant;
     });

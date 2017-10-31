@@ -51,7 +51,7 @@
                 {{/each}}
               </select>
             </div>
-            <div class="column">{{status-map pick.status}}</div>
+            <div class="column">{{pick-status-map pick.status}}</div>
             <div class="column">
               {{#unless (eq pick.status 'hire')}}
                 <button class="small" onclick={{action 'removePick' pick}}>REMOVE</button>
