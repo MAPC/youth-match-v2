@@ -12,6 +12,12 @@
     Pay Rate: $11.00/hour <br>
     Duties and Responsibilities: <%= @position.duties_responsbilities %></p>
 
+    If you wish to contact the job site you can get in touch with:
+    <p><%= @position.primary_contact_person %><br>
+       <%= @position.primary_contact_person_title %><br>
+       <%= @position.primary_contact_person_phone %>
+   </p>
+
     <p><b>You have until 5pm on Wednesday June 28th to accept or decline this job offer.</b> If you don't respond by then, we will drop your name to the bottom of our waitlist.</p>
 
     <p>Have questions? Call Youth Engagement and Employment at 617-635-4202, or email us at <a href="mailto:youthline@boston.gov">youthline@boston.gov</a>.</p>
