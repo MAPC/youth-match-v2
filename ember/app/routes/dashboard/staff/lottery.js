@@ -1,5 +1,7 @@
 import Ember from 'ember';
 import RSVP from 'rsvp';
+import { on } from 'ember-decorators/object/evented';
+
 
 export default Ember.Route.extend({
 
@@ -16,6 +18,15 @@ export default Ember.Route.extend({
       lottery: lotteryStatus.getLottery(),
       worker: lotteryStatus.getWorker(),
     });
-  }
+  },
+
+  @on('deactivate')
+  stopLotteryStatusUpdates() {
+    const lotteryController = this.controllerFor('dashboard.staff.lottery');
+
+    if (lotteryController.get('updateTimer')) {
+      clearTimeout(lotteryController.get('updateTimer'));
+    }
+  },
 
 });

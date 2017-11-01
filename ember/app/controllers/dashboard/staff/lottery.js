@@ -42,58 +42,23 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model.expire', 'updateStatus', 'tick')
-  expireStat(expire, update) {
-    if (update) {
-      this.setUpdateTimer();
-      return this.get('lotteryStatus').getExpire();
-    }
-    else {
-      return expire;
-    }
-  },
+  @computed('model.expire')
+  expireStat(status) { return status; },
 
+  @computed('model.lottery')
+  lotteryStat(status) { return status; },
 
-  @computed('model.lottery', 'updateStatus', 'tick')
-  lotteryStat(lottery, update) {
-    if (update) {
-      this.setUpdateTimer();
-      return this.get('lotteryStatus').getLottery();
-    }
-    else {
-      return lottery;
-    }
-  },
+  @computed('model.worker')
+  workerStat(status) { return status; },
 
+  @computed('expireStat')
+  expireActive(status) { return status.toLowerCase() === 'active'; },
 
-  @computed('lotteryStat') 
-  lotteryActive(status) {
-    return status.toLowerCase() === 'active';
-  },
+  @computed('lotteryStat')
+  lotteryActive(status) { return status.toLowerCase() === 'active'; },
 
-
-  @computed('workerStat') 
-  workerActive(status) {
-    return status.toLowerCase() === 'active';
-  },
-
-
-  @computed('expireStat') 
-  expireActive(status) {
-    return status.toLowerCase() === 'active';
-  },
-
-
-  @computed('model.worker', 'updateStatus', 'tick')
-  workerStat(worker, update) {
-    if (update) {
-      this.setUpdateTimer();
-      return this.get('lotteryStatus').getWorker();
-    }
-    else {
-      return worker;
-    }
-  },
+  @computed('workerStat')
+  workerActive(status) { return status.toLowerCase() === 'active'; },
 
 
   @computed('expireStat', 'lotteryStat', 'workerStat')
@@ -101,7 +66,9 @@ export default Ember.Controller.extend({
     console.log("Lottery: ", lottery);
     console.log("Worker: ", worker);
     console.log("Expire: ", expire);
-    const canRun = ![expire, lottery, worker].any(status => status && status.toLowerCase() === 'active'); 
+
+    const canRun = ![expire, lottery, worker].any(status => status.toLowerCase() === 'active'); 
+    console.log(canRun);
 
     if (!canRun) {
       this.setUpdateTimer();
@@ -218,8 +185,8 @@ export default Ember.Controller.extend({
   
         ajax 
         .post(endpoint, { headers })
-        .then(result => {
-          this.set('updateStatus', true);
+        .then(() => {
+          this.setUpdateTimer();
         })
         .catch(() => {
           this.set('errorMessage', 'Could not run the current lottery');
@@ -236,8 +203,22 @@ export default Ember.Controller.extend({
       clearTimeout(this.get('updateTimer'));
     }
 
+    const lotteryStatus = this.get('lotteryStatus');
+
+    lotteryStatus.getExpire(status => {
+      this.set('expireStat', status);
+    });
+
+    lotteryStatus.getLottery(status => {
+      this.set('lotteryStat', status);
+    });
+
+    lotteryStatus.getWorker(status => {
+      this.set('workerStat', status);
+    });
+
     const timer = setTimeout(() => {
-      this.set('tick', this.get('tick') + 1)
+      this.setUpdateTimer();
     }, 5000);
 
     this.set('updateTimer', timer);
