@@ -33,7 +33,9 @@ export default Ember.Controller.extend({
     'created_at'
   ],
 
+  disableSubmit: false,
   updateStatus: false, 
+  lotteryStatOverride: false,
   
 
   @computed('attributes', 'removedFields')
@@ -54,21 +56,16 @@ export default Ember.Controller.extend({
   @computed('expireStat')
   expireActive(status) { return status.toLowerCase() === 'active'; },
 
-  @computed('lotteryStat')
-  lotteryActive(status) { return status.toLowerCase() === 'active'; },
+  @computed('lotteryStat', 'lotteryStatOverride')
+  lotteryActive(status, override) { return override || status.toLowerCase() === 'active'; },
 
   @computed('workerStat')
   workerActive(status) { return status.toLowerCase() === 'active'; },
 
 
-  @computed('expireStat', 'lotteryStat', 'workerStat')
+  @computed('expireActive', 'lotteryActive', 'workerActive')
   canRunLottery(expire, lottery, worker) {
-    console.log("Lottery: ", lottery);
-    console.log("Worker: ", worker);
-    console.log("Expire: ", expire);
-
-    const canRun = ![expire, lottery, worker].any(status => status.toLowerCase() === 'active'); 
-    console.log(canRun);
+    const canRun = ![expire, lottery, worker].any(x => x); 
 
     if (!canRun) {
       this.setUpdateTimer();
@@ -172,7 +169,8 @@ export default Ember.Controller.extend({
   runLottery() {
     const canRunLottery = this.get('canRunLottery');
 
-    if (canRunLottery) {
+    if (canRunLottery && !this.get('disableSubmit')) {
+      this.set('disableSubmit', true);
       const ajax = this.get('ajax');
       const session = this.get('session');
       const endpoint = url.resolve(config.host, 'api/matches');
@@ -186,10 +184,13 @@ export default Ember.Controller.extend({
         ajax 
         .post(endpoint, { headers })
         .then(() => {
+          this.set('lotteryStatOverride', true);
+          this.set('disableSubmit', false);
           this.setUpdateTimer();
         })
         .catch(() => {
           this.set('errorMessage', 'Could not run the current lottery');
+          this.set('disableSubmit', false);
         });
 
       });
@@ -205,15 +206,15 @@ export default Ember.Controller.extend({
 
     const lotteryStatus = this.get('lotteryStatus');
 
-    lotteryStatus.getExpire(status => {
+    lotteryStatus.getExpire().then(status => {
       this.set('expireStat', status);
     });
 
-    lotteryStatus.getLottery(status => {
+    lotteryStatus.getLottery().then(status => {
       this.set('lotteryStat', status);
     });
 
-    lotteryStatus.getWorker(status => {
+    lotteryStatus.getWorker().then(status => {
       this.set('workerStat', status);
     });
 

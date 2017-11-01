@@ -41,19 +41,14 @@
       <div class="lottery-counter">
         This lottery will match {{model.applicants.length}} youth.
       </div>
-      <button class="lottery-button" onclick={{action 'runLottery'}}>RUN LOTTERY</button>
+      <button class="lottery-button {{if disableSubmit 'disabled'}}" onclick={{action 'runLottery'}}>RUN LOTTERY</button>
 
       <div class="error-message">
         {{errorMessage}}
       </div>
     </div>
   {{else}}
-    {{#if lotteryActive}}
-      {{loading-dots text="SETTING UP LOTTERY"}}
-      <div class="status-box">
-        The server is preparing the current lottery to be run
-      </div>
-    {{else if workerActive}}
+    {{#if workerActive}}
       {{loading-dots text="MATCHING YOUTH TO JOBS"}}
       <div class="status-box">
         The algorithm is currently matching valid youth 
@@ -61,10 +56,16 @@
       </div>
     {{else if expireActive}}
       <div class="expire-active status-box"> 
+        <h1>LOTTERY COMPLETED</h1>
         <h3 class="active-status">
-          The most recent lottery has completed. You may not run a lottery 
+          The most recent lottery has completed. You may not run another lottery 
           until 72 hours have passed.
         </h3>
+      </div>
+    {{else if lotteryActive}}
+      {{loading-dots text="SETTING UP LOTTERY"}}
+      <div class="status-box">
+        The server is preparing the current lottery to be run
       </div>
     {{/if}}
   {{/if}}

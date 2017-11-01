@@ -11,7 +11,7 @@
   },
   "repository": "",
   "scripts": {
-    "stage": "ember build --prod && rsync -r dist/* successlink@prep.mapc.org:/var/www/successlink/ember/",
+    "stage": "ember build --prod && rsync -r dist/* youthjobs@prep.mapc.org:/var/www/youthjobs/ember/",
     "build": "ember build",
     "start": "ember server",
     "test": "ember test"

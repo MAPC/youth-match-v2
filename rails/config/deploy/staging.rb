@@ -3,7 +3,7 @@
 # Defines a single server with a list of roles and multiple properties.
 # You can define all roles on a single server, or split them:
 
-server "prep.mapc.org", user: "successlink", roles: %w{app db web}
+server "prep.mapc.org", user: "youthjobs", roles: %w{app db web}
 
 # role-based syntax
 # ==================
