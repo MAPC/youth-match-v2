@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       resources :selections
       resources :picks
     end
+
     resources :users, only: [:create, :update, :show, :index] do
       resources :positions
     end
@@ -31,6 +32,7 @@ Rails.application.routes.draw do
     resources :position_imports, only: [:create]
     resources :password_resets, only: [:create]
     resources :offer_emails, only: [:create]
+
     match "expire-lottery-status" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::ScheduledSet.new.size < 1 ? "Empty" : "Active" ]] }, via: :get
     match "match-lottery-status" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::Queue.new('match_lottery').size < 1 ? "Empty" : "Active" ]] }, via: :get
     match "workers-status" => proc { [200, {"Content-Type" => "text/plain"}, [Sidekiq::Workers.new.size < 1 ? "Empty" : "Active" ]] }, via: :get

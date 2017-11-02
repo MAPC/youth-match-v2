@@ -33,6 +33,7 @@ export default Ember.Controller.extend({
     'created_at'
   ],
 
+  sentEmails: false,
   disableSubmit: false,
   updateStatus: false, 
   lotteryStatOverride: false,
@@ -173,7 +174,7 @@ export default Ember.Controller.extend({
       this.set('disableSubmit', true);
       const ajax = this.get('ajax');
       const session = this.get('session');
-      const endpoint = url.resolve(config.host, 'api/matches');
+      let endpoint = url.resolve(config.host, 'api/matches');
 
       const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
 
@@ -199,6 +200,29 @@ export default Ember.Controller.extend({
   },
 
 
+  sendOfferEmails() {
+    const ajax = this.get('ajax');
+    const session = this.get('session');
+    const endpoint = url.resolve(config.host, 'api/offer_emails');
+
+    const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
+
+    session.authorize(authorizer, (headerName, header) => {
+      const headers = {};
+      headers[headerName] = header;
+
+      ajax
+      .post(endpoint, { headers })
+      .then(() => {
+        console.log('Emails sent');
+      })
+      .catch(() => {
+        this.set('errorMessage', 'Could not send offer emails to matched lottery applicants');
+      });
+    });
+  },
+
+
   setUpdateTimer() {
     if (this.get('updateTimer'))  {
       clearTimeout(this.get('updateTimer'));
@@ -207,6 +231,14 @@ export default Ember.Controller.extend({
     const lotteryStatus = this.get('lotteryStatus');
 
     lotteryStatus.getExpire().then(status => {
+      if (
+        !this.get('sentEmails')
+        && status.toLowerCase() === 'active' 
+      ) {
+        this.set('sentEmails', true);
+        this.sendOfferEmails();
+      }
+
       this.set('expireStat', status);
     });
 
