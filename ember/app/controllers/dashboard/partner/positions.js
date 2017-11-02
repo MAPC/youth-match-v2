@@ -7,8 +7,9 @@ import { computed, action } from 'ember-decorators/object';
 export default Ember.Controller.extend({
 
   parent: Ember.inject.controller('dashboard.partner'),
-  session: Ember.inject.session(),
-  ajax: Ember.inject.session(),
+
+  session: Ember.inject.service(),
+  ajax: Ember.inject.service(),
 
   submitted: false,
 
