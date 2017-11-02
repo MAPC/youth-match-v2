@@ -51,7 +51,9 @@ class Applicant < ApplicationRecord
   end
 
   def validate_email
-    ValidateEmailJob.perform_later(id)
+    if valid_email.blank?
+      ValidateEmailJob.perform_later(id)
+    end
   end
 end
 
