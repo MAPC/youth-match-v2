@@ -9,7 +9,6 @@ class Applicant < ApplicationRecord
  #  validate :positions_count_within_bounds
  validates :email, presence: true
  validates :icims_id, presence: true
- after_save :validate_email
 
   def match_to_position
     preferences.order(score: :desc).each do |preference|
@@ -48,12 +47,6 @@ class Applicant < ApplicationRecord
   def positions_count_within_bounds
     return if positions.blank?
     errors.add(:positions, :size, message: 'You can only apply to ten or less positions') if positions.size > 10
-  end
-
-  def validate_email
-    if valid_email.blank?
-      ValidateEmailJob.perform_later(id)
-    end
   end
 end
 
