@@ -186,14 +186,14 @@ export default Ember.Controller.extend({
         .post(endpoint, { headers })
         .then(() => {
           this.set('lotteryStatOverride', true);
-          this.set('disableSubmit', false);
           this.setUpdateTimer();
         })
         .catch(() => {
           this.set('errorMessage', 'Could not run the current lottery');
+        })
+        .finally(() => {
           this.set('disableSubmit', false);
         });
-
       });
 
      }

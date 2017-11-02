@@ -16,11 +16,6 @@
     </div>
   {{/if}}
 
-
-  <div class="update-message {{if updated 'display'}}">
-    {{updateMessage}}
-  </div>
-
   {{input class="search-box" value=searchQuery placeholder="Search for Users by Email"}}
 
   <div class="table users-table">
@@ -34,12 +29,18 @@
         <div class="tr">
           <div class="td">{{user.email}}</div>
           <div class="td">
-            <button class="destructive small" onclick={{action 'regeneratePassword' user}}>Regenerate Password</button>
+            <button class="destructive small {{if resettingPassword 'disabled'}}" onclick={{action 'regeneratePassword' user}}>Regenerate Password</button>
           </div>
         </div>
       {{/each}}
     </div>
   </div>
+
+  {{#if errorMessage}}
+    <div class="error-message">
+      {{errorMessage}}
+    </div>
+  {{/if}}
 
 
 </section>
