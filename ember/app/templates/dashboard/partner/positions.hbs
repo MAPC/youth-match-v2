@@ -61,7 +61,7 @@
         {{/each}}
 
         {{#if queuedPicks}}
-          <button class="small dark {{if submitted 'disabled'}}" onclick={{action 'submitForm'}}>{{if submitted 'OFFERS SENT' 'SEND OFFERS TO QUEUED'}}</button>
+          <button class="small dark {{if submitted 'disabled'}}" onclick={{action 'submitForm'}}>{{if submitted 'OFFERS SENT' 'SEND OFFERS TO PICKED APPLICANTS'}}</button>
         {{else}}
           {{#unless parent.hasHitLimit}}
             <div class="no-picks">
@@ -69,11 +69,16 @@
             </div>
           {{/unless}}
         {{/if}}
+
+        {{#if errorMessage}}
+          <div class="error-message">
+            {{errorMessage}}
+          </div>
+        {{/if}}
       </div>
     </div>
 
     <div class="partner-column">  
-      {{outlet}}
     </div>
   </div>
 

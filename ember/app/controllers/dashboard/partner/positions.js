@@ -1,12 +1,18 @@
 import Ember from 'ember';
+import url from 'npm:url';
+import config from '../../../config/environment';
 import { computed, action } from 'ember-decorators/object';
 
 
 export default Ember.Controller.extend({
 
   parent: Ember.inject.controller('dashboard.partner'),
+  session: Ember.inject.session(),
+  ajax: Ember.inject.session(),
 
   submitted: false,
+
+  errorMessage: '',
 
 
   @computed('parent.directSelectAllotments', 'model.picks.length')
@@ -53,7 +59,26 @@ export default Ember.Controller.extend({
         this.store.createRecord('offer', {
           position: pick.get('position'),
           applicant: pick.get('applicant'),
-        }).save();
+        })
+        .save()
+        .then(() => {
+          const ajax = this.get('ajax');
+          const session = this.get('session');
+          let endpoint = url.resolve(config.host, 'api/offer_emails');
+
+          const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
+
+          session.authorize(authorizer, (headerName, header) => {
+            const headers = {};
+            headers[headerName] = header;
+      
+            ajax 
+            .post(endpoint, { headers })
+            .catch(() => {
+              this.set('errorMessage', 'Could not send offer emails to applicants');
+            });
+          });
+        });
       });
     }
   }

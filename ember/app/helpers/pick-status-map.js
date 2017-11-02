@@ -4,7 +4,7 @@ export function pickStatusMap(params/*, hash*/) {
   const status = params[0] || 'no-status';
   
   const map = {
-    'no-status': 'Queued',
+    'no-status': 'Picked',
     'hire': 'Offer Sent',
   };
 

@@ -112,9 +112,6 @@ export default Ember.Controller.extend({
 
   @action 
   regeneratePassword(user) {
-    console.log(user.get('id'));
-    return;
-
     if (!this.get('resettingPassword')) {
       this.set('resettingPassword', true);
 

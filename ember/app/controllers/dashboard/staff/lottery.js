@@ -213,9 +213,6 @@ export default Ember.Controller.extend({
 
       ajax
       .post(endpoint, { headers })
-      .then(() => {
-        console.log('Emails sent');
-      })
       .catch(() => {
         this.set('errorMessage', 'Could not send offer emails to matched lottery applicants');
       });
