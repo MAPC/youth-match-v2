@@ -1,6 +1,4 @@
 import Ember from 'ember';
-import url from 'npm:url';
-import config from '../../../config/environment';
 import { computed, action } from 'ember-decorators/object';
 
 const defaults = {
@@ -120,27 +118,16 @@ export default Ember.Controller.extend({
     if (!this.get('resettingPassword')) {
       this.set('resettingPassword', true);
 
-      const userId = user.get('id');
+      const user_id = user.get('id');
 
-      const ajax = this.get('ajax');
-      const session = this.get('session');
-      const endpoint = url.resolve(config.host, `api/password_resets/${userId}`);
-
-      const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
-
-      session.authorize(authorizer, (headerName, header) => {
-        const headers = {};
-        headers[headerName] = header;
-      
-        ajax
-        .post(endpoint, { headers })
-        .catch(() => {
-          const userEmail = user.get('email');
-          this.set('errorMessage', `Could not reset credentials for ${userEmail}.`);
-        })
-        .finally(() => {
-          this.set('resettingPassword', false);
-        });
+      this.store.createRecord('passwordReset', { user_id })
+      .save()
+      .catch(() => {
+        const userEmail = user.get('email');
+        this.set('errorMessage', `Could not reset credentials for ${userEmail}.`);
+      })
+      .finally(() => {
+        this.set('resettingPassword', false);
       });
     }
   },
