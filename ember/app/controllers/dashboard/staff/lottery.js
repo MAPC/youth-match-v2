@@ -29,6 +29,10 @@ export default Ember.Controller.extend({
     'participant_essay', 
     'interests', 
     'user', 
+    'offer_status',
+    'offer_site',
+    'position_id',
+    'position_title',
     'updated_at', 
     'created_at'
   ],
