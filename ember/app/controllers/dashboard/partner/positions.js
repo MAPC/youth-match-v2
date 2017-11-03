@@ -56,29 +56,20 @@ export default Ember.Controller.extend({
 
       this.set('submitted', true);
 
-      willHire.forEach(pick => {
-        this.store.createRecord('offer', {
-          position: pick.get('position'),
-          applicant: pick.get('applicant'),
-        })
-        .save()
-        .then(() => {
-          const ajax = this.get('ajax');
-          const session = this.get('session');
-          let endpoint = url.resolve(config.host, 'api/offer_emails');
+      const ajax = this.get('ajax');
+      const session = this.get('session');
+      let endpoint = url.resolve(config.host, 'api/offer_emails');
 
-          const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
+      const authorizer = session.session.authenticator.replace(/authenticator/, 'authorizer');
 
-          session.authorize(authorizer, (headerName, header) => {
-            const headers = {};
-            headers[headerName] = header;
-      
-            ajax 
-            .post(endpoint, { headers })
-            .catch(() => {
-              this.set('errorMessage', 'Could not send offer emails to applicants');
-            });
-          });
+      session.authorize(authorizer, (headerName, header) => {
+        const headers = {};
+        headers[headerName] = header;
+  
+        ajax 
+        .post(endpoint, { headers })
+        .catch(() => {
+          this.set('errorMessage', 'Could not send offer emails to applicants');
         });
       });
     }
