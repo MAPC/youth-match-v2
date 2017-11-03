@@ -7,9 +7,11 @@ import url from 'npm:url';
 export default Ember.Controller.extend({
 
   ajax: Ember.inject.service(),
-  messageBody: '',
 
+  messageBody: '',
   textLength: 160,
+
+  sending: false,
 
   premadeMessages: {
     offer: "",
@@ -41,11 +43,17 @@ export default Ember.Controller.extend({
   sendText() {
     const body = this.get('messageBody');
 
-    if (body.get('length') > 0) {
-      console.log(this.store.createRecord('outgoingMessage', { body })); 
-      return;
+    if (body.length > 0 && !this.get('sending')) {
+      this.set('sending', true);
 
-      this.store.createRecord('outgoingMessage', { body }).save();
+      this.store.createRecord('outgoingMessage', { body })
+      .save()
+      .finally(() => {
+        setTimeout(() => {
+          this.set('messageBody', '');
+          this.set('sending', false);
+        }, 3000);
+      });
     }
   },
 

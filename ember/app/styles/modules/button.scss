@@ -47,6 +47,8 @@ button {
     background: none;
     border: 1px solid $color_brand-blue;
 
+    &.disabled { opacity: .3; }
+
     &:hover {
       color: $color_brand-blue--active; 
       border-color: $color_brand-blue--active;

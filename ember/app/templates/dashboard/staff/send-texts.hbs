@@ -42,7 +42,7 @@
         You will be sending this text to {{model.length}} applicant{{unless (eq model.length 1) 's'}}.
       </p>
 
-      <button class="{{if (eq messageBody.length 0) 'disabled'}}" onclick={{action 'sendText'}}>SEND TEXT</button>
+      <button class="{{if (eq messageBody.length 0) 'disabled'}}{{if sending 'disabled hollow'}}" onclick={{action 'sendText'}}>SEND TEXT</button>
     </div>
   </div>
 

@@ -2,22 +2,21 @@
 
   .text-columns {
     display: flex; 
+
     width: 75%;
 
     .text-column {
       &:first-of-type { 
         flex: 1 0 71%; 
         max-width: 71%;
-
         margin-right: 4%; 
       } 
+
       &:last-of-type { flex: 1 0 25%; }
     }
   }
 
-  .premade-buttons-wrapper {
-    margin: 25px auto; 
-  }
+  .premade-buttons-wrapper { margin: 25px auto; }
 
   .premade-buttons {
     display: flex; 
@@ -34,9 +33,7 @@
     }
   }
 
-  p a {
-    color: $color_brand-blue;
-  }
+  p a { color: $color_brand-blue; }
 
   textarea {
     width: 100%;
