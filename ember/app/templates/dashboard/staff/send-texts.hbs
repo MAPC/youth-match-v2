@@ -9,6 +9,11 @@
         Each text is made up of {{textLength}} characters.
       </p>
 
+      <p>
+        These texts are sent out to any {{link-to 'applicants' 'dashboard.staff.applicants'}} 
+        that have an offer.
+      </p>
+
       <div class="premade-buttons-wrapper">
         <h3>Premade Texts:</h3>
 
@@ -28,16 +33,14 @@
 
       <div class="text-counter">
         Character count: {{messageBody.length}}/{{characterThreshold}}.
-        You are sending {{textCount}} text{{unless (eq textCount 1) 's'}}.
+        You are sending {{textCount}} text{{unless (eq textCount 1) 's'}} to each applicant.
       </div>
     </div>
 
     <div class='text-column'>
-      {{#if textStatus}}
-        <p>
-          {{textStatus}}
-        </p>
-      {{/if}}
+      <p class="recipient-counter">
+        You will be sending this text to {{model.length}} applicant{{unless (eq model.length 1) 's'}}.
+      </p>
 
       <button class="{{if (eq messageBody.length 0) 'disabled'}}" onclick={{action 'sendText'}}>SEND TEXT</button>
     </div>
