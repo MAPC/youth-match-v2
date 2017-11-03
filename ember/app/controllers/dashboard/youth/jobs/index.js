@@ -13,11 +13,12 @@ export default Ember.Controller.extend({
    * Members
    */
 
-  fields: ['site_name', 'title', 'open_positions', 'category'],
   queryParams: ['min', 'max'],
   selectedInterestCategories: [],
   min: 0,
   max: 10,
+
+  searchQuery: '',
 
 
   @computed('min', 'max')
@@ -46,16 +47,30 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('model', 'selectedInterestCategories.[]')
-  filteredModel(model,selectedInterestCategories) {
-    return model.positions.filter((el) => {
+  @computed('model.positions', 'selectedInterestCategories.[]', 'searchQuery')
+  filteredModel(positions, selectedInterestCategories, query) {
+    let results = positions.filter((el) => {
       return selectedInterestCategories.includes(el.get('category'));
     });
+
+    if (query.length > 1) {
+      results = results.length ? results : positions; // use all positions if not filtered by category
+      query = query.toLowerCase();
+
+
+      results = results.filter(position => {
+        return (('' + position.get('title')).toLowerCase().startsWith(query))
+               || (('' + position.get('site_name')).toLowerCase().startsWith(query));
+      });
+    }
+
+    return results;
   },
 
 
-  @computed('filteredModel', 'min', 'max')
+  @computed('filteredModel.[]', 'min', 'max')
   sortedModel(filteredModel, min, max) {
+
     return filteredModel.sortBy('site_name').slice(min, max);
   },
 
