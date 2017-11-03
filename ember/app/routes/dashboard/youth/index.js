@@ -10,8 +10,9 @@ export default Ember.Route.extend({
 
     return RSVP.hash({
       positions: this.store.findAll('position'),
+      offers: this.store.findAll('offer'),
       applicant, 
     });
-  }
+  },
 
 });

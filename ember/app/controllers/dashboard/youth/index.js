@@ -34,8 +34,33 @@ export default Ember.Controller.extend({
   animationTriggered: false,
 
 
-  @computed('model.applicant', 'model.applicant.positions')
-  step(applicant, positions) {
+  @computed('model.applicant.offers')
+  applicantOffer(offers) {
+    return offers.get('firstObject');
+  },
+
+  @computed('model.applicant', 'model.applicant.positions', 'applicantOffer')
+  step(applicant, positions, offer) {
+
+    /*
+     * Step 5 should occur after the data has been exported to ICIMs.
+     */
+    /*
+    if () {
+      return '5';
+    }
+    */
+
+    if (offer) {
+      const status = ('' + offer.get('accepted')).toLowerCase();
+
+      if (status === 'accept' || status === 'decline') {
+        return '4';
+      }
+      else if (status !== 'expire') {
+        return '3';
+      }
+    }
     if (positions.get('length')) {
       return '2'; 
     }
