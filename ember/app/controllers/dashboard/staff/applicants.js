@@ -2,23 +2,13 @@ import Ember from 'ember';
 import Applicant from '../../../models/applicant';
 import { offerStatusMap } from '../../../helpers/offer-status-map';
 import { computed, action } from 'ember-decorators/object';
-
-const defaults = {
-  min: 0,
-  max: 50,
-};
-
-export default Ember.Controller.extend({
+import PaginatedController from '../../PaginatedController';
 
 
-  queryParams: ['min', 'max'],
-  min: defaults.min,
-  max: defaults.max,
+export default PaginatedController.extend({
 
   attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
-
   searchQuery: '',
-
 
   removedFields: [
     'id',
@@ -37,26 +27,6 @@ export default Ember.Controller.extend({
     return attributes.filter(x => fields.indexOf(x.name) === -1).map(attr => attr.name.split('_').join(' '));
   },
 
-
-  @computed('min', 'max')
-  perPage(min, max) {
-    if (min > max) {
-      this.set('max', min);
-      this.set('min', max);
-    }
-    else if (min === max) {
-      this.set('min', defaults.min);
-    }
-
-    return this.get('max') - this.get('min');
-  },
-
-
-  @computed('max', 'perPage')
-  page(max, perPage) {
-    return Math.round(max / perPage);
-  },
-
   @computed('model.offers.[]') 
   offerPositions(offers) {
     return offers.mapBy('position');
@@ -65,7 +35,6 @@ export default Ember.Controller.extend({
 
   @computed('model.applicants.[]', 'model.offers.@each.position', 'model.positions')
   combinedModel(applicants, offers, positions) {
-
     const activeApplicants = offers.map(offer => {
       let applicant = offer.get('applicant').toJSON({ includeId: true });
       let position = positions.filter(pos => pos.get('id') === offer.get('position.id'))[0];
@@ -116,6 +85,10 @@ export default Ember.Controller.extend({
   },
 
 
+  @computed('sortedModel.[]')
+  modelLength(sortedModel) { return sortedModel.get('length'); },
+
+
   @computed('sortedModel.[]', 'min', 'max', 'removedFields')
   filteredModel(sortedModel, min, max, fields) {
     return sortedModel.slice(min, max).map(x => {
@@ -125,45 +98,5 @@ export default Ember.Controller.extend({
       return json;
     });
   },
-
-
-  @action 
-  previous() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-
-    let newMin = min - perPage;
-    let newMax = max - perPage;
-
-    this.set('min', newMin >= 0 ? newMin : 0);
-    this.set('max', newMax >= perPage ? newMax : perPage);
-  },
-
-
-  @action
-  next() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-    this.set('min', min + perPage);
-    this.set('max', max + perPage);
-  },
-
-
-  @action
-  first() {
-    const perPage = this.get('perPage');
-
-    this.set('min', 0);
-    this.set('max', perPage);
-  },
-
-
-  @action
-  last() {
-    let { sortedModel, perPage } = this.getProperties('sortedModel','perPage');
-    let count = sortedModel.get('length');
-
-    this.set('min', count - perPage);
-    this.set('max', count);
-  },
-
 
 });

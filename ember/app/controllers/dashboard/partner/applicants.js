@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import { computed, action } from 'ember-decorators/object';
+import PaginatedController from '../../PaginatedController';
 
 
-export default Ember.Controller.extend({
+export default PaginatedController.extend({
 
   parent: Ember.inject.controller('dashboard.partner'),
 
@@ -10,16 +11,8 @@ export default Ember.Controller.extend({
    * Members
    */
 
-  queryParams: ['min', 'max'],
-
   searchQuery: '',
-  min: 0,
   max: 20,
-
-  @computed('min', 'max') 
-  pageSize(min, max) {
-    return Math.abs(max - min);
-  },
 
 
   @computed('model.picks.[]')
@@ -46,6 +39,12 @@ export default Ember.Controller.extend({
     const applicantIds = interestedApplicants.map(applicant => applicant.get('id'));
     return applicants.filter(applicant => applicantIds.indexOf(applicant.get('id')) === -1)
                      .sortBy('last_name', 'first_name');
+  },
+
+
+  @computed('disinterestedApplicants', 'interestedApplicants')
+  modelLength(disinterested, interested) {
+    return disinterested.length + interested.length;
   },
 
 

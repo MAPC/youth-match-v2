@@ -3,23 +3,14 @@ import Applicant from '../../../models/applicant';
 import config from '../../../config/environment';
 import url from 'npm:url';
 import { computed, action } from 'ember-decorators/object';
+import PaginatedController from '../../PaginatedController';
 
 
-const defaults = {
-  min: 0,
-  max: 50,
-};
-
-export default Ember.Controller.extend({
+export default PaginatedController.extend({
 
   lotteryStatus: Ember.inject.service(),
   session: Ember.inject.service(),
   ajax: Ember.inject.service(),
-
-
-  queryParams: ['min', 'max'],
-  min: defaults.min,
-  max: defaults.max,
 
   attributes: Object.values(Ember.get(Applicant, 'attributes')._values),
 
@@ -80,26 +71,6 @@ export default Ember.Controller.extend({
   },
 
 
-  @computed('min', 'max')
-  perPage(min, max) {
-    if (min > max) {
-      this.set('max', min);
-      this.set('min', max);
-    }
-    else if (min === max) {
-      this.set('min', defaults.min);
-    }
-
-    return this.get('max') - this.get('min');
-  },
-
-
-  @computed('max', 'perPage')
-  page(max, perPage) {
-    return Math.round(max / perPage);
-  },
-
-
   @computed('model.applicants.[]', 'searchQuery')
   sortedModel(model, query) {
     let results = model;
@@ -120,6 +91,10 @@ export default Ember.Controller.extend({
   },
 
 
+  @computed('sortedModel.[]')
+  modelLength(sortedModel) { return sortedModel.get('length'); },
+
+
   @computed('sortedModel.[]', 'min', 'max', 'removedFields')
   filteredModel(sortedModel, min, max, fields) {
     return sortedModel.slice(min, max).map(x => {
@@ -128,45 +103,6 @@ export default Ember.Controller.extend({
 
       return json;
     });
-  },
-
-
-  @action 
-  previous() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-
-    let newMin = min - perPage;
-    let newMax = max - perPage;
-
-    this.set('min', newMin >= 0 ? newMin : 0);
-    this.set('max', newMax >= perPage ? newMax : perPage);
-  },
-
-
-  @action
-  next() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
-    this.set('min', min + perPage);
-    this.set('max', max + perPage);
-  },
-
-
-  @action
-  first() {
-    const perPage = this.get('perPage');
-
-    this.set('min', 0);
-    this.set('max', perPage);
-  },
-
-
-  @action
-  last() {
-    let { sortedModel, perPage } = this.getProperties('sortedModel','perPage');
-    let count = sortedModel.get('length');
-
-    this.set('min', count - perPage);
-    this.set('max', count);
   },
 
 
