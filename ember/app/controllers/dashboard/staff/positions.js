@@ -17,14 +17,20 @@ export default Ember.Controller.extend({
 
   searchQuery: '',
 
+  renamedFields: {
+    'open_positions': 'allotted_positions',
+  },
+
   removedFields: [
     'applicants',
   ],
   
 
-  @computed('attributes', 'removedFields')
-  attributeNames(attributes, fields) {
-    return attributes.filter(x => fields.indexOf(x.name) === -1).map(attr => attr.name.split('_').join(' '));
+  @computed('attributes', 'removedFields', 'renamedFields')
+  attributeNames(attributes, fields, renamedFields) {
+    return attributes.filter(x => fields.indexOf(x.name) === -1)
+                     .map(attr => renamedFields[attr.name] || attr.name)
+                     .map(attrName => attrName.split('_').join(' '));
   },
 
 
