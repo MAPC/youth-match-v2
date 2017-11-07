@@ -170,7 +170,7 @@ export default Ember.Controller.extend({
 
   @action
   next() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
+    const { min, max, perPage } = this.getProperties('min','max','perPage');
     this.set('min', min + perPage);
     this.set('max', max + perPage);
   },
@@ -178,7 +178,7 @@ export default Ember.Controller.extend({
 
   @action
   first() {
-    let { min, max, perPage } = this.getProperties('min','max','perPage');
+    const perPage = this.get('perPage');
     this.set('min', 0);
     this.set('max', perPage);
   },

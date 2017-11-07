@@ -7,8 +7,4 @@ export default Ember.Route.extend({
     return this.modelFor('dashboard.partner');
   },
 
-  afterModel(model) {
-    console.log(model);
-  }
-
 });

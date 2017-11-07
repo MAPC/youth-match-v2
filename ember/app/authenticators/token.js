@@ -3,13 +3,13 @@ import OAuth2PasswordGrant from 'ember-simple-auth/authenticators/oauth2-passwor
 export default OAuth2PasswordGrant.extend({
 
   authenticate(email, token) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       resolve({
         email,
         access_token: token,
         token_type: 'bearer',
       });
     });
-  }
+  },
 
 });

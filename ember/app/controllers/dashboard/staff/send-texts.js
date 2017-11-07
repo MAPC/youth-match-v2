@@ -1,12 +1,8 @@
 import Ember from 'ember';
 import { computed, action } from 'ember-decorators/object';
-import config from '../../../config/environment';
-import url from 'npm:url';
 
 
 export default Ember.Controller.extend({
-
-  ajax: Ember.inject.service(),
 
   messageBody: '',
   textLength: 160,
@@ -49,10 +45,8 @@ export default Ember.Controller.extend({
       this.store.createRecord('outgoingMessage', { body })
       .save()
       .finally(() => {
-        setTimeout(() => {
-          this.set('messageBody', '');
-          this.set('sending', false);
-        }, 3000);
+        this.set('messageBody', '');
+        this.set('sending', false);
       });
     }
   },

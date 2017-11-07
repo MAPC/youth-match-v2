@@ -10,12 +10,12 @@ export default Ember.Component.extend({
         .visibility({
           type   : 'fixed',
           offset : 15,
-          onUpdate: that.updateMap(that)
+          onUpdate: that.updateMap()
         })
       ;
     })
   },
-  updateMap(that) {
+  updateMap() {
     let mapInstance = this.get('mapState.mapInstance.target');
     if(mapInstance) {
       mapInstance.invalidateSize();

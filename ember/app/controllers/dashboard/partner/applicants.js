@@ -23,7 +23,7 @@ export default Ember.Controller.extend({
 
 
   @computed('model.picks.[]')
-  pickedApplicants(picks, applicants) {
+  pickedApplicants(picks) {
     return picks.mapBy('applicant');
   },
 

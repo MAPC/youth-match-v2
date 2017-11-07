@@ -8,18 +8,14 @@ export default Ember.Component.extend({
   downloadData() {
     const fileName = this.get('fileName');
     let data = this.get('data');
-    console.log(data);
 
     if (data.content) {
       data = data.content;
     }
 
-    console.log(data);
-
     const csvHeader = "data:text/csv;charset=utf-8,";
 
     const documentHeader = Object.keys(data[0]);
-    console.log(documentHeader);
     const documentRows = data.map(row => Object.keys(row).map(key => row[key]))
                              .map(row => row.map(value => Array.isArray(value) ? value.join(';') : value))
                              .map(row => row.map(value => (typeof value === 'string') ? value.split(',').join(';') : value ));
