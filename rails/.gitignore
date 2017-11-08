@@ -18,3 +18,6 @@
 
 # Ignore casettes
 /spec/cassettes/*
+
+# Ignore dot-env
+.env
