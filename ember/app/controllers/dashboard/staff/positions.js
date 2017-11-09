@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Position from '../../../models/position';
-import { computed, action } from 'ember-decorators/object';
+import { computed } from 'ember-decorators/object';
 import PaginatedController from '../../PaginatedController';
 
 
@@ -35,9 +35,7 @@ export default PaginatedController.extend({
     let results = model.map(x => x.toJSON());
 
     if (query.length > 1) {
-      this.set('min', defaults.min);
-      this.set('max', defaults.max);
-
+      this.resetPage();
       query = query.toLowerCase();
 
       results = results.filter(x => {

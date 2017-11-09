@@ -12,7 +12,7 @@ export default PaginatedController.extend({
    */
 
   searchQuery: '',
-  max: 20,
+  defaultMax: 20,
 
 
   @computed('model.picks.[]')
@@ -56,6 +56,7 @@ export default PaginatedController.extend({
                                 .filter(applicant => pickedIds.indexOf(applicant.get('id')) === -1);
 
     if (query.length >= 2) {
+      this.resetPage();
       query = query.toLowerCase();
 
       applicants = applicants.filter(x => { 

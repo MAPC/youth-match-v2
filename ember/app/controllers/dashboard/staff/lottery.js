@@ -76,9 +76,7 @@ export default PaginatedController.extend({
     let results = model;
 
     if (query.length > 1) {
-      this.set('min', defaults.min);
-      this.set('max', defaults.max);
-
+      this.resetPage();
       query = query.toLowerCase();
 
       results = results.filter(x => {

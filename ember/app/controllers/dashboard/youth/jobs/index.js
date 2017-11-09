@@ -16,7 +16,7 @@ export default PaginatedController.extend({
 
   selectedInterestCategories: [],
 
-  max: 10,
+  defaultMax: 10,
 
   searchQuery: '',
 
@@ -34,9 +34,9 @@ export default PaginatedController.extend({
     });
 
     if (query.length > 1) {
+      this.resetPage();
       results = results.length ? results : positions; // use all positions if not filtered by category
       query = query.toLowerCase();
-
 
       results = results.filter(position => {
         return (('' + position.get('title')).toLowerCase().startsWith(query))
