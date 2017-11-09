@@ -92,7 +92,7 @@ class OffersController < ApplicationController
     end
 
     def offers_params
-      ActiveModelSerializers::Deserialization.jsonapi_parse(params, only: [:applicant, :position, :accepted])
+      ActiveModelSerializers::Deserialization.jsonapi_parse(params, only: [:applicant, :position, :accepted, :exported])
     end
 
 end
