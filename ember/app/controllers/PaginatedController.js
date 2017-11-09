@@ -79,5 +79,9 @@ export default Ember.Controller.extend({
     this.set('max', modelLength);
   },
 
+  resetPage() {
+    this.set('min', this.get('defaultMin'));
+    this.set('max', this.get('defaultMax'));
+  }
 
 });
