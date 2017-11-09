@@ -55,7 +55,7 @@ export default PaginatedController.extend({
       .save()
       .catch(() => {
         const userEmail = user.get('email');
-        this.set('errorMessage', `Could not reset credentials for ${userEmail}.`);
+        //this.set('errorMessage', `Could not reset credentials for ${userEmail}.`);
       })
       .finally(() => {
         this.set('resettingPassword', false);
