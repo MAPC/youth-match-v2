@@ -57,7 +57,7 @@ export default Ember.Controller.extend({
       if (status === 'yes' || status === 'no_bottom_waitlist') {
         return '4';
       }
-      else if (status !== 'expire') {
+      else if (status !== 'expired') {
         return '3';
       }
     }
