@@ -54,7 +54,7 @@ export default Ember.Controller.extend({
     if (offer) {
       const status = ('' + offer.get('accepted')).toLowerCase();
 
-      if (status === 'accept' || status === 'decline') {
+      if (status === 'yes' || status === 'no_bottom_waitlist') {
         return '4';
       }
       else if (status !== 'expire') {
