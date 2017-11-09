@@ -33,7 +33,7 @@ class OutgoingMessagesController < ApplicationController
         SendTextJob.perform_later(phone_number, @outgoing_message.body)
       end
       respond_to do |format|
-        format.jsonapi { render head: :created }
+        format.jsonapi { render head :created }
         format.html { redirect_to @outgoing_message, notice: 'Outgoing message was successfully created.' }
       end
     else
