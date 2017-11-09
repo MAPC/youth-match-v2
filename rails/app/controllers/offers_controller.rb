@@ -39,13 +39,13 @@ class OffersController < ApplicationController
       if current_user.applicant.lottery_activated?
         @offer.update(accepted: 'yes')
       else
-        render head: :gone
+        render head :gone
       end
     else
       if current_user.applicant.lottery_activated?
         @offer.update(accepted: 'no_bottom_waitlist')
       else
-        render head: :gone
+        render head :gone
       end
     end
   end

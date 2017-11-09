@@ -6,17 +6,17 @@ class PasswordResetsController < ApplicationController
       if user.try(:reset_password, password, password)
         email_password_to(user, password)
         respond_to do |format|
-          format.jsonapi { render head: :created  }
+          format.jsonapi { render head :created }
           format.html { redirect_to @outgoing_message, notice: 'Check your email for your new password.' }
         end
       else
         respond_to do |format|
-          format.jsonapi { render head: :bad_request }
+          format.jsonapi { render head :bad_request }
         end
       end
     else
       respond_to do |format|
-        format.jsonapi { render head: :unauthorized }
+        format.jsonapi { render head :unauthorized }
       end
     end
   end
