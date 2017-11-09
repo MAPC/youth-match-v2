@@ -1,5 +1,5 @@
 class OfferSerializer < ActiveModel::Serializer
-  attributes :id, :accepted
+  attributes :id, :accepted, :exported
 
   has_one :applicant, seralizer: ApplicantSerializer do
     applicant = object.applicant
