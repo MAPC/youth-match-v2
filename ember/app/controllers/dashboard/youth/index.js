@@ -22,7 +22,7 @@ export default Ember.Controller.extend({
 
     '4': {
       title: 'Accept or Decline Your Offer',
-      message: "Thank you! You've accepted or declined your job.",
+      message: "Thank you! You've responded to your job offer.",
     },
 
     '5': {
@@ -41,17 +41,11 @@ export default Ember.Controller.extend({
 
   @computed('model.applicant', 'model.applicant.positions', 'applicantOffer')
   step(applicant, positions, offer) {
-
-    /*
-     * Step 5 should occur after the data has been exported to ICIMs.
-     */
-    /*
-    if () {
-      return '5';
-    }
-    */
-
     if (offer) {
+      if (offer.get('exported')) {
+        return '5';
+      }
+
       const status = ('' + offer.get('accepted')).toLowerCase();
 
       if (status === 'yes' || status === 'no_bottom_waitlist') {
@@ -67,6 +61,15 @@ export default Ember.Controller.extend({
 
     return '1';   
   },
+
+
+  @computed('applicantOffer')
+  acceptedOrDeclined(offer) {
+    if (offer && offer.get('accepted')) {
+      return offer.get('accepted').toLowerCase() === 'yes' ? 'accepted' : 'declined';
+    }
+  },
+
 
   @computed('model.applicant')
   applicantEmail(applicant) {

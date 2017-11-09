@@ -5,4 +5,5 @@ export default DS.Model.extend({
   applicant: belongsTo('applicant', { async: false }),
   position: belongsTo('position'),
   accepted: attr('string'),
+  exported: attr('boolean'),
 });
