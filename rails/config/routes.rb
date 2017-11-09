@@ -40,7 +40,6 @@ Rails.application.routes.draw do
 
   root to: 'offers#index'
 
-  get 'offers/accept'
-  get 'offers/decline'
+  get 'offers/answer'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
