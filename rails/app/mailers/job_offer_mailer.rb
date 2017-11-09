@@ -7,7 +7,7 @@ class JobOfferMailer < ApplicationMailer
     @position = @offer.position
     @accept_url  = root_url + 'offers?email=' + user.email + '&token=' + user.authentication_token + '&response=true'
     @decline_url = root_url + 'offers?email=' + user.email + '&token=' + user.authentication_token + '&response=false'
-    mail(to: user.email, subject: '2017 Successlink Lottery Job Offer - We’ve picked you for a summer job!')
+    mail(to: user.email, subject: '2017 Successlink Job Offer - We’ve picked you for a summer job!')
     @offer.update(accepted: 'offer_sent')
   end
 end
