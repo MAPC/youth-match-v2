@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171101140501) do
+ActiveRecord::Schema.define(version: 20171108214007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,8 +63,9 @@ ActiveRecord::Schema.define(version: 20171101140501) do
     t.integer  "applicant_id"
     t.integer  "position_id"
     t.integer  "accepted"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "exported",     default: false
     t.index ["applicant_id"], name: "index_offers_on_applicant_id", using: :btree
     t.index ["position_id"], name: "index_offers_on_position_id", using: :btree
   end

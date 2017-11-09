@@ -21,11 +21,12 @@ namespace :export do
 
   task 'Export CSV of results'
   task offers_csv: :environment do
-    offers = Offer.all.includes(:applicant).includes(:position)
+    offers = Offer.where(exported: false).includes(:applicant).includes(:position)
     CSV.open('offers_all.csv', 'wb') do |csv|
       csv << offers.first.applicant.attributes.keys + offers.first.position.attributes.keys
       offers.each do |offer|
         csv << offer.applicant.attributes.values + offer.position.attributes.values
+        offer.update(exported: true)
       end
     end
   end

@@ -6,6 +6,5 @@ class OfferEmailsController < ApplicationController
         SendTextJob.perform_later(offer.applicant.mobile_phone, 'Congrats, you got a summer job offer! Please check your email. You must still upload documents to your City of Boston profile and complete work tasks.')
       end
     end
-    render body: 'Offer emails and texts will be sent.'
   end
 end

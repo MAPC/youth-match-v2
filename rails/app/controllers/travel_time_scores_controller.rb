@@ -6,6 +6,5 @@ class TravelTimeScoresController < ApplicationController
         BuildTravelTimePreferenceJob.perform_later(applicant.id, position.id)
       end
     end
-    render body: 'Travel time scores will be assigned for all applicants.'
   end
 end
