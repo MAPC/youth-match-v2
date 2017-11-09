@@ -29,6 +29,7 @@ Router.map(function() {
       this.route('lottery');
     });
   });
+  this.route('offers');
 });
 
 export default Router;
