@@ -29,16 +29,17 @@ button {
     &:hover { background: $color_brand-red--active; }
   }
 
-  &.disabled {
-    cursor: default; 
-
-    background: $color_bg-medium;
-  }
-
   &.dark {
     background: $color_bg-dark; 
 
     &:hover { background: rgba($color_bg-dark, 10); }
+  }
+
+  &.disabled {
+    cursor: default; 
+    background: $color_bg-medium;
+
+    &:hover { background: $color_bg-medium; }
   }
 
   &.hollow {

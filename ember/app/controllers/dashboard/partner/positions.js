@@ -49,6 +49,7 @@ export default Ember.Controller.extend({
   @action
   submitForm() {
     if (!this.get('submitted')) {
+
       const willHire = this.get('model.picks').filter(pick => !pick.get('status'));
 
       willHire.invoke('set', 'status', 'hire');
