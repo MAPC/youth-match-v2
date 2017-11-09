@@ -7,7 +7,11 @@ class Pick < ApplicationRecord
   private
 
   def create_offer
-    Offer.create(applicant: applicant, position: position)
+    offer = Offer.create(applicant: applicant, position: position)
+    JobOfferMailer.job_offer_email(offer.applicant.user).deliver_later
+    if offer.applicant.receive_text_messages && offer.applicant.mobile_phone
+      SendTextJob.perform_later(offer.applicant.mobile_phone, 'Congrats, you got a summer job offer! Please check your email. You must still upload documents to your City of Boston profile and complete work tasks.')
+    end
   end
 
   def hired?
