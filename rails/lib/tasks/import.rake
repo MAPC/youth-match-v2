@@ -373,6 +373,49 @@ namespace :import do
     end
   end
 
+  desc 'Create all data necessary for demo'
+  task demo_data: :environment do
+    User.destroy_all
+    Applicant.destroy_all
+
+    600.times do |index|
+      FactoryGirl.create(:user_with_applicant)
+    end
+
+    Applicant.all.each do |applicant|
+      Position.all.each do |position|
+        FactoryGirl.create(:preference, applicant: applicant, position: position)
+      end
+    end
+
+    Applicant.order("RANDOM()").each_with_index do |applicant, index|
+      applicant.lottery_number = index
+      applicant.save!
+    end
+
+    applicant = Applicant.all.sample
+    applicant.update(lottery_activated: true, receive_text_messages: true)
+
+    youth = User.find(applicant.user_id)
+
+    staff = User.create({ email: 'staff@seed.org', password: 'password', account_type: 'staff' })
+
+    partner = User.create({
+      email: Faker::Internet.email,
+      account_tye: 'partner',
+    })
+
+    position = Position.all.sample
+    position.update(open_positions: 8)
+
+    Site.create(position_id: position.id, user_id: partner.id)
+
+    puts 'Youth Email: ' + youth.email
+    puts 'Partner Email: ' + partner.email
+    puts 'Staff Email: ' + staff.email
+    puts 'Staff Pass: password'
+  end
+
   private
 
   def get_address_from_icims(address_url)
