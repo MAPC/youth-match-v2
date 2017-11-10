@@ -16,7 +16,7 @@ RSpec.describe "PasswordResets", type: :request do
           }
         }
       ), headers: headers
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:created)
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe "PasswordResets", type: :request do
         }
       }
     ), headers: headers
-    expect(response).to have_http_status(500)
+    expect(response).to have_http_status(:bad_request)
   end
 
   it "fails if the requesting user is not staff" do
@@ -51,6 +51,6 @@ RSpec.describe "PasswordResets", type: :request do
         }
       }
     ), headers: headers
-    expect(response).to have_http_status(500)
+    expect(response).to have_http_status(:unauthorized)
   end
 end

@@ -9,7 +9,7 @@ FactoryGirl.define do
     interests ['Interest1', 'Interest2', 'Interest3', 'Interest4', 'Interest5']
     prefers_nearby { Faker::Boolean.boolean }
     has_transit_pass { Faker::Boolean.boolean }
-    receive_text_messages { Faker::Boolean.boolean }
+    receive_text_messages { true }
     mobile_phone { Faker::PhoneNumber.phone_number }
     guardian_name { Faker::Name.name }
     guardian_phone { Faker::PhoneNumber.phone_number }

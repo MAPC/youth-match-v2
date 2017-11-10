@@ -24,7 +24,7 @@ RSpec.describe "OutgoingMessages", type: :request do
           }
         }
       ), headers: headers
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:created)
     end
   end
 end
