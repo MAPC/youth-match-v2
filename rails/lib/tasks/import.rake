@@ -375,10 +375,10 @@ namespace :import do
 
   desc 'Create all data necessary for demo'
   task demo_data: :environment do
-    User.destroy_all
     Applicant.destroy_all
+    User.destroy_all
 
-    600.times do |index|
+    200.times do |index|
       FactoryGirl.create(:user_with_applicant)
     end
 
@@ -398,11 +398,16 @@ namespace :import do
 
     youth = User.find(applicant.user_id)
 
-    staff = User.create({ email: 'staff@seed.org', password: 'password', account_type: 'staff' })
+    staff = User.create({ 
+      email: 'staff@seed.org', 
+      password: 'password', 
+      account_type: 'staff',
+    })
 
     partner = User.create({
       email: Faker::Internet.email,
-      account_tye: 'partner',
+      password: 'password',
+      account_type: 'partner',
     })
 
     position = Position.all.sample
