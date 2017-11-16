@@ -100,15 +100,15 @@ For the actual lottery the developer will have to run the following tasks on imp
 
 Our algorithm works in the following manner:
 
-We geolocate the addresses of the young people and positions using Mapzen. Then we run a "travel time" score calculation for the distance between an applicant and a position based on how long it would take the applicant to get to the job site. We store this calculation as a floating point number between 5 and -5. If the applicant cares about travel time we assign the calculation based on the following formula:
+We geolocate the addresses of the young people and positions using Mapzen. Then we run a "travel time" score calculation for the distance between an applicant and a position based on how long it would take the applicant to get to the job site. We store this calculation as a floating point number between 5 and -5. If the applicant indicates on their application form that they care about travel time "is travel time an important factor to you" we assign the calculation based on the following formula:
 
 `minutes < 30 ? (0.008 * (minutes ** 2)) - (0.5833 * minutes) + 5 : -5`
 
-If they do not care then we use this formula:
+If they have not indicated that travel time is important, then we use this formula:
 
 `minutes < 40 ? (-0.25 * minutes) + 5 : -5`
 
-This is then used to calculate a preference store that is based on two components:
+This is then used to calculate a preference score that is based on two components:
 
 1. A normalized travel time score
 2. An overlapping interest score
@@ -117,7 +117,7 @@ The normalized travel time score involves ranking the travel time scores for an 
 
 Finally, we add the interest score. If there is interest score overlap and interest score is important we add 5 points. If interest score is ranked less important than travel time score we add 3. Otherwise if there is no overlap we subtract 3 or 5.
 
-After we've calculated these scores we apply the Gale-Shapely algorithm to place applicants with positions. We implement Gale-Shapely by taking an applicant and iterating over each position until we find either an open position or a position where the applicant ranks more highly as a match than the current applicant. We then repeat this process for each unplaced applicant until all applicants are placed.
+After we've calculated these scores we apply the Gale-Shapley algorithm to place applicants with positions. We implement Gale-Shapley by taking an applicant and iterating over each position until we find either an open position or a position where the applicant ranks more highly as a match than the current applicant. We then repeat this process for each unplaced applicant until all applicants are placed.
 
 ## Contact
 
